@@ -55,6 +55,7 @@ public class controller extends Activity {
     private static boolean disableColorChange = false;
     private Handler handler = new Handler();
     private static Context ctx;
+    private boolean instabug_started = false;
     private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
 
     @Override
@@ -99,13 +100,17 @@ public class controller extends Activity {
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone3", getString(R.string.Zone3))).setTabListener(new LightControlTabListener(this, "zone3")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone4", getString(R.string.Zone4))).setTabListener(new LightControlTabListener(this, "zone4")));
 
-        Instabug.initialize(this.getApplicationContext())
-                .setAnnotationActivityClass(InstabugAnnotationActivity.class)
-                .setShowIntroDialog(true)
-                .setEnableOverflowMenuItem(true)
-                .setCrashReportingEnabled(true)
-                .setTrackUserSteps(true)
-                .setShowIntroDialog(false);
+        try {
+            Instabug.initialize(this.getApplicationContext())
+                    .setAnnotationActivityClass(InstabugAnnotationActivity.class)
+                    .setShowIntroDialog(true)
+                    .setEnableOverflowMenuItem(true)
+                    .setCrashReportingEnabled(true)
+                    .setTrackUserSteps(true)
+                    .setShowIntroDialog(false);
+        } catch(IllegalStateException e) {
+            //do nothing
+        }
     }
 
     private class LightControlTabListener implements ActionBar.TabListener {
@@ -188,7 +193,7 @@ public class controller extends Activity {
             startActivity(intent);
             return true;
         } else if(id == R.id.action_send_feedback) {
-            Instabug.getInstance().invokeFeedbackProcess();
+            Instabug.getInstance().displayFeedbackDialog();
         } else if(id == R.id.action_report_bug) {
             Instabug.getInstance().startAnnotationActivity(getScreen());
         }
