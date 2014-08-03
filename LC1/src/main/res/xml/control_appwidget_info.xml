@@ -4,7 +4,7 @@
     android:minWidth="294dp"
     android:minHeight="40dp"
     android:updatePeriodMillis="2000"
-    android:previewImage="@drawable/preview"
+    android:previewImage="@drawable/widget"
     android:initialLayout="@layout/control_widget_init"
     android:resizeMode="vertical"
     android:widgetCategory="home_screen|keyguard"

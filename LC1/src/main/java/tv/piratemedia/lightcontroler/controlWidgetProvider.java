@@ -174,25 +174,29 @@ public class controlWidgetProvider extends AppWidgetProvider {
     public static void setTime(Context ctx) {
         Calendar c = Calendar.getInstance();
         int min = c.get(Calendar.MINUTE);
-        String minString;
+        String minString = "00";
         if(min < 10) {
             minString = "0"+min;
         } else {
             minString = Integer.toString(min);
         }
         int hour = c.get(Calendar.HOUR_OF_DAY);
-        String hourString;
+        String hourString = "00";
         if(hour < 10) {
             hourString = "0"+hour;
         } else {
             hourString = Integer.toString(hour);
         }
-        remoteViews.setTextViewText(R.id.timeHour,hourString);
-        remoteViews.setTextViewText(R.id.timeMinute,minString);
-        remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-        String month_name = month_date.format(c.getTime());
-        remoteViews.setTextViewText(R.id.dateMonth,month_name);
+        try {
+            remoteViews.setTextViewText(R.id.timeHour, hourString);
+            remoteViews.setTextViewText(R.id.timeMinute, minString);
+            remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+            String month_name = month_date.format(c.getTime());
+            remoteViews.setTextViewText(R.id.dateMonth, month_name);
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
 
         try {
             aWM.updateAppWidget(thisWidget, remoteViews);
