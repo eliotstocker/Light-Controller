@@ -7,7 +7,9 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,10 +27,19 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.instabug.library.Instabug;
+import com.instabug.library.util.TouchEventDispatcher;
+import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;
+
 import com.larswerkman.holocolorpicker.ColorPicker;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class controller extends Activity {
 
@@ -43,6 +55,7 @@ public class controller extends Activity {
     private static boolean disableColorChange = false;
     private Handler handler = new Handler();
     private static Context ctx;
+    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +78,12 @@ public class controller extends Activity {
         Controller.recreateUDPC();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        dispatcher.dispatchTouchEvent(this,ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
     private void setupApp() {
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
@@ -79,6 +98,14 @@ public class controller extends Activity {
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone2", getString(R.string.Zone2))).setTabListener(new LightControlTabListener(this, "zone2")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone3", getString(R.string.Zone3))).setTabListener(new LightControlTabListener(this, "zone3")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone4", getString(R.string.Zone4))).setTabListener(new LightControlTabListener(this, "zone4")));
+
+        Instabug.initialize(this.getApplicationContext())
+                .setAnnotationActivityClass(InstabugAnnotationActivity.class)
+                .setShowIntroDialog(true)
+                .setEnableOverflowMenuItem(true)
+                .setCrashReportingEnabled(true)
+                .setTrackUserSteps(true)
+                .setShowIntroDialog(false);
     }
 
     private class LightControlTabListener implements ActionBar.TabListener {
@@ -160,8 +187,43 @@ public class controller extends Activity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
+        } else if(id == R.id.action_send_feedback) {
+            Instabug.getInstance().invokeFeedbackProcess();
+        } else if(id == R.id.action_report_bug) {
+            Instabug.getInstance().startAnnotationActivity(getScreen());
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private File getScreen() {
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        String mPath = Environment.getExternalStorageDirectory().toString() + "/bug_report_"+ts+".jpg";
+
+// create bitmap screen capture
+        Bitmap bitmap;
+        View v1 = getWindow().getDecorView().getRootView();
+        v1.setDrawingCacheEnabled(true);
+        bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+        v1.setDrawingCacheEnabled(false);
+
+        OutputStream fout = null;
+        File imageFile = new File(mPath);
+
+        try {
+            fout = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fout);
+            fout.flush();
+            fout.close();
+            return imageFile;
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -363,7 +425,6 @@ public class controller extends Activity {
                 toggleCandle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("Eliot", "Candle Button Clicked");
                         if(!candleMode) {
                             toggleCandle.setText("Stop Candle Mode");
                             Controller.startCandleMode(getArguments().getInt(ARG_SECTION_NUMBER) - 1);

@@ -4,8 +4,12 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -43,6 +47,19 @@
                 <action android:name="tv.piratemedia.lightcontroler.clock.action.UPDATE" />
             </intent-filter>
         </service>
+
+        <activity android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.Lightcontroller"/>
+        <service android:name="com.instabug.library.network.UploadCacheService"/>
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <meta-data android:name="com.instabug.DevelopmentAppToken" android:value="03e7f2c6fe7535e249bb72f8955f058f"/>
+        <meta-data android:name="com.instabug.ProductionMode" android:value="false"/>
+
     </application>
 
 </manifest>

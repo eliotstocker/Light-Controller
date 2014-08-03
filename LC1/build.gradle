@@ -18,8 +18,14 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url 'http://archiva.instabug.com/repository/release' }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.larswerkman:HoloColorPicker:1.4'
+    compile 'com.instabug.library:instabugsupport:1.1.1'
 }
