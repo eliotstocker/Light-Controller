@@ -37,23 +37,18 @@ public class controlCommands {
         byte[] messageBA = new byte[3];
         switch(zone) {
             case 0:
-                //Log.d("EliotTest", "Lights ON Global");
                 messageBA[0] = 66;
                 break;
             case 1:
-                //Log.d("EliotTest", "Lights ON Zone 1");
                 messageBA[0] = 69;
                 break;
             case 2:
-                //Log.d("EliotTest", "Lights ON Zone 2");
                 messageBA[0] = 71;
                 break;
             case 3:
-                //Log.d("EliotTest", "Lights ON Zone 3");
                 messageBA[0] = 73;
                 break;
             case 4:
-                //Log.d("EliotTest", "Lights ON Zone 4");
                 messageBA[0] = 75;
                 break;
         }
@@ -77,23 +72,18 @@ public class controlCommands {
         byte[] messageBA = new byte[3];
         switch(zone) {
             case 0:
-                //Log.d("EliotTest", "Lights OFF Global");
                 messageBA[0] = 65;
                 break;
             case 1:
-                //Log.d("EliotTest", "Lights OFF Zone 1");
                 messageBA[0] = 70;
                 break;
             case 2:
-                //Log.d("EliotTest", "Lights OFF Zone 2");
                 messageBA[0] = 72;
                 break;
             case 3:
-                //Log.d("EliotTest", "Lights OFF Zone 3");
                 messageBA[0] = 74;
                 break;
             case 4:
-                //Log.d("EliotTest", "Lights OFF Zone 4");
                 messageBA[0] = 76;
                 break;
         }
@@ -111,23 +101,18 @@ public class controlCommands {
         byte[] messageBA = new byte[3];
         switch(zone) {
             case 0:
-                //Log.d("EliotTest", "Lights White Global");
                 messageBA[0] = (byte)194;
                 break;
             case 1:
-                //Log.d("EliotTest", "Lights White Zone 1");
                 messageBA[0] = (byte)197;
                 break;
             case 2:
-                //Log.d("EliotTest", "Lights White Zone 2");
                 messageBA[0] = (byte)199;
                 break;
             case 3:
-                //Log.d("EliotTest", "Lights White Zone 3");
                 messageBA[0] = (byte)201;
                 break;
             case 4:
-                //Log.d("EliotTest", "Lights White Zone 4");
                 messageBA[0] = (byte)203;
                 break;
         }
@@ -144,7 +129,6 @@ public class controlCommands {
     public void setBrightness(int zoneid, int brightness) {
         if(!sleeping) {
             LightsOn(zoneid);
-            //Log.d("EliotTest", "brightness: " + brightness);
             byte[] messageBA = new byte[3];
             messageBA[0] = 78;
             messageBA[1] = (byte)(brightness);
@@ -182,7 +166,6 @@ public class controlCommands {
             Color.colorToHSV(color, colors);
             Float deg = (float) Math.toRadians(-colors[0]);
             Float dec = (deg/((float)Math.PI*2f))*255f;
-            //Log.d("EliotTest","deg: "+deg+"color: "+dec);
             if(LastOn != zoneid) {
                 LightsOn(zoneid);
             }
@@ -210,7 +193,6 @@ public class controlCommands {
     public void toggleDiscoMode(int zoneid) {
         LightsOn(zoneid);
         byte[] messageBA = new byte[3];
-        //Log.d("EliotTest", "Disco Toggle");
         messageBA[0] = 77;
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -224,7 +206,6 @@ public class controlCommands {
 
     public void discoModeFaster() {
         byte[] messageBA = new byte[3];
-        //Log.d("EliotTest", "Disco Faster");
         messageBA[0] = 68;
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -238,7 +219,6 @@ public class controlCommands {
 
     public void discoModeSlower() {
         byte[] messageBA = new byte[3];
-        //Log.d("EliotTest", "Disco Slower");
         messageBA[0] = 67;
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -257,17 +237,8 @@ public class controlCommands {
         startCandleColor = "fffc00";
         endCandleColor = "ff4e00";
 
-        final int[] startInts = new int[3];
-        startInts[0] = Integer.parseInt(startCandleColor.substring(0,2),16);
-        startInts[1] = Integer.parseInt(startCandleColor.substring(2,4),16);
-        startInts[2] = Integer.parseInt(startCandleColor.substring(4,6),16);
-
-        Log.d("Testing", startCandleColor.substring(0,2)+", "+startCandleColor.substring(2,4)+", "+startCandleColor.substring(4,6));
-
-        final int[] endInts = new int[3];
-        endInts[0] = Integer.parseInt(endCandleColor.substring(0,2),16);
-        endInts[1] = Integer.parseInt(endCandleColor.substring(2,4),16);
-        endInts[2] = Integer.parseInt(endCandleColor.substring(4,6),16);
+        final int startInt = Integer.parseInt(startCandleColor.substring(2,4),16);
+        final int endInt = Integer.parseInt(endCandleColor.substring(2,4),16);
 
         Thread thread = new Thread()
         {
@@ -277,43 +248,28 @@ public class controlCommands {
                     int i = 0;
                     while(candling) {
                         Random r = new Random();
-                        String newColor = "#";
-                        if(endInts[0] - startInts[0] == 0) {
-                            newColor += Integer.toHexString(startInts[0]);
+                        String newColor = "#ff";
+                        if(endInt - startInt == 0) {
+                            newColor += Integer.toHexString(startInt);
                         } else {
-                            if(endInts[0] - startInts[0] < 0) {
-                                newColor += Integer.toHexString(r.nextInt(-(endInts[0] - startInts[0])) + startInts[0]);
+                            if(endInt - startInt < 0) {
+                                newColor += Integer.toHexString(r.nextInt(startInt - (endInt - startInt)));
                             } else {
-                                newColor += Integer.toHexString(r.nextInt(endInts[0] - startInts[0]) + startInts[0]);
+                                newColor += Integer.toHexString(r.nextInt(endInt - startInt) + startInt);
                             }
                         }
-                        if(endInts[1] - startInts[1] == 0) {
-                            newColor += Integer.toHexString(startInts[1]);
-                        } else {
-                            if(endInts[1] - startInts[1] < 0) {
-                                newColor += Integer.toHexString(r.nextInt(-(endInts[1] - startInts[1])) + startInts[1]);
-                            } else {
-                                newColor += Integer.toHexString(r.nextInt(endInts[1] - startInts[1]) + startInts[1]);
-                            }
+                        if(newColor.length() < 5) {
+                            newColor+="f";
                         }
-                        if(endInts[2] - startInts[2] == 0) {
-                            newColor += Integer.toHexString(startInts[2]);
-                        } else {
-                            if(endInts[2] - startInts[2] < 0) {
-                                newColor += Integer.toHexString(r.nextInt(-(endInts[2] - startInts[2])) + startInts[2]);
-                            } else {
-                                newColor += Integer.toHexString(r.nextInt(endInts[2] - startInts[2]) + startInts[2]);
-                            }
-                        }
-
-                        Log.d("Testing", newColor);
+                        newColor += "00";
 
                         try {
                             setColor(zone, Color.parseColor(newColor));
                         } catch(IllegalArgumentException e) {
 
                         }
-                        TimeUnit.MILLISECONDS.sleep(200);
+                        int sleedTime = r.nextInt(150) + 50;
+                        TimeUnit.MILLISECONDS.sleep(sleedTime);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -331,7 +287,6 @@ public class controlCommands {
     private FileOutputStream fd;
     private int[] strobeColors = new int[4];
     public void startMeasuringVol(final int zone) {
-        //Log.d("EliotTest","Start Mic Input in zone: "+zone);
         strobeColors[0] = Color.parseColor("#FF0000");
         strobeColors[1] = Color.parseColor("#0000FF");
         strobeColors[2] = Color.parseColor("#FFFF00");
@@ -357,7 +312,6 @@ public class controlCommands {
                     int i = 0;
                     while(measuring) {
                         if(getInputVolume() > tolerance[0]) {
-                            Log.d("Light Control","Beat Detected");
                             i++;
                             if(i > 3) {
                                 i = 0;
@@ -375,7 +329,6 @@ public class controlCommands {
     }
 
     public void stopMeasuringVol() {
-        //Log.d("EliotTest","stop Mic Input");
         measuring = false;
         try {
             mr.stop();
