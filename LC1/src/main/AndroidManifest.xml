@@ -58,7 +58,7 @@
             </intent-filter>
         </receiver>
         <meta-data android:name="com.instabug.DevelopmentAppToken" android:value="03e7f2c6fe7535e249bb72f8955f058f"/>
-        <meta-data android:name="com.instabug.ProductionMode" android:value="false"/>
+        <meta-data android:name="com.instabug.ProductionMode" android:value="true"/>
 
     </application>
 
