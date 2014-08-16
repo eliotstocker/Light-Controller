@@ -27,7 +27,7 @@ Pull request and translations very welcome
 
 License
 -------
-Light Controller is published under the GPL V3 license
+Light Controller is published under the [GPL V3 license](GPL.md)
 
 Libraies
 --------
