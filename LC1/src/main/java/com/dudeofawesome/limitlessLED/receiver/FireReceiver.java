@@ -73,7 +73,6 @@ public final class FireReceiver extends BroadcastReceiver
 
         if (PluginBundleManager.isBundleValid(bundle))
         {
-            System.out.println("starting");
             final String message = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
 
             controlCommands Controller;
@@ -84,7 +83,7 @@ public final class FireReceiver extends BroadcastReceiver
             for (int i = 0; i < in.length; i++) {
                 in[i] = _in[i].split(";");
             }
-            for (int i = in.length - 1; i >= 0; i--) {
+            for (int i = in.length - 1; i >= 0; i++) {
                 TaskerCommand.TASKTYPE task = TaskerCommand.TASKTYPE.values()[Integer.parseInt(in[i][1])];
                 if (task == TaskerCommand.TASKTYPE.ON) {
                     Controller.LightsOn(Integer.parseInt(in[i][0]));
