@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tv.piratemedia.lightcontroler"
+    package="com.dudeofawesome.limitlessLED"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0"
+    android:installLocation="internalOnly" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -17,11 +18,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Lightcontroller" >
         <activity
-            android:name="tv.piratemedia.lightcontroler.controller"
+            android:name=".controller"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,10 +30,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="tv.piratemedia.lightcontroler.controlPreferences"
-            android:parentActivityName="tv.piratemedia.lightcontroler.controller">
+        <activity android:name="com.dudeofawesome.limitlessLED.controlPreferences"
+            android:parentActivityName="com.dudeofawesome.limitlessLED.controller">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.EditActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/plugin_name"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize" >
+
+            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
         <receiver android:name=".controlWidgetProvider" >
@@ -42,9 +57,19 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/control_appwidget_info" />
         </receiver>
+        <receiver
+            android:name=".receiver.FireReceiver"
+            android:exported="true"
+            android:process=":background" >
+
+            <!-- this Intent filter allows the plug-in to discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
         <service android:name=".controlWidgetProvider$ClockUpdateService" android:exported="false">
             <intent-filter>
-                <action android:name="tv.piratemedia.lightcontroler.clock.action.UPDATE" />
+                <action android:name="com.dudeofawesome.limitlessLED.clock.action.UPDATE" />
             </intent-filter>
         </service>
 

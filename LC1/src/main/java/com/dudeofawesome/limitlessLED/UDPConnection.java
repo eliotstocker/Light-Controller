@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package tv.piratemedia.lightcontroler;
+package com.dudeofawesome.limitlessLED;
 
 import android.content.Context;
 import android.content.SharedPreferences;

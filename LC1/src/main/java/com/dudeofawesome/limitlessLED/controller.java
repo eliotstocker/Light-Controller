@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package tv.piratemedia.lightcontroler;
+package com.dudeofawesome.limitlessLED;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -25,12 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,11 +108,10 @@ public class controller extends Activity {
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.removeAllTabs();
-        actionBar.setIcon(R.drawable.icon_white);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        actionBar.addTab(actionBar.newTab().setText(R.string.gloabl).setTabListener(new LightControlTabListener(this, "global")));
+        actionBar.addTab(actionBar.newTab().setText(R.string.global).setTabListener(new LightControlTabListener(this, "global")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone1", getString(R.string.Zone1))).setTabListener(new LightControlTabListener(this, "zone1")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone2", getString(R.string.Zone2))).setTabListener(new LightControlTabListener(this, "zone2")));
         actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone3", getString(R.string.Zone3))).setTabListener(new LightControlTabListener(this, "zone3")));
@@ -339,6 +339,19 @@ public class controller extends Activity {
                     @Override
                     public void onColorChanged(int i) {
                         if(!disableColorChange) {
+                            LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.mainLayout);
+                            ActionBar bar = getActivity().getActionBar();
+                            float[] hsv = new float[3];
+                            int rgb = Color.BLACK;
+                            Color.colorToHSV(i, hsv);
+                            hsv[2] = 0.8f;
+                            rgb = Color.HSVToColor(hsv);
+                            rl.setBackgroundColor(rgb);
+                            hsv[0] += 180;
+                            hsv[2] = 0.9f;
+                            if (hsv[0] > 360) hsv[0] -= 360;
+                            rgb = Color.HSVToColor(hsv);
+                            bar.setBackgroundDrawable(new ColorDrawable(rgb));
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER) - 1, i);
                             ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);
@@ -369,8 +382,16 @@ public class controller extends Activity {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (isChecked) {
+//                            LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.mainLayout);
+//                            ActionBar bar = getActivity().getActionBar();
+//                            rl.setBackgroundColor(Color.rgb(100, 100, 100));
+//                            bar.setBackgroundDrawable(new ColorDrawable(Color.rgb(200, 200, 200)));
                             Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
                         } else {
+                            LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.mainLayout);
+                            ActionBar bar = getActivity().getActionBar();
+                            rl.setBackgroundColor(Color.BLACK);
+                            bar.setBackgroundDrawable(new ColorDrawable(Color.rgb(50, 50, 50)));
                             Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
                         }
                     }
@@ -406,6 +427,10 @@ public class controller extends Activity {
                 white.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        LinearLayout rl = (LinearLayout) rootView.findViewById(R.id.mainLayout);
+                        ActionBar bar = getActivity().getActionBar();
+                        rl.setBackgroundColor(Color.rgb(100, 100, 100));
+                        bar.setBackgroundDrawable(new ColorDrawable(Color.rgb(200, 200, 200)));
                         Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);

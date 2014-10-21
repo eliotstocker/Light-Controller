@@ -85,7 +85,7 @@
                 <TextView
                     android:layout_width="85dp"
                     android:layout_height="13dp"
-                    android:text="@string/gloabl"
+                    android:text="@string/global"
                     android:id="@+id/textView"
                     android:gravity="center_horizontal"
                     android:textSize="10dp"

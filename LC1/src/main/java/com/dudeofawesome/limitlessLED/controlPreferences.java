@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package tv.piratemedia.lightcontroler;
+package com.dudeofawesome.limitlessLED;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -41,7 +41,7 @@ public class controlPreferences extends PreferenceActivity {
         final ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.icon_white);
+//        actionBar.setIcon(R.drawable.icon_white);
 
         EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");
 

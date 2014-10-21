@@ -15,17 +15,13 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package tv.piratemedia.lightcontroler;
+package com.dudeofawesome.limitlessLED;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;

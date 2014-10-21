@@ -2,9 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tv.piratemedia.lightcontroler.controller$PlaceholderFragment">
+    tools:context="com.dudeofawesome.limitlessLED.controller$PlaceholderFragment">
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -85,7 +86,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp" />
 
-                <tv.piratemedia.lightcontroler.verticalSeekBar
+                <com.dudeofawesome.limitlessLED.verticalSeekBar
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/brightness"
