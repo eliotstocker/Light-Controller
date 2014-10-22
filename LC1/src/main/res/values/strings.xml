@@ -21,12 +21,10 @@
     <string name="pref_zone_2">Zone 2 Name</string>
     <string name="pref_zone_3">Zone 3 Name</string>
     <string name="pref_zone_4">Zone 4 Name</string>
-
     <string name="plugin_name">LimitlessLED</string>
     <string name="message_hint">Choose what to do with your lights</string>
-
-    <string name="twofortyfouram_locale_breadcrumb_format" >%1$s%2$s%3$s</string>
-    <string name="twofortyfouram_locale_breadcrumb_separator">\u0020&gt;\u0020</string>
+    <string name="twofortyfouram_locale_breadcrumb_format">%1$s%2$s%3$s</string>
+    <string name="twofortyfouram_locale_breadcrumb_separator">\u0020>\u0020</string>
     <!-- The Don't Save button in the menu or Action Bar.  MDPI 21 character maximum -->
     <string name="twofortyfouram_locale_menu_dontsave">Cancel</string>
     <!-- The Help button in the menu or Action Bar.  MDPI 21 character maximum -->
@@ -39,4 +37,8 @@
         <item>Music Mode</item>
         <item>Candle Mode</item>
     </string-array>
+
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
 </resources>

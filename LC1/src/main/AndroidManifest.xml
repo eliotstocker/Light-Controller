@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dudeofawesome.limitlessLED"
+    android:installLocation="internalOnly"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:installLocation="internalOnly" >
+    android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -30,10 +30,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.dudeofawesome.limitlessLED.controlPreferences"
-            android:parentActivityName="com.dudeofawesome.limitlessLED.controller">
+        <activity
+            android:name=".controlPreferences"
+            android:parentActivityName=".controller" >
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
@@ -50,11 +51,14 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
+
         <receiver android:name=".controlWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/control_appwidget_info" />
         </receiver>
         <receiver
@@ -67,24 +71,44 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
-        <service android:name=".controlWidgetProvider$ClockUpdateService" android:exported="false">
+
+        <service
+            android:name=".controlWidgetProvider$ClockUpdateService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.dudeofawesome.limitlessLED.clock.action.UPDATE" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.Lightcontroller"/>
-        <service android:name="com.instabug.library.network.UploadCacheService"/>
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
+        <activity
+            android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
+            android:theme="@style/Theme.Lightcontroller"
+            android:windowSoftInputMode="adjustPan" />
+
+        <service android:name="com.instabug.library.network.UploadCacheService" />
+
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <meta-data android:name="com.instabug.DevelopmentAppToken" android:value="03e7f2c6fe7535e249bb72f8955f058f"/>
-        <meta-data android:name="com.instabug.ProductionMode" android:value="true"/>
 
+        <meta-data
+            android:name="com.instabug.DevelopmentAppToken"
+            android:value="03e7f2c6fe7535e249bb72f8955f058f" />
+        <meta-data
+            android:name="com.instabug.ProductionMode"
+            android:value="true" />
+
+        <receiver android:name=".LargeWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/large_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
