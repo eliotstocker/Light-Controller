@@ -493,5 +493,4 @@ public class controller extends Activity {
             }
         }
     }
-
 }

@@ -300,10 +300,10 @@ public class controlCommands {
     private FileOutputStream fd;
     private int[] strobeColors = new int[4];
     public void startMeasuringVol(final int zone) {
-        strobeColors[0] = Color.parseColor("#FF0000");
-        strobeColors[1] = Color.parseColor("#0000FF");
-        strobeColors[2] = Color.parseColor("#FFFF00");
-        strobeColors[3] = Color.parseColor("#00FF00");
+        strobeColors[0] = Color.parseColor("#FF7400");
+        strobeColors[1] = Color.parseColor("#FFAA00");
+        strobeColors[2] = Color.parseColor("#00FEFE");
+        strobeColors[3] = Color.parseColor("#004DFE");
         measuring = true;
         try {
             fd = new FileOutputStream(new File(mContext.getCacheDir().getPath()+"/check"));
@@ -325,10 +325,11 @@ public class controlCommands {
                     int i = 0;
                     while(measuring) {
                         if(getInputVolume() > tolerance[0]) {
-                            i++;
-                            if(i > 3) {
-                                i = 0;
-                            }
+//                            i++;
+//                            if(i >= strobeColors.length) {
+//                                i = 0;
+//                            }
+                            i = (i + 1 >= strobeColors.length) ? 0 : i + 1;
                             setColor(zone,strobeColors[i]);
                         }
                         TimeUnit.MILLISECONDS.sleep(50);
