@@ -27,6 +27,8 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
 
+import tv.piratemedia.lightcontroler.R;
+
 import java.util.regex.Pattern;
 
 public class controlPreferences extends PreferenceActivity {
@@ -41,7 +43,7 @@ public class controlPreferences extends PreferenceActivity {
         final ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setIcon(R.drawable.icon_white);
+//        actionBar.setIcon(R.drawable.icon_white);
 
         EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");
 

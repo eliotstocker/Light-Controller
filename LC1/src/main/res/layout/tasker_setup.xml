@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+** Copyright 2013 two forty four a.m. LLC <http://www.twofortyfouram.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!--<EditText-->
+        <!--android:id="@android:id/text1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="6dip"-->
+        <!--android:layout_marginRight="6dip"-->
+        <!--android:layout_marginTop="8dip"-->
+        <!--android:hint="@string/message_hint" />-->
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Power"
+                android:id="@+id/textView"
+                android:textSize="12dp"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp" />
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/onoff"
+                android:checked="false"
+                style="@style/ToggleLightController"
+                android:textOn=""
+                android:textOff=""/>
+
+            <Button
+                style="@style/ButtonLightController"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:text="white"
+                android:id="@+id/white"
+                android:layout_marginTop="55dp"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <com.larswerkman.holocolorpicker.ColorPicker
+            android:id="@+id/color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:layout_weight="4"
+            android:layout_marginLeft="-15dp"
+            android:layout_marginRight="-15dp"
+            android:layout_marginTop="-10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|center_horizontal"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brightness"
+                android:id="@+id/textView2"
+                android:textColor="#FFFFFF"
+                android:textSize="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <tv.piratemedia.lightcontroler.verticalSeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/brightness"
+                android:layout_gravity="center_horizontal"
+                android:max="30"
+                android:progress="30"
+                style="@style/SeekBarLightController" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

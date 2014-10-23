@@ -31,8 +31,9 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
+
+import tv.piratemedia.lightcontroler.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,7 +42,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
 
     public static class ClockUpdateService extends Service {
         private static final String ACTION_UPDATE =
-                "tv.piratemedia.lightcontroler.clock.action.UPDATE";
+                "tv.piratemedia.limitlessLED.clock.action.UPDATE";
 
         private final static IntentFilter intentFilter;
 
