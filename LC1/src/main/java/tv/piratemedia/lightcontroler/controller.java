@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.ActionBar;
@@ -32,7 +32,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +47,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
+import tv.piratemedia.lightcontroler.R;
 import com.instabug.library.Instabug;
 import com.instabug.library.util.TouchEventDispatcher;
 import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;

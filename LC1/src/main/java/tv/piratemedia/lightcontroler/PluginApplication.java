@@ -10,12 +10,14 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.os.Build;
 import android.util.Log;
+
+import tv.piratemedia.lightcontroler.BuildConfig;
 
 /**
  * Implements an application object for the plug-in.

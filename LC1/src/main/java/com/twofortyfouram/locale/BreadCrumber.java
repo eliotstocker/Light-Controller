@@ -16,7 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.dudeofawesome.limitlessLED.R;
+import tv.piratemedia.lightcontroler.R;
 
 /**
  * Utility class to generate a breadcrumb title string for {@code Activity} instances in Locale.

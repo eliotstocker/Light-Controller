@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -26,6 +26,8 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.widget.Toast;
+
+import tv.piratemedia.lightcontroler.R;
 
 import java.util.regex.Pattern;
 

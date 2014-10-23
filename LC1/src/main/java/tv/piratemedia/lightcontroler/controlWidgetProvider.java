@@ -15,7 +15,7 @@
 *    You should have received a copy of the GNU General Public License
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,6 +33,8 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
+import tv.piratemedia.lightcontroler.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,7 +42,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
 
     public static class ClockUpdateService extends Service {
         private static final String ACTION_UPDATE =
-                "com.dudeofawesome.limitlessLED.clock.action.UPDATE";
+                "tv.piratemedia.limitlessLED.clock.action.UPDATE";
 
         private final static IntentFilter intentFilter;
 

@@ -10,9 +10,11 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.content.Context;
+
+import tv.piratemedia.lightcontroler.BuildConfig;
 
 /**
  * Class of constants used by this Locale plug-in.

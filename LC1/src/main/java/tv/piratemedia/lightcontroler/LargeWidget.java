@@ -1,4 +1,4 @@
-package com.dudeofawesome.limitlessLED;
+package tv.piratemedia.lightcontroler;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -6,13 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RemoteViews;
+
+import tv.piratemedia.lightcontroler.R;
 
 
 /**

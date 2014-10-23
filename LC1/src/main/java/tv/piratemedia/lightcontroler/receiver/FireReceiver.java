@@ -10,26 +10,22 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.dudeofawesome.limitlessLED.receiver;
+package tv.piratemedia.lightcontroler.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.Locale;
 
-import com.dudeofawesome.limitlessLED.Constants;
-import com.dudeofawesome.limitlessLED.DataTypes.TaskerCommand;
-import com.dudeofawesome.limitlessLED.bundle.BundleScrubber;
-import com.dudeofawesome.limitlessLED.bundle.PluginBundleManager;
-import com.dudeofawesome.limitlessLED.controlCommands;
-import com.dudeofawesome.limitlessLED.ui.EditActivity;
+import tv.piratemedia.lightcontroler.Constants;
+import tv.piratemedia.lightcontroler.DataTypes.TaskerCommand;
+import tv.piratemedia.lightcontroler.bundle.BundleScrubber;
+import tv.piratemedia.lightcontroler.bundle.PluginBundleManager;
+import tv.piratemedia.lightcontroler.controlCommands;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -44,7 +40,7 @@ public final class FireReceiver extends BroadcastReceiver
      * @param context {@inheritDoc}.
      * @param intent the incoming {@link com.twofortyfouram.locale.Intent#ACTION_FIRE_SETTING} Intent. This
      *            should contain the {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE} that was saved by
-     *            {@link EditActivity} and later broadcast by Locale.
+     *            {@link tv.piratemedia.lightcontroler.ui.EditActivity} and later broadcast by Locale.
      */
     @Override
     public void onReceive(final Context context, final Intent intent)

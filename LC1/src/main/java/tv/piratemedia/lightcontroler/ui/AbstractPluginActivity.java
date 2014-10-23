@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.dudeofawesome.limitlessLED.ui;
+package tv.piratemedia.lightcontroler.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -21,9 +21,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import tv.piratemedia.lightcontroler.Constants;
 import com.twofortyfouram.locale.BreadCrumber;
-import com.dudeofawesome.limitlessLED.Constants;
-import com.dudeofawesome.limitlessLED.R;
+import tv.piratemedia.lightcontroler.R;
 
 /**
  * Superclass for plug-in Activities. This class takes care of initializing aspects of the plug-in's UI to

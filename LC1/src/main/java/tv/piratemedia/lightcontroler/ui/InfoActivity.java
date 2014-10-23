@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.dudeofawesome.limitlessLED.ui;
+package tv.piratemedia.lightcontroler.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import android.util.Log;
 import java.util.Locale;
 
 import com.twofortyfouram.locale.PackageUtilities;
-import com.dudeofawesome.limitlessLED.Constants;
+import tv.piratemedia.lightcontroler.Constants;
 
 /**
  * If the user tries to launch the plug-in via the "Open" button in Google Play, this will redirect the user

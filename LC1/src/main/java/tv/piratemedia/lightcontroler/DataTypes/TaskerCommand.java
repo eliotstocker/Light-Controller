@@ -1,4 +1,4 @@
-package com.dudeofawesome.limitlessLED.DataTypes;
+package tv.piratemedia.lightcontroler.DataTypes;
 
 /**
  * Created by DudeOfAwesome on 10/20/14.
