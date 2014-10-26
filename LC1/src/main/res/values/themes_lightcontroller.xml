@@ -2,19 +2,12 @@
 
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-  <style name="LightController" parent="android:Theme.Holo">
-
-    <item name="android:buttonStyle">@style/ButtonLightController</item>
-
-    <item name="android:imageButtonStyle">@style/ImageButtonLightController</item>
-
-    <item name="android:dropDownSpinnerStyle">@style/SpinnerLightController</item>
-
-    <item name="android:seekBarStyle">@style/SeekBarLightController</item>
-
-    <item name="android:buttonStyleToggle">@style/ToggleLightController</item>
-
-  </style>
-
+    <style name="LightController" parent="LightController.Base"/>
+    <style name="LightController.Base" parent="Theme.AppCompat">
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">#ff383838</item>
+    </style>
 </resources>

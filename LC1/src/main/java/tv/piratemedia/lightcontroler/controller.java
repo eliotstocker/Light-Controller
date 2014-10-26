@@ -17,10 +17,9 @@
 */
 package tv.piratemedia.lightcontroler;
 
-import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +29,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,11 +47,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
+import android.support.v7.app.ActionBarActivity;
 
-import com.instabug.library.Instabug;
+/*import com.instabug.library.Instabug;
 import com.instabug.library.util.TouchEventDispatcher;
-import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;
+import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;*/
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -58,7 +62,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class controller extends Activity {
+public class controller extends ActionBarActivity {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -72,8 +76,11 @@ public class controller extends Activity {
     private static boolean disableColorChange = false;
     private Handler handler = new Handler();
     private static Context ctx;
+    private static SharedPreferences prefs;
     private boolean instabug_started = false;
-    private TouchEventDispatcher dispatcher = new TouchEventDispatcher();
+
+    private Toolbar mActionBarToolbar;
+    private PagerSlidingTabStrip tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,37 +94,38 @@ public class controller extends Activity {
 
         Controller = new controlCommands(this);
         ctx = this;
+        Intent i = new Intent(this, NotificationService.class);
+        i.setAction(NotificationService.START_SERVICE);
+        this.startService(i);
+        if(Build.VERSION.SDK_INT == 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //setupApp();
         Controller.recreateUDPC();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        dispatcher.dispatchTouchEvent(this,ev);
         return super.dispatchTouchEvent(ev);
     }
 
     private void setupApp() {
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.removeAllTabs();
-        actionBar.setIcon(R.drawable.icon_white);
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        setSupportActionBar(mActionBarToolbar);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        actionBar.addTab(actionBar.newTab().setText(R.string.gloabl).setTabListener(new LightControlTabListener(this, "global")));
-        actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone1", getString(R.string.Zone1))).setTabListener(new LightControlTabListener(this, "zone1")));
-        actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone2", getString(R.string.Zone2))).setTabListener(new LightControlTabListener(this, "zone2")));
-        actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone3", getString(R.string.Zone3))).setTabListener(new LightControlTabListener(this, "zone3")));
-        actionBar.addTab(actionBar.newTab().setText(prefs.getString("pref_zone4", getString(R.string.Zone4))).setTabListener(new LightControlTabListener(this, "zone4")));
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new ControllerPager(getSupportFragmentManager()));
 
-        try {
+        tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+        tabs.setViewPager(pager);
+
+        /*try {
             Instabug.initialize(this.getApplicationContext())
                     .setAnnotationActivityClass(InstabugAnnotationActivity.class)
                     .setShowIntroDialog(true)
@@ -127,10 +135,10 @@ public class controller extends Activity {
                     .setShowIntroDialog(false);
         } catch(IllegalStateException e) {
             //do nothing
-        }
+        }*/
     }
 
-    private class LightControlTabListener implements ActionBar.TabListener {
+    /*private class LightControlTabListener implements ActionBar.TabListener {
         private Fragment mFragment;
         private final Activity mActivity;
         private final String mTag;
@@ -164,6 +172,20 @@ public class controller extends Activity {
         public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
 
         }
+    }*/
+
+    private void setActionbarColor(int c) {
+        mActionBarToolbar.setBackgroundColor(c);
+        tabs.setIndicatorColor(c);
+
+        float[] hsv = new float[3];
+        Color.colorToHSV(c, hsv);
+        hsv[2] *= 0.8f; // value component
+        c = Color.HSVToColor(hsv);
+
+        if(Build.VERSION.SDK_INT == 21) {
+            getWindow().setStatusBarColor(c);
+        }
     }
 
     private Runnable runnable = new Runnable() {
@@ -178,16 +200,16 @@ public class controller extends Activity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Restore the previously serialized current dropdown position.
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getActionBar().setSelectedNavigationItem(
-                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+            /*getActionBar().setSelectedNavigationItem(
+                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));*/
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // Serialize the current dropdown position.
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                getActionBar().getSelectedNavigationIndex());
+        /*outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
+                getActionBar().getSelectedNavigationIndex());*/
     }
 
 
@@ -209,11 +231,11 @@ public class controller extends Activity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        } else if(id == R.id.action_send_feedback) {
+        } /*else if(id == R.id.action_send_feedback) {
             Instabug.getInstance().displayFeedbackDialog();
         } else if(id == R.id.action_report_bug) {
             Instabug.getInstance().startAnnotationActivity(getScreen());
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -251,6 +273,47 @@ public class controller extends Activity {
     /**
      * A placeholder fragment containing a simple view.
      */
+    public static class ControllerPager extends FragmentPagerAdapter {
+        Fragment G = PlaceholderFragment.newInstance(0);
+        Fragment z1 = PlaceholderFragment.newInstance(1);
+        Fragment z2 = PlaceholderFragment.newInstance(2);
+        Fragment z3 = PlaceholderFragment.newInstance(3);
+        Fragment z4 = PlaceholderFragment.newInstance(4);
+
+        public ControllerPager(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int i) {
+            switch(i) {
+                case 0: return G;
+                case 1: return z1;
+                case 2: return z2;
+                case 3: return z3;
+                case 4: return z4;
+                default: return G;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 5;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch(position) {
+                case 0: return "Global";
+                case 1: return prefs.getString("pref_zone1", "Zone 1");
+                case 2: return prefs.getString("pref_zone2", "Zone 2");
+                case 3: return prefs.getString("pref_zone3", "Zone 3");
+                case 4: return prefs.getString("pref_zone4", "Zone 4");
+            }
+            return "unknown";
+        }
+    }
+
     public static class PlaceholderFragment extends Fragment {
 
         public boolean recreateView = false;
@@ -339,7 +402,8 @@ public class controller extends Activity {
                     @Override
                     public void onColorChanged(int i) {
                         if(!disableColorChange) {
-                            Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER) - 1, i);
+                            Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
+                            ((controller)getActivity()).setActionbarColor(color.getColor());
                             ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);
                         }
@@ -349,7 +413,7 @@ public class controller extends Activity {
                 brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER) - 1, progress);
+                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
                     }
@@ -369,9 +433,9 @@ public class controller extends Activity {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (isChecked) {
-                            Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                            Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                         } else {
-                            Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                            Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
                         }
                     }
                 });
@@ -379,7 +443,7 @@ public class controller extends Activity {
                 disco.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.toggleDiscoMode(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                        Controller.toggleDiscoMode(getArguments().getInt(ARG_SECTION_NUMBER));
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
                     }
@@ -406,7 +470,7 @@ public class controller extends Activity {
                 white.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
                     }
@@ -434,7 +498,7 @@ public class controller extends Activity {
                     public void onClick(View v) {
                         if (!micStarted) {
                             toggleMic.setText("Stop Listening");
-                            Controller.startMeasuringVol(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                            Controller.startMeasuringVol(getArguments().getInt(ARG_SECTION_NUMBER));
                             micStarted = true;
                         } else {
                             toggleMic.setText("Start Listening");
@@ -449,7 +513,7 @@ public class controller extends Activity {
                     public void onClick(View v) {
                         if(!candleMode) {
                             toggleCandle.setText("Stop Candle Mode");
-                            Controller.startCandleMode(getArguments().getInt(ARG_SECTION_NUMBER) - 1);
+                            Controller.startCandleMode(getArguments().getInt(ARG_SECTION_NUMBER));
                             candleMode = true;
                         } else {
                             toggleCandle.setText("Start Candle Mode");
@@ -463,6 +527,7 @@ public class controller extends Activity {
                 cacheView = rootView;
                 return rootView;
             } else {
+                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
                 return cacheView;
             }
         }

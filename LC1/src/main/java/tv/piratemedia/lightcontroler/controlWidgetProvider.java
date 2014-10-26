@@ -36,12 +36,15 @@ import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
+import java.util.Set;
 
 public class controlWidgetProvider extends AppWidgetProvider {
 
     public static class ClockUpdateService extends Service {
         private static final String ACTION_UPDATE =
                 "tv.piratemedia.lightcontroler.clock.action.UPDATE";
+        private SharedPreferences prefs;
 
         private final static IntentFilter intentFilter;
 
@@ -63,6 +66,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
                      */
                     public void onReceive(Context context, Intent intent) {
                         setTime(context);
+                        //checkAlarm();
                     }
                 };
 
@@ -77,7 +81,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
          */
         public void onCreate() {
             super.onCreate();
-
+            prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
             registerReceiver(clockChangedReceiver, intentFilter);
         }
         /**
@@ -98,6 +102,36 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 }
             }
         }
+
+        /*public void checkAlarm() {
+            String[] Keys = (String[]) prefs.getAll().keySet().toArray();
+            Map<String, ?> Prefs = prefs.getAll();
+            Calendar c = Calendar.getInstance();
+            long t = c.getTimeInMillis() / 1000;
+            for(int i = 0; i < Prefs.size(); i++) {
+                if(Keys[i].startsWith("light-alarm-days")) {
+                    boolean on = prefs.getBoolean(Keys[i].replace("days", "enabled"), false);
+                    String days = prefs.getString(Keys[i], null);
+                    String[] dayArray = days.split(",");
+                    int time = prefs.getInt(Keys[i].replace("days","time"), 0);
+                    for(int j = 0; j < dayArray.length; j++) {
+                        if(on && dayArray[j].equals(c.get(Calendar.DAY_OF_WEEK))) {
+                            int secondOfDay = (c.get(Calendar.HOUR_OF_DAY) * 60 * 60) + (c.get(Calendar.MINUTE) * 60);
+                            if(on && time >= secondOfDay && time < secondOfDay + 60) {
+                                Log.d("Eliot", "Day Alarm Active now");
+                            }
+                        }
+                    }
+                } else if(Keys[i].startsWith("light-alarm-date")) {
+                    boolean on = prefs.getBoolean(Keys[i].replace("date", "enabled"), false);
+                    long date = prefs.getLong(Keys[i],0);
+                    if(on && date >= t && date < (t + 60)) {
+                        Log.d("Eliot", "One Time Alarm Active now");
+                        prefs.edit().putBoolean(Keys[i].replace("date", "enabled"), false).commit();
+                    }
+                }
+            }
+        }*/
     }
 
     private static final int LIGHT_ON = 0;
@@ -112,8 +146,10 @@ public class controlWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
         updateNames(context, appWidgetManager);
-        context.startService(new Intent(
-                ClockUpdateService.ACTION_UPDATE));
+
+        Intent i = new Intent(context, ClockUpdateService.class);
+        i.setAction(NotificationService.START_SERVICE);
+        context.startService(i);
     }
 
     public void onDisabled(Context context) {
@@ -128,8 +164,9 @@ public class controlWidgetProvider extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
 
-        context.startService(new Intent(
-                ClockUpdateService.ACTION_UPDATE));
+        Intent i = new Intent(context, ClockUpdateService.class);
+        i.setAction(NotificationService.START_SERVICE);
+        context.startService(i);
     }
 
     public void updateNames(Context context, AppWidgetManager appWidgetManager) {

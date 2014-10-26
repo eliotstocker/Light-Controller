@@ -110,7 +110,7 @@
                         android:layout_height="match_parent"
                         android:text="I"
                         android:id="@+id/ig"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_white"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -120,7 +120,7 @@
                         android:layout_height="match_parent"
                         android:text="O"
                         android:id="@+id/og"
-                        android:background="@drawable/button_background_off"
+                        android:background="@drawable/button_background_white_off"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -166,7 +166,7 @@
                         android:layout_height="match_parent"
                         android:text="I"
                         android:id="@+id/i1"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_white"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -176,7 +176,7 @@
                         android:layout_height="match_parent"
                         android:text="O"
                         android:id="@+id/o1"
-                        android:background="@drawable/button_background_off"
+                        android:background="@drawable/button_background_white_off"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>
@@ -218,7 +218,7 @@
                         android:layout_height="match_parent"
                         android:text="I"
                         android:id="@+id/i2"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_white"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -228,7 +228,7 @@
                         android:layout_height="match_parent"
                         android:text="O"
                         android:id="@+id/o2"
-                        android:background="@drawable/button_background_off"
+                        android:background="@drawable/button_background_white_off"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>
@@ -269,7 +269,7 @@
                         android:layout_height="match_parent"
                         android:text="I"
                         android:id="@+id/i3"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_white"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -279,7 +279,7 @@
                         android:layout_height="match_parent"
                         android:text="O"
                         android:id="@+id/o3"
-                        android:background="@drawable/button_background_off"
+                        android:background="@drawable/button_background_white_off"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>
@@ -321,7 +321,7 @@
                         android:layout_height="match_parent"
                         android:text="I"
                         android:id="@+id/i4"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_white"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
 
@@ -331,7 +331,7 @@
                         android:layout_height="match_parent"
                         android:text="O"
                         android:id="@+id/o4"
-                        android:background="@drawable/button_background_off"
+                        android:background="@drawable/button_background_white_off"
                         android:layout_weight="1"
                         android:textColor="@android:color/white"/>
                 </LinearLayout>

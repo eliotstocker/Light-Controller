@@ -4,62 +4,127 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Lightcontroller" >
+        android:theme="@style/LightController" >
         <activity
-            android:name="tv.piratemedia.lightcontroler.controller"
-            android:label="@string/app_name" >
+            android:name=".controller"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="tv.piratemedia.lightcontroler.controlPreferences"
-            android:parentActivityName="tv.piratemedia.lightcontroler.controller">
+        <activity
+            android:name=".controlPreferences"
+            android:icon="@drawable/icon"
+            android:label="@string/app_settings"
+            android:parentActivityName=".controller">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="tv.piratemedia.lightcontroler.ui.EditActivity"
+            android:exported="true"
+            android:icon="@drawable/icon"
+            android:label="@string/plugin_name"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize" >
+
+            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
         <receiver android:name=".controlWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+
+            <meta-data
+                android:name="android.appwidget.provider"
                 android:resource="@xml/control_appwidget_info" />
         </receiver>
-        <service android:name=".controlWidgetProvider$ClockUpdateService" android:exported="false">
+        <receiver
+            android:name="tv.piratemedia.lightcontroler.receiver.FireReceiver"
+            android:exported="true"
+            android:process=":background" >
+
+            <!-- this Intent filter allows the plug-in to discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".controlWidgetProvider$ClockUpdateService"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="tv.piratemedia.lightcontroler.clock.action.UPDATE" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/Theme.Lightcontroller"/>
-        <service android:name="com.instabug.library.network.UploadCacheService"/>
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
+        <service android:name=".NotificationService" >
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="tv.piratemedia.lightcontroller.service.start"/>
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".SwitchWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/large_widget_info" />
+        </receiver>
+
+        <!--activity
+            android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
+            android:theme="@style/Theme.Lightcontroller"
+            android:windowSoftInputMode="adjustPan" />
+
+        <service android:name="com.instabug.library.network.UploadCacheService" />
+
+        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <meta-data android:name="com.instabug.DevelopmentAppToken" android:value="03e7f2c6fe7535e249bb72f8955f058f"/>
-        <meta-data android:name="com.instabug.ProductionMode" android:value="true"/>
 
+        <meta-data
+            android:name="com.instabug.DevelopmentAppToken"
+            android:value="03e7f2c6fe7535e249bb72f8955f058f" />
+        <meta-data
+            android:name="com.instabug.ProductionMode"
+            android:value="false" /-->
+
+        <activity
+            android:name=".AlarmPreferences"
+            android:label="@string/title_activity_alarm_preferences"
+            android:parentActivityName=".controller" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="controller" />
+        </activity>
     </application>
 
 </manifest>

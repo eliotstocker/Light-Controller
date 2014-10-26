@@ -16,6 +16,12 @@
             android:maxLength="5"
             android:defaultValue="8899"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/notifications">
+        <CheckBoxPreference android:title="@string/lockscreen_notification_head"
+            android:key="lockscreen_notification"
+            android:defaultValue="false"
+            android:summary="@string/lockscreen_notification_summary"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_zones_head" >
         <EditTextPreference
             android:title="@string/pref_zone_1"
@@ -33,5 +39,19 @@
             android:title="@string/pref_zone_4"
             android:key="pref_zone4"
             android:defaultValue="@string/Zone4"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cat_contributors" >
+        <EditTextPreference
+            android:title="Created By"
+            android:summary="Eliot Stocker"
+            android:key="contrib1"
+            android:enabled="false"
+            android:alpha="1"/>
+        <EditTextPreference
+            android:title="Major Contributor"
+            android:summary="Louis Orleans"
+            android:key="contrib2"
+            android:enabled="false"
+            android:alpha="1"/>
     </PreferenceCategory>
 </PreferenceScreen>
