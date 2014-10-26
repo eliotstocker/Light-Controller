@@ -1,9 +1,11 @@
 Light Controller
 ================
 
+![Promo Image](promo.png)
+
 Description
 -----------
-have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app if you, it was developed specifically in oder to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens on the lock screen or both.
+have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app if you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
 
 The widget gives you easy access to switch each zone on and off as well as global control. also included is easy access to the main application for more advanced control.
 
