@@ -17,7 +17,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 
-public class NotificationService extends Service {
+public class notificationService extends Service {
     private SharedPreferences prefs;
     private static Notification Notif;
     private NotificationManager nm;

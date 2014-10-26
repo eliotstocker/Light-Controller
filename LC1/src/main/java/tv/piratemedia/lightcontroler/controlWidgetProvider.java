@@ -31,13 +31,10 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
-import java.util.Set;
 
 public class controlWidgetProvider extends AppWidgetProvider {
 
@@ -148,8 +145,9 @@ public class controlWidgetProvider extends AppWidgetProvider {
         updateNames(context, appWidgetManager);
 
         Intent i = new Intent(context, ClockUpdateService.class);
-        i.setAction(NotificationService.START_SERVICE);
+        i.setAction(notificationService.START_SERVICE);
         context.startService(i);
+        setTime(context);
     }
 
     public void onDisabled(Context context) {
@@ -165,7 +163,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
         super.onEnabled(context);
 
         Intent i = new Intent(context, ClockUpdateService.class);
-        i.setAction(NotificationService.START_SERVICE);
+        i.setAction(notificationService.START_SERVICE);
         context.startService(i);
     }
 

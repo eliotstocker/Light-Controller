@@ -6,15 +6,19 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 
 /**
  * Implementation of App Widget functionality.
  */
-public class SwitchWidget extends AppWidgetProvider {
+public class switchWidget extends AppWidgetProvider {
 
     private static final int LIGHT_ON = 0;
     private static final int LIGHT_OFF = 1;
@@ -23,25 +27,59 @@ public class SwitchWidget extends AppWidgetProvider {
     private static RemoteViews remoteViews;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
+    private int ControlZone;
+    private boolean ShowTitle;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
+        Log.d("widget", "onUpdate Called");
         updateNames(context, appWidgetManager);
     }
 
     public void updateNames(Context context, AppWidgetManager appWidgetManager) {
         thisWidget = new ComponentName(context,
-                SwitchWidget.class);
+                switchWidget.class);
+
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         for (int widgetId : allWidgetIds) {
+            ControlZone = prefs.getInt("widget_"+widgetId+"_zone", 0);
+            ShowTitle = prefs.getBoolean("widget_"+widgetId+"_title", true);
+
             remoteViews = new RemoteViews(context.getPackageName(),
-                    R.layout.large_widget);
+                    R.layout.switch_widget);
 
             aWM = appWidgetManager;
 
-            remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+            if(ShowTitle) {
+                String label = "";
+                switch(ControlZone) {
+                    case 0:
+                        label = context.getString(R.string.gloabl);
+                        break;
+                    case 1:
+                        label = prefs.getString("pref_zone1", context.getString(R.string.Zone1));
+                        break;
+                    case 2:
+                        label = prefs.getString("pref_zone2", context.getString(R.string.Zone2));
+                        break;
+                    case 3:
+                        label = prefs.getString("pref_zone3", context.getString(R.string.Zone3));
+                        break;
+                    case 4:
+                        label = prefs.getString("pref_zone4", context.getString(R.string.Zone4));
+                        break;
+                }
+                remoteViews.setTextViewText(R.id.zone_label, label);
+                remoteViews.setViewVisibility(R.id.zone_label, View.VISIBLE);
+            } else {
+                remoteViews.setViewVisibility(R.id.zone_label, View.GONE);
+            }
+
+            remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(ControlZone,context,true));
+            remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(ControlZone,context,false));
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
@@ -49,7 +87,7 @@ public class SwitchWidget extends AppWidgetProvider {
 
     public PendingIntent createPendingIntent(int i, Context cont, boolean on) {
         Intent launchIntent = new Intent();
-        launchIntent.setClass(cont, SwitchWidget.class);
+        launchIntent.setClass(cont, switchWidget.class);
         launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         if(on) {
             launchIntent.setData(Uri.parse(i + ":" + LIGHT_ON));

@@ -34,8 +34,15 @@
             android:icon="@drawable/icon"
             android:label="@string/app_settings"
             android:parentActivityName=".controller">
+        </activity>
+
+        <activity
+            android:name=".switchWidgetConfig"
+            android:icon="@drawable/icon"
+            android:label="@string/app_widget_settings"
+            android:parentActivityName=".controller">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
         <activity
@@ -79,7 +86,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".NotificationService" >
+        <service android:name=".notificationService" >
             <intent-filter>
                 <action android:name="tv.piratemedia.lightcontroller.service.start"/>
                 <action android:name="android.intent.action.SCREEN_ON" />
@@ -87,14 +94,13 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".SwitchWidget" >
+        <receiver android:name=".switchWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/large_widget_info" />
+                android:resource="@xml/switch_widget_info" />
         </receiver>
 
         <!--activity
@@ -118,7 +124,7 @@
             android:value="false" /-->
 
         <activity
-            android:name=".AlarmPreferences"
+            android:name=".alarmPreferences"
             android:label="@string/title_activity_alarm_preferences"
             android:parentActivityName=".controller" >
             <meta-data

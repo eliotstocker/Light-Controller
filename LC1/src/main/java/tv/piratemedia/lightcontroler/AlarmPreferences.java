@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,11 +17,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.util.Calendar;
 import java.util.Map;
 
 
-public class AlarmPreferences extends Activity {
+public class alarmPreferences extends Activity {
     private SharedPreferences prefs;
 
     @Override
@@ -98,7 +96,7 @@ public class AlarmPreferences extends Activity {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                LayoutInflater inflater = (LayoutInflater)AlarmPreferences.this.getApplicationContext().getSystemService
+                LayoutInflater inflater = (LayoutInflater)alarmPreferences.this.getApplicationContext().getSystemService
                         (Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.alarm_item_layout, null);
                 TextView Time = (TextView)convertView.findViewById(R.id.time);

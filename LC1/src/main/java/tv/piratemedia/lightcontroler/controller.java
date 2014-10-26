@@ -94,8 +94,8 @@ public class controller extends ActionBarActivity {
 
         Controller = new controlCommands(this);
         ctx = this;
-        Intent i = new Intent(this, NotificationService.class);
-        i.setAction(NotificationService.START_SERVICE);
+        Intent i = new Intent(this, notificationService.class);
+        i.setAction(notificationService.START_SERVICE);
         this.startService(i);
         if(Build.VERSION.SDK_INT == 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
