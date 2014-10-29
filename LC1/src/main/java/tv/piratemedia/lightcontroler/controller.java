@@ -40,6 +40,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -62,6 +63,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 
 public class controller extends ActionBarActivity {
 
@@ -211,6 +213,29 @@ public class controller extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.controller, menu);
         return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+                try{
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+
+                }
+                catch(NoSuchMethodException e){
+                    Log.e("Menu", "onMenuOpened", e);
+                }
+                catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
     }
 
     @Override
@@ -547,7 +572,6 @@ public class controller extends ActionBarActivity {
                 handler.postDelayed(new Runnable(){
                     @Override
                     public void run(){
-                        Log.d("Eliot","Enable Color Wheel");
                         disabled = false;
                     }
                 }, 500);
@@ -559,7 +583,6 @@ public class controller extends ActionBarActivity {
                 handler.postDelayed(new Runnable(){
                     @Override
                     public void run(){
-                        Log.d("Eliot","Enable Color Wheel");
                         disabled = false;
                     }
                 }, 500);
