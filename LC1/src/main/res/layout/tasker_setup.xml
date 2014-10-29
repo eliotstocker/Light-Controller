@@ -99,7 +99,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp" />
 
-            <com.dudeofawesome.limitlessLED.verticalSeekBar
+            <tv.piratemedia.lightcontroler.verticalSeekBar
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/brightness"

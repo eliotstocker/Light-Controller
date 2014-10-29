@@ -33,6 +33,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,8 +74,6 @@ public class controller extends ActionBarActivity {
     private static controlCommands Controller;
     private static boolean micStarted = false;
     private static boolean candleMode = false;
-    private static boolean disableColorChange = false;
-    private Handler handler = new Handler();
     private static Context ctx;
     private static SharedPreferences prefs;
     private boolean instabug_started = false;
@@ -188,13 +187,6 @@ public class controller extends ActionBarActivity {
         }
     }
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            disableColorChange = false;
-        }
-    };
-
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -274,11 +266,11 @@ public class controller extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G = PlaceholderFragment.newInstance(0);
-        Fragment z1 = PlaceholderFragment.newInstance(1);
-        Fragment z2 = PlaceholderFragment.newInstance(2);
-        Fragment z3 = PlaceholderFragment.newInstance(3);
-        Fragment z4 = PlaceholderFragment.newInstance(4);
+        Fragment G = null;
+        Fragment z1 = null;
+        Fragment z2 = null;
+        Fragment z3 = null;
+        Fragment z4 = null;
 
         public ControllerPager(FragmentManager fm) {
             super(fm);
@@ -287,12 +279,36 @@ public class controller extends ActionBarActivity {
         @Override
         public android.support.v4.app.Fragment getItem(int i) {
             switch(i) {
-                case 0: return G;
-                case 1: return z1;
-                case 2: return z2;
-                case 3: return z3;
-                case 4: return z4;
-                default: return G;
+                case 0:
+                    if(G == null) {
+                        G = PlaceholderFragment.newInstance(0);
+                    }
+                    return G;
+                case 1:
+                    if(z1 == null) {
+                        z1 = PlaceholderFragment.newInstance(1);
+                    }
+                    return z1;
+                case 2:
+                    if(z2 == null) {
+                        z2 = PlaceholderFragment.newInstance(2);
+                    }
+                    return z2;
+                case 3:
+                    if(z3 == null) {
+                        z3 = PlaceholderFragment.newInstance(3);
+                    }
+                    return z3;
+                case 4:
+                    if(z4 == null) {
+                        z4 = PlaceholderFragment.newInstance(4);
+                    }
+                    return z4;
+                default:
+                    if(G == null) {
+                        G = PlaceholderFragment.newInstance(0);
+                    }
+                    return G;
             }
         }
 
@@ -318,6 +334,7 @@ public class controller extends ActionBarActivity {
 
         public boolean recreateView = false;
         private View cacheView = null;
+        private boolean disabled = true;
 
         /**
          * The fragment argument representing the section number for this
@@ -401,9 +418,9 @@ public class controller extends ActionBarActivity {
                 color.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
                     @Override
                     public void onColorChanged(int i) {
-                        if(!disableColorChange) {
+                        if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
-                            ((controller)getActivity()).setActionbarColor(color.getColor());
+                            ((controller) getActivity()).setActionbarColor(color.getColor());
                             ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);
                         }
@@ -473,6 +490,7 @@ public class controller extends ActionBarActivity {
                         Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
+                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
                     }
                 });
 
@@ -525,9 +543,26 @@ public class controller extends ActionBarActivity {
 
                 recreateView = true;
                 cacheView = rootView;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        Log.d("Eliot","Enable Color Wheel");
+                        disabled = false;
+                    }
+                }, 500);
                 return rootView;
             } else {
+                disabled = true;
                 ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        Log.d("Eliot","Enable Color Wheel");
+                        disabled = false;
+                    }
+                }, 500);
                 return cacheView;
             }
         }
