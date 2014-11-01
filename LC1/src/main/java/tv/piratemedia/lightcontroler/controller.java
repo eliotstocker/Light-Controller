@@ -18,6 +18,9 @@
 package tv.piratemedia.lightcontroler;
 
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -31,9 +34,13 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,13 +48,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.support.v7.app.ActionBarActivity;
 
@@ -82,6 +93,7 @@ public class controller extends ActionBarActivity {
 
     private Toolbar mActionBarToolbar;
     private PagerSlidingTabStrip tabs;
+    private PopupWindow mMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,27 +227,58 @@ public class controller extends ActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu)
-    {
-        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
-            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
-                try{
-                    Method m = menu.getClass().getDeclaredMethod(
-                            "setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
+    public void popupMenu() {
+        View MenuView = View.inflate(this, R.layout.menu, null);
+        ImageView close = (ImageView) MenuView.findViewById(R.id.close_menu_item);
+        TextView settings = (TextView) MenuView.findViewById(R.id.settings_menu_item);
 
-                }
-                catch(NoSuchMethodException e){
-                    Log.e("Menu", "onMenuOpened", e);
-                }
-                catch(Exception e){
-                    throw new RuntimeException(e);
-                }
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeMenu();
             }
+        });
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                startActivity(intent);
+            }
+        });
+
+        mMenu = new PopupWindow(MenuView, LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mMenu.setContentView(MenuView);
+        mMenu.setTouchable(true);
+        if(Build.VERSION.SDK_INT == 21) {
+            mMenu.setElevation(3);
         }
-        return super.onMenuOpened(featureId, menu);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        mMenu.showAtLocation(findViewById(R.id.container), 0, size.x - (int)dipToPixels(this, 208), (int)dipToPixels(this, 32));
+        mMenu.setFocusable(true);
+        mMenu.setOutsideTouchable(true);
+
+        mMenu.setTouchInterceptor(new View.OnTouchListener() {
+            @Override public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    mMenu.dismiss();
+                }
+                return true;
+            }
+        });
+    }
+
+    public void closeMenu() {
+        mMenu.dismiss();
+    }
+
+    public static float dipToPixels(Context context, float dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
     @Override
@@ -248,7 +291,10 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        } /*else if(id == R.id.action_send_feedback) {
+        }  else if(id == R.id.action_menu) {
+            popupMenu();
+            return true;
+        }/*else if(id == R.id.action_send_feedback) {
             Instabug.getInstance().displayFeedbackDialog();
         } else if(id == R.id.action_report_bug) {
             Instabug.getInstance().startAnnotationActivity(getScreen());
