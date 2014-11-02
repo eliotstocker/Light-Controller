@@ -50,7 +50,7 @@
             android:exported="true"
             android:icon="@drawable/icon"
             android:label="@string/plugin_name"
-            android:theme="@style/Base.V14.Theme.AppCompat.Light"
+            android:theme="@android:style/Theme.Holo"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize" >
 

@@ -49,6 +49,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -94,6 +95,7 @@ public class controller extends ActionBarActivity {
     private Toolbar mActionBarToolbar;
     private PagerSlidingTabStrip tabs;
     private PopupWindow mMenu;
+    private View MenuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,7 +230,7 @@ public class controller extends ActionBarActivity {
     }
 
     public void popupMenu() {
-        View MenuView = View.inflate(this, R.layout.menu, null);
+        MenuView = View.inflate(this, R.layout.menu, null);
         ImageView close = (ImageView) MenuView.findViewById(R.id.close_menu_item);
         TextView settings = (TextView) MenuView.findViewById(R.id.settings_menu_item);
 
@@ -246,6 +248,8 @@ public class controller extends ActionBarActivity {
             }
         });
 
+        MenuView.setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_corner));
+
         mMenu = new PopupWindow(MenuView, LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         mMenu.setContentView(MenuView);
@@ -258,16 +262,15 @@ public class controller extends ActionBarActivity {
         Point size = new Point();
         display.getSize(size);
 
-        mMenu.showAtLocation(findViewById(R.id.container), 0, size.x - (int)dipToPixels(this, 208), (int)dipToPixels(this, 32));
+        mMenu.setAnimationStyle(R.anim.abc_slide_in_top);
+        mMenu.setBackgroundDrawable(new BitmapDrawable());
         mMenu.setFocusable(true);
-        mMenu.setOutsideTouchable(true);
-
-        mMenu.setTouchInterceptor(new View.OnTouchListener() {
-            @Override public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    mMenu.dismiss();
-                }
-                return true;
+        mMenu.setOutsideTouchable(false);
+        mMenu.showAtLocation(findViewById(R.id.container), 0, size.x - (int)dipToPixels(this, 208), (int)dipToPixels(this, 32));
+        mMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                MenuView.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_corner));
             }
         });
     }
