@@ -243,6 +243,7 @@ public class controller extends ActionBarActivity {
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeMenu();
                 Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
                 startActivity(intent);
             }
@@ -255,7 +256,7 @@ public class controller extends ActionBarActivity {
         mMenu.setContentView(MenuView);
         mMenu.setTouchable(true);
         if(Build.VERSION.SDK_INT == 21) {
-            mMenu.setElevation(3);
+            mMenu.setElevation((int)dipToPixels(this, 10));
         }
 
         Display display = getWindowManager().getDefaultDisplay();
