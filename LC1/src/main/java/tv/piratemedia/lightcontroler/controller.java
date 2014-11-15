@@ -22,6 +22,8 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +62,7 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.support.v7.app.ActionBarActivity;
 
@@ -97,6 +100,8 @@ public class controller extends ActionBarActivity {
     private PopupWindow mMenu;
     private View MenuView;
 
+    public MyHandler mHandler = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,17 +120,33 @@ public class controller extends ActionBarActivity {
         if(Build.VERSION.SDK_INT == 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        mHandler = new MyHandler();
+    }
+
+    class MyHandler extends Handler {
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+                case controlCommands.DISCOVERED_DEVICE:
+                    String DeviceMAC = (String)msg.obj;
+                    Toast.makeText(getApplicationContext(), "Device Found: "+DeviceMAC, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Controller.recreateUDPC();
+        attemptDiscovery();
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return super.dispatchTouchEvent(ev);
+    }
+
+    private void attemptDiscovery() {
+        Controller.discover();
     }
 
     private void setupApp() {

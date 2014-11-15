@@ -20,6 +20,9 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/LightController" >
+        <!-- android:backupAgent="LCBackupAgent" -->
+        <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIb0-S1PPn7w6c-GnAr1gF5Pjnwru29t2s8hc5xQ" />
+
         <activity
             android:name=".controller"
             android:label="@string/app_name">

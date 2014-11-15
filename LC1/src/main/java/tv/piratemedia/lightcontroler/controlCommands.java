@@ -32,6 +32,8 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class controlCommands {
+    public static final int DISCOVERED_DEVICE = 111;
+
     private UDPConnection UDPC;
     public int LastOn = -1;
     public boolean sleeping = false;
@@ -47,7 +49,18 @@ public class controlCommands {
     }
 
     public void recreateUDPC() {
+        UDPC.destroyUDPC();
         UDPC = new UDPConnection(mContext);
+    }
+
+    public void discover() {
+        Log.d("discovery", "Start Discovery");
+        try {
+            UDPC.sendAdminMessage("Link_Wi-Fi".getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
     }
 
     public void LightsOn(int zone) {
