@@ -17,6 +17,8 @@
 */
 package tv.piratemedia.lightcontroler;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -102,6 +104,8 @@ public class controller extends ActionBarActivity {
 
     public MyHandler mHandler = null;
 
+    private boolean gotDevice = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +132,49 @@ public class controller extends ActionBarActivity {
         public void handleMessage(Message msg) {
             switch(msg.what) {
                 case controlCommands.DISCOVERED_DEVICE:
-                    String DeviceMAC = (String)msg.obj;
-                    Toast.makeText(getApplicationContext(), "Device Found: "+DeviceMAC, Toast.LENGTH_LONG).show();
+                    String[] DeviceInfo = (String[])msg.obj;
+                    String Mac = DeviceInfo[1];
+                    String IP = DeviceInfo[0];
+                    newDeviceFound(IP, Mac);
+            }
+        }
+    }
+
+    private void newDeviceFound(final String IP, final String Mac) {
+        final utils Utils = new utils(this);
+        final SharedPreferences Devices = this.getSharedPreferences("devices", MODE_PRIVATE);
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Devices.edit().putBoolean(Mac+"-known",true).commit();
+                        prefs.edit().putString("pref_light_controller_ip", IP).commit();
+                        Devices.edit().putString(Mac+"-online",Utils.getWifiName());
+                        gotDevice = true;
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        Devices.edit().putBoolean(Mac+"-known",false).commit();
+                        break;
+                }
+            }
+        };
+
+        if(Devices.getAll().size() < 1) {
+            prefs.edit().putString("pref_light_controller_ip", IP).commit();
+            Devices.edit().putBoolean(Mac+"-known",true);
+            Devices.edit().putString(Mac+"-online",Utils.getWifiName());
+            gotDevice = true;
+        } else {
+            if (!Devices.contains(Mac + "-known")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("A new Light Control device has been found, Would you like to save/control it?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+            } else {
+                if (Devices.getBoolean(Mac + "-known", false)) {
+                    gotDevice = true;
+                    prefs.edit().putString("pref_light_controller_ip", IP).commit();
+                }
             }
         }
     }
@@ -137,6 +182,11 @@ public class controller extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        gotDevice = false;
+        utils Utils = new utils(this);
+        if(!Utils.isWifiConnection()) {
+
+        }
         attemptDiscovery();
     }
 
@@ -147,6 +197,7 @@ public class controller extends ActionBarActivity {
 
     private void attemptDiscovery() {
         Controller.discover();
+        //start timer here for no discovery (try 3 times)
     }
 
     private void setupApp() {

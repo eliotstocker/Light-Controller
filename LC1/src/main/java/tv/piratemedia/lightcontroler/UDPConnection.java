@@ -43,19 +43,36 @@ public class UDPConnection {
     private SharedPreferences prefs;
     private static Context mCtx;
 
+    private boolean onlineMode = false;
+
     public UDPConnection(Context context) {
         mCtx = context;
         Utils = new utils(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    public void setOnlineMode(boolean online) {
+        onlineMode = online;
+    }
+
     public void sendMessage(byte[] Bytes) throws IOException {
-        CONTROLLERIP = prefs.getString("pref_light_controller_ip", "192.168.0.255");
-        CONTROLLERPORT = Integer.parseInt(prefs.getString("pref_light_controller_port", "8899"));
-        DatagramSocket s = new DatagramSocket();
-        InetAddress controller = InetAddress.getByName(CONTROLLERIP);
-        DatagramPacket p = new DatagramPacket(Bytes, 3, controller, CONTROLLERPORT);
-        s.send(p);
+        if(!onlineMode) {
+            String NetworkBroadCast = "192.168.0.255";
+            try {
+                NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+                return;
+            }
+            CONTROLLERIP = prefs.getString("pref_light_controller_ip", NetworkBroadCast);
+            CONTROLLERPORT = Integer.parseInt(prefs.getString("pref_light_controller_port", "8899"));
+            DatagramSocket s = new DatagramSocket();
+            InetAddress controller = InetAddress.getByName(CONTROLLERIP);
+            DatagramPacket p = new DatagramPacket(Bytes, 3, controller, CONTROLLERPORT);
+            s.send(p);
+        } else {
+            //send message in online mode;
+        }
     }
 
     public void sendAdminMessage(byte[] Bytes) throws IOException {
@@ -110,7 +127,7 @@ public class UDPConnection {
                                     Log.d("Packets", "Discovered Host: "+parts[1]);
                                     Message m = new Message();
                                     m.what = controlCommands.DISCOVERED_DEVICE;
-                                    m.obj = parts[1];
+                                    m.obj = parts;
                                     ((controller)mCtx).mHandler.sendMessage(m);
                                 }
                             }

@@ -33,7 +33,7 @@ public class utils {
         mCtx = ctx;
     }
 
-    private boolean isWifiConnection() {
+    public boolean isWifiConnection() {
         ConnectivityManager connManager = (ConnectivityManager) mCtx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
@@ -70,6 +70,12 @@ public class utils {
             throw new ConnectionException("Wifi not connected", ConnectionException.WIFI_NOT_CONNECTED);
         }
         return null;
+    }
+
+    public String getWifiName() {
+        WifiManager wifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
+        String SSID = wifi.getConnectionInfo().getSSID();
+        return SSID.replace("\"","");
     }
 
     public boolean validIP(String ip) {
