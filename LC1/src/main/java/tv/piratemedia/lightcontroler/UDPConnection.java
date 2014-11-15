@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -79,6 +81,8 @@ public class UDPConnection {
         if(server == null) {
             server = new UDP_Server();
             server.runUdpServer();
+        } else if(!server.Server_aktiv) {
+            server.runUdpServer();
         }
 
         String NetworkBroadCast = null;
@@ -104,7 +108,7 @@ public class UDPConnection {
 
     class UDP_Server {
         private AsyncTask<Void, Void, Void> async;
-        private boolean Server_aktiv = true;
+        public boolean Server_aktiv = true;
 
         @SuppressLint("NewApi")
         public void runUdpServer() {
@@ -117,19 +121,24 @@ public class UDPConnection {
 
                     try {
                         ds = new DatagramSocket(UDPConnection.CONTROLLERADMINPORT);
+                        ds.setSoTimeout(1000);
                         while (Server_aktiv) {
-                            ds.receive(dp);
-                            String Data = new String(dp.getData());
-                            String[] parts = Data.split(",");
-                            if(parts.length > 1) {
-                                if(Utils.validIP(parts[0]) && Utils.validMac(parts[1])) {
-                                    //this is the discovery response;
-                                    Log.d("Packets", "Discovered Host: "+parts[1]);
-                                    Message m = new Message();
-                                    m.what = controlCommands.DISCOVERED_DEVICE;
-                                    m.obj = parts;
-                                    ((controller)mCtx).mHandler.sendMessage(m);
+                            try {
+                                ds.receive(dp);
+                                String Data = new String(dp.getData());
+                                String[] parts = Data.split(",");
+                                if(parts.length > 1) {
+                                    if(Utils.validIP(parts[0]) && Utils.validMac(parts[1])) {
+                                        Log.d("Packets", "Discovered Host: "+parts[1]);
+                                        Message m = new Message();
+                                        m.what = controlCommands.DISCOVERED_DEVICE;
+                                        m.obj = parts;
+                                        ((controller)mCtx).mHandler.sendMessage(m);
+                                        Server_aktiv = false;
+                                    }
                                 }
+                            } catch(SocketTimeoutException e) {
+                                //no problem
                             }
                         }
                     } catch (Exception e) {

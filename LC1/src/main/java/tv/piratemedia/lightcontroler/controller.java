@@ -22,9 +22,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -38,11 +36,9 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -51,8 +47,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -64,13 +58,8 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.support.v7.app.ActionBarActivity;
-
-/*import com.instabug.library.Instabug;
-import com.instabug.library.util.TouchEventDispatcher;
-import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;*/
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.larswerkman.holocolorpicker.ColorPicker;
@@ -80,7 +69,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 
 public class controller extends ActionBarActivity {
 
@@ -94,8 +82,9 @@ public class controller extends ActionBarActivity {
     private static boolean micStarted = false;
     private static boolean candleMode = false;
     private static Context ctx;
+
+    private SaveState appState = null;
     private static SharedPreferences prefs;
-    private boolean instabug_started = false;
 
     private Toolbar mActionBarToolbar;
     private PagerSlidingTabStrip tabs;
@@ -125,6 +114,7 @@ public class controller extends ActionBarActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
+        appState = new SaveState(this);
         mHandler = new MyHandler();
     }
 
@@ -191,6 +181,12 @@ public class controller extends ActionBarActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Controller.killUDPC();
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return super.dispatchTouchEvent(ev);
     }
@@ -207,59 +203,11 @@ public class controller extends ActionBarActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new ControllerPager(getSupportFragmentManager()));
+        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
         tabs.setViewPager(pager);
-
-        /*try {
-            Instabug.initialize(this.getApplicationContext())
-                    .setAnnotationActivityClass(InstabugAnnotationActivity.class)
-                    .setShowIntroDialog(true)
-                    .setEnableOverflowMenuItem(true)
-                    .setCrashReportingEnabled(true)
-                    .setTrackUserSteps(true)
-                    .setShowIntroDialog(false);
-        } catch(IllegalStateException e) {
-            //do nothing
-        }*/
     }
-
-    /*private class LightControlTabListener implements ActionBar.TabListener {
-        private Fragment mFragment;
-        private final Activity mActivity;
-        private final String mTag;
-
-        public LightControlTabListener(Activity activity, String tag) {
-            mActivity = activity;
-            mTag = tag;
-        }
-
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            if (mFragment == null) {
-                // If not, instantiate and add it to the activity
-                mFragment = PlaceholderFragment.newInstance(tab.getPosition() + 1);
-                ft.add(android.R.id.content, mFragment, mTag);
-            } else {
-                // If it exists, simply attach it in order to show it
-                disableColorChange = true;
-                ft.attach(mFragment);
-                //set timer to re-enable color changer
-                handler.postDelayed(runnable, 400);
-            }
-        }
-
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            ft.detach(mFragment);
-        }
-
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
-        }
-    }*/
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
@@ -370,11 +318,7 @@ public class controller extends ActionBarActivity {
         }  else if(id == R.id.action_menu) {
             popupMenu();
             return true;
-        }/*else if(id == R.id.action_send_feedback) {
-            Instabug.getInstance().displayFeedbackDialog();
-        } else if(id == R.id.action_report_bug) {
-            Instabug.getInstance().startAnnotationActivity(getScreen());
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -418,9 +362,11 @@ public class controller extends ActionBarActivity {
         Fragment z2 = null;
         Fragment z3 = null;
         Fragment z4 = null;
+        private controller mThis;
 
-        public ControllerPager(FragmentManager fm) {
+        public ControllerPager(FragmentManager fm, controller t) {
             super(fm);
+            mThis = t;
         }
 
         @Override
@@ -474,6 +420,17 @@ public class controller extends ActionBarActivity {
                 case 4: return prefs.getString("pref_zone4", "Zone 4");
             }
             return "unknown";
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+            int savedColor = mThis.appState.getColor(position);
+            if(savedColor < 0) {
+                mThis.setActionbarColor(savedColor);
+            } else {
+                mThis.setActionbarColor(mThis.getResources().getColor(R.color.colorPrimary));
+            }
         }
     }
 
@@ -529,6 +486,15 @@ public class controller extends ActionBarActivity {
                 modeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                 modeSpinner.setAdapter(modeAdapter);
+
+                //Return State
+                io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
+                brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
+                int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
+                if(savedColor < 0) {
+                    color.setColor(savedColor);
+                    ((controller) getActivity()).setActionbarColor(savedColor);
+                }
 
                 if (micStarted) {
                     toggleMic.setText("Stop Listening");

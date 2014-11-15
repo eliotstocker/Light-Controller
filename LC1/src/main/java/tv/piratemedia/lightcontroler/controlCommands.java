@@ -41,16 +41,22 @@ public class controlCommands {
     private boolean measuring = false;
     private boolean candling = false;
     public final int[] tolerance = new int[1];
+    private SaveState appState = null;
 
     public controlCommands(Context context) {
         UDPC = new UDPConnection(context);
         mContext = context;
         tolerance[0] = 25000;
+        appState = new SaveState(context);
     }
 
     public void recreateUDPC() {
         UDPC.destroyUDPC();
         UDPC = new UDPConnection(mContext);
+    }
+
+    public void killUDPC() {
+        UDPC.destroyUDPC();
     }
 
     public void discover() {
@@ -96,6 +102,7 @@ public class controlCommands {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        appState.setOnOff(zone, true);
     }
 
     public void LightsOff(int zone) {
@@ -125,6 +132,7 @@ public class controlCommands {
             e.printStackTrace();
             //add alert to tell user we cant send command
         }
+        appState.setOnOff(zone, false);
     }
 
     public void setToWhite(int zone) {
@@ -154,6 +162,7 @@ public class controlCommands {
             e.printStackTrace();
             //add alert to tell user we cant send command
         }
+        appState.removeColor(zone);
     }
 
     public void setBrightness(int zoneid, int brightness) {
@@ -169,6 +178,7 @@ public class controlCommands {
                 e.printStackTrace();
                 //add alert to tell user we cant send command
             }
+            appState.setBrighness(zoneid, brightness);
             sleeping = true;
             startTimeout();
         }
@@ -215,6 +225,7 @@ public class controlCommands {
                 e.printStackTrace();
                 //add alert to tell user we cant send command
             }
+            appState.setColor(zoneid, color);
             sleeping = true;
             startTimeout();
         }
