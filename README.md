@@ -12,6 +12,7 @@ The widget gives you easy access to switch each zone on and off as well as globa
 We have started working on some extra lighting modes also light listening mode, where it will attempt to detect the beat of the music playing and pulse different colours to the music. A candle mode to emulate the flickering of a candle, along with the built in disco modes.
 
 Control LED Bulbs from:
+* Easybulb
 * Limitless LED
 * MiLight
 * AppLamp
