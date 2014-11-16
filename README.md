@@ -3,6 +3,8 @@ Light Controller
 
 ![Promo Image](promo.png)
 
+[<img src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png">](https://play.google.com/store/apps/details?id=tv.piratemedia.lightcontroler)
+
 Description
 -----------
 have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app if you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
@@ -27,6 +29,10 @@ if the application doesn't work out of the box, you may need to setup the IP add
 This Project is Open source, find the source on GitHub here:
 https://github.com/eliotstocker/Light-Controller
 Pull request and translations very welcome
+
+Change Log
+----------
+[Changes can be found here](changelog.md)
 
 License
 -------
