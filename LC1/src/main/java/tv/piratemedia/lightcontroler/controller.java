@@ -39,6 +39,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -92,8 +94,11 @@ public class controller extends ActionBarActivity {
     private View MenuView;
 
     public MyHandler mHandler = null;
+    private utils Utils;
 
     private boolean gotDevice = false;
+
+    private String DeviceMac = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +121,7 @@ public class controller extends ActionBarActivity {
 
         appState = new SaveState(this);
         mHandler = new MyHandler();
+        Utils = new utils(this);
     }
 
     class MyHandler extends Handler {
@@ -126,12 +132,87 @@ public class controller extends ActionBarActivity {
                     String Mac = DeviceInfo[1];
                     String IP = DeviceInfo[0];
                     newDeviceFound(IP, Mac);
+                    break;
+                case controlCommands.LIST_WIFI_NETWORKS:
+                    String NetworkString = (String)msg.obj;
+                    String[] Networks = NetworkString.split("\\n\\r");
+                    Log.d("Networks", "There are "+(Networks.length - 4)+" Networks");
+                    for(int i = 1; i < Networks.length - 2; i++) {
+                        Log.d("Networks", Networks[i]);
+                    }
+                    listWifiNetworks(Networks);
             }
         }
     }
 
+    private void listWifiNetworks(final String[] Networks) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                controller.this);
+        builderSingle.setTitle("Select Wifi Network");
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                controller.this,
+                android.R.layout.select_dialog_singlechoice);
+        for(int i = 2; i < Networks.length - 2; i++) {
+            String[] NetworkInfo = Networks[i].split(",");
+            arrayAdapter.add(NetworkInfo[1]+" - "+NetworkInfo[4]+"%");
+        }
+        builderSingle.setNegativeButton("cancel",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+
+
+        builderSingle.setAdapter(arrayAdapter,
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String[] NetworkInfo = Networks[which + 2].split(",");
+                        if(NetworkInfo[3].equals("NONE")) {
+                            Controller.setWifiNetwork(NetworkInfo[1]);
+                        } else {
+                            AlertDialog.Builder builderInner = new AlertDialog.Builder(
+                                    controller.this);
+                            builderInner.setMessage("Please type the network password");
+                            builderInner.setTitle("Password For: "+NetworkInfo[1]);
+                            builderInner.setView(input);
+                            builderInner.setPositiveButton("Ok",
+                                    new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            String[] sec = NetworkInfo[3].split("/");
+                                            Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            builderInner.setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialog,
+                                                int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            builderInner.show();
+                        }
+                    }
+                });
+        builderSingle.show();
+    }
+
     private void newDeviceFound(final String IP, final String Mac) {
-        final utils Utils = new utils(this);
         final SharedPreferences Devices = this.getSharedPreferences("devices", MODE_PRIVATE);
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -142,6 +223,7 @@ public class controller extends ActionBarActivity {
                         prefs.edit().putString("pref_light_controller_ip", IP).commit();
                         Devices.edit().putString(Mac+"-online",Utils.getWifiName());
                         gotDevice = true;
+                        DeviceMac = Mac;
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         Devices.edit().putBoolean(Mac+"-known",false).commit();
@@ -155,6 +237,7 @@ public class controller extends ActionBarActivity {
             Devices.edit().putBoolean(Mac+"-known",true);
             Devices.edit().putString(Mac+"-online",Utils.getWifiName());
             gotDevice = true;
+            DeviceMac = Mac;
         } else {
             if (!Devices.contains(Mac + "-known")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -164,6 +247,7 @@ public class controller extends ActionBarActivity {
                 if (Devices.getBoolean(Mac + "-known", false)) {
                     gotDevice = true;
                     prefs.edit().putString("pref_light_controller_ip", IP).commit();
+                    DeviceMac = Mac;
                 }
             }
         }
@@ -173,7 +257,6 @@ public class controller extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         gotDevice = false;
-        utils Utils = new utils(this);
         if(!Utils.isWifiConnection()) {
 
         }
@@ -253,6 +336,13 @@ public class controller extends ActionBarActivity {
         MenuView = View.inflate(this, R.layout.menu, null);
         ImageView close = (ImageView) MenuView.findViewById(R.id.close_menu_item);
         TextView settings = (TextView) MenuView.findViewById(R.id.settings_menu_item);
+        TextView DeviceSetup = (TextView) MenuView.findViewById(R.id.setup_menu_item);
+
+        if(DeviceMac.toLowerCase().equals(Utils.GetWifiMac().replace(":","").toLowerCase())) {
+            DeviceSetup.setVisibility(View.VISIBLE);
+        } else {
+            DeviceSetup.setVisibility(View.GONE);
+        }
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,6 +356,14 @@ public class controller extends ActionBarActivity {
                 closeMenu();
                 Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
                 startActivity(intent);
+            }
+        });
+
+        DeviceSetup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controller.getWifiNetworks();
+                closeMenu();
             }
         });
 

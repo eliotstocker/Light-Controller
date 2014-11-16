@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 
 public class controlCommands {
     public static final int DISCOVERED_DEVICE = 111;
+    public static final int LIST_WIFI_NETWORKS = 802;
+    public static final int COMMAND_SUCCESS = 222;
 
     private UDPConnection UDPC;
     public int LastOn = -1;
@@ -62,10 +64,63 @@ public class controlCommands {
     public void discover() {
         Log.d("discovery", "Start Discovery");
         try {
+            UDPC.sendAdminMessage("AT+Q\r".getBytes());
+            Thread.sleep(100);
             UDPC.sendAdminMessage("Link_Wi-Fi".getBytes());
         } catch (IOException e) {
             e.printStackTrace();
             //add alert to tell user we cant send command
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getWifiNetworks() {
+        try {
+            UDPC.sendAdminMessage("+ok".getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage("AT+WSCAN\r\n".getBytes(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setWifiNetwork(String SSID, String Security, String Type, String Password) {
+        try {
+            UDPC.sendAdminMessage("+ok".getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage(("AT+WSSSID="+SSID+"\r").getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage(("AT+WSKEY="+Security+","+Type+","+Password+"\r\n").getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage("AT+WMODE=STA\r\n".getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage("AT+Z\r\n".getBytes(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setWifiNetwork(String SSID) {
+        try {
+            UDPC.sendAdminMessage("+ok".getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage(("AT+WSSSID="+SSID+"\r").getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage("AT+WMODE=STA\r\n".getBytes(), true);
+            Thread.sleep(100);
+            UDPC.sendAdminMessage("AT+Z\r\n".getBytes(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
@@ -76,6 +77,11 @@ public class utils {
         WifiManager wifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
         String SSID = wifi.getConnectionInfo().getSSID();
         return SSID.replace("\"","");
+    }
+
+    public String GetWifiMac() {
+        WifiManager wifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
+        return wifi.getConnectionInfo().getBSSID();
     }
 
     public boolean validIP(String ip) {

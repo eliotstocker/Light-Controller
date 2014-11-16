@@ -78,6 +78,10 @@ public class UDPConnection {
     }
 
     public void sendAdminMessage(byte[] Bytes) throws IOException {
+        sendAdminMessage(Bytes, false);
+    }
+
+    public void sendAdminMessage(byte[] Bytes, Boolean Device) throws IOException {
         if(server == null) {
             server = new UDP_Server();
             server.runUdpServer();
@@ -86,11 +90,16 @@ public class UDPConnection {
         }
 
         String NetworkBroadCast = null;
-        try {
-            NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
-        } catch (ConnectionException e) {
-            e.printStackTrace();
-            return;
+        if(Device) {
+            CONTROLLERIP = prefs.getString("pref_light_controller_ip", "192.168.0.255");
+            NetworkBroadCast = CONTROLLERIP;
+        } else {
+            try {
+                NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
+            } catch (ConnectionException e) {
+                e.printStackTrace();
+                return;
+            }
         }
         DatagramSocket s = new DatagramSocket();
         InetAddress controller = InetAddress.getByName(NetworkBroadCast);
@@ -112,6 +121,7 @@ public class UDPConnection {
 
         @SuppressLint("NewApi")
         public void runUdpServer() {
+            Server_aktiv = true;
             async = new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
@@ -126,15 +136,29 @@ public class UDPConnection {
                             try {
                                 ds.receive(dp);
                                 String Data = new String(dp.getData());
-                                String[] parts = Data.split(",");
-                                if(parts.length > 1) {
-                                    if(Utils.validIP(parts[0]) && Utils.validMac(parts[1])) {
-                                        Log.d("Packets", "Discovered Host: "+parts[1]);
+                                if(Data.startsWith("+ok")) {
+                                    if(Data.startsWith("+ok=")) {
                                         Message m = new Message();
-                                        m.what = controlCommands.DISCOVERED_DEVICE;
-                                        m.obj = parts;
-                                        ((controller)mCtx).mHandler.sendMessage(m);
+                                        m.what = controlCommands.LIST_WIFI_NETWORKS;
+                                        m.obj = Data;
+                                        ((controller) mCtx).mHandler.sendMessage(m);
                                         Server_aktiv = false;
+                                    } else {
+                                        Message m = new Message();
+                                        m.what = controlCommands.COMMAND_SUCCESS;
+                                        ((controller) mCtx).mHandler.sendMessage(m);
+                                        Server_aktiv = false;
+                                    }
+                                } else {
+                                    String[] parts = Data.split(",");
+                                    if (parts.length > 1) {
+                                        if (Utils.validIP(parts[0]) && Utils.validMac(parts[1])) {
+                                            Message m = new Message();
+                                            m.what = controlCommands.DISCOVERED_DEVICE;
+                                            m.obj = parts;
+                                            ((controller) mCtx).mHandler.sendMessage(m);
+                                            Server_aktiv = false;
+                                        }
                                     }
                                 }
                             } catch(SocketTimeoutException e) {
