@@ -107,7 +107,7 @@ public class switchWidget extends AppWidgetProvider {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Controller = new controlCommands(context);
+        Controller = new controlCommands(context, null);
 
         String action = intent.getAction();
         if (intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)) {

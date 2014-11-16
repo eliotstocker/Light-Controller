@@ -77,7 +77,7 @@ public final class FireReceiver extends BroadcastReceiver
             final String message = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
 
             controlCommands Controller;
-            Controller = new controlCommands(context);
+            Controller = new controlCommands(context, null);
 
             String[] _in = message.split(":");
             String[][] in = new String[_in.length][3];

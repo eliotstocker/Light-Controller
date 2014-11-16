@@ -37,4 +37,5 @@ Libraies
 Light controller uses the following libraries:
 * [HoloColorPicker](https://github.com/LarsWerkman/HoloColorPicker) by [Lars Werkman](https://github.com/LarsWerkman)
 * [Android PagerSlidingTabStrip](https://github.com/astuetz/PagerSlidingTabStrip) by [Andreas Stütz](https://github.com/astuetz)
+* [Material Dialogs](https://github.com/afollestad/material-dialogs) by [Aidan Follestad](https://github.com/afollestad)
 * [Appcompat Android Support](https://developer.android.com/tools/support-library/features.html) by [Google](https://developer.android.com/)

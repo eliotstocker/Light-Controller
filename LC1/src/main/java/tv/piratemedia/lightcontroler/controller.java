@@ -38,8 +38,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -63,6 +63,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.support.v7.app.ActionBarActivity;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
@@ -110,7 +112,8 @@ public class controller extends ActionBarActivity {
 
         setupApp();
 
-        Controller = new controlCommands(this);
+        mHandler = new MyHandler();
+        Controller = new controlCommands(this, mHandler);
         ctx = this;
         Intent i = new Intent(this, notificationService.class);
         i.setAction(notificationService.START_SERVICE);
@@ -120,7 +123,6 @@ public class controller extends ActionBarActivity {
         }
 
         appState = new SaveState(this);
-        mHandler = new MyHandler();
         Utils = new utils(this);
     }
 
@@ -136,80 +138,62 @@ public class controller extends ActionBarActivity {
                 case controlCommands.LIST_WIFI_NETWORKS:
                     String NetworkString = (String)msg.obj;
                     String[] Networks = NetworkString.split("\\n\\r");
-                    Log.d("Networks", "There are "+(Networks.length - 4)+" Networks");
-                    for(int i = 1; i < Networks.length - 2; i++) {
-                        Log.d("Networks", Networks[i]);
-                    }
                     listWifiNetworks(Networks);
             }
         }
     }
 
     private void listWifiNetworks(final String[] Networks) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(
-                controller.this);
-        builderSingle.setTitle("Select Wifi Network");
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                controller.this,
-                android.R.layout.select_dialog_singlechoice);
+        String[] ShowNetworks = new String[Networks.length - 4];
         for(int i = 2; i < Networks.length - 2; i++) {
             String[] NetworkInfo = Networks[i].split(",");
-            arrayAdapter.add(NetworkInfo[1]+" - "+NetworkInfo[4]+"%");
+            ShowNetworks[i - 2] = NetworkInfo[1]+" - "+NetworkInfo[4]+"%";
         }
-        builderSingle.setNegativeButton("cancel",
-                new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
 
         // Set an EditText view to get user input
         final EditText input = new EditText(this);
-
-
-        builderSingle.setAdapter(arrayAdapter,
-                new DialogInterface.OnClickListener() {
-
+        input.setHint("Password");
+        input.setSingleLine(true);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        final Context _this = this;
+        new MaterialDialog.Builder(this)
+                .title("Controller Wifi Networks")
+                .theme(Theme.DARK)
+                .items(ShowNetworks)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
                         final String[] NetworkInfo = Networks[which + 2].split(",");
-                        if(NetworkInfo[3].equals("NONE")) {
+                        if (NetworkInfo[3].equals("NONE")) {
                             Controller.setWifiNetwork(NetworkInfo[1]);
                         } else {
-                            AlertDialog.Builder builderInner = new AlertDialog.Builder(
-                                    controller.this);
-                            builderInner.setMessage("Please type the network password");
-                            builderInner.setTitle("Password For: "+NetworkInfo[1]);
-                            builderInner.setView(input);
-                            builderInner.setPositiveButton("Ok",
-                                    new DialogInterface.OnClickListener() {
-
+                            new MaterialDialog.Builder(_this)
+                                    .title("Password For: " + NetworkInfo[1])
+                                    .theme(Theme.DARK)
+                                    .customView(input)
+                                    .content("Please type the network password")
+                                    .positiveText("OK")
+                                    .negativeText("Cancel")
+                                    .callback(new MaterialDialog.Callback() {
                                         @Override
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            String[] sec = NetworkInfo[3].split("/");
+                                        public void onPositive(MaterialDialog dialog) {
                                             Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
-                                            dialog.dismiss();
                                         }
-                                    });
-                            builderInner.setNegativeButton("Cancel",
-                                    new DialogInterface.OnClickListener() {
 
                                         @Override
-                                        public void onClick(
-                                                DialogInterface dialog,
-                                                int which) {
-                                            dialog.dismiss();
+                                        public void onNegative(MaterialDialog materialDialog) {
+
                                         }
-                                    });
-                            builderInner.show();
+                                    })
+                                    .build()
+                                    .show();
                         }
                     }
-                });
-        builderSingle.show();
+                })
+                .positiveText("Select")
+                .negativeText("Cancel")
+                .build()
+                .show();
     }
 
     private void newDeviceFound(final String IP, final String Mac) {

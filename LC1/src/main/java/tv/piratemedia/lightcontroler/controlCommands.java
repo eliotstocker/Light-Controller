@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaRecorder;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
@@ -45,16 +46,11 @@ public class controlCommands {
     public final int[] tolerance = new int[1];
     private SaveState appState = null;
 
-    public controlCommands(Context context) {
-        UDPC = new UDPConnection(context);
+    public controlCommands(Context context, Handler handler) {
+        UDPC = new UDPConnection(context, handler);
         mContext = context;
         tolerance[0] = 25000;
         appState = new SaveState(context);
-    }
-
-    public void recreateUDPC() {
-        UDPC.destroyUDPC();
-        UDPC = new UDPConnection(mContext);
     }
 
     public void killUDPC() {

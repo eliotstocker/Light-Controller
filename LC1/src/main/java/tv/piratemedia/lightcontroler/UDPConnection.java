@@ -17,9 +17,9 @@
 */
 package tv.piratemedia.lightcontroler;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -31,10 +31,8 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.widget.Toast;
 
 public class UDPConnection {
     public static String CONTROLLERIP = "";
@@ -44,11 +42,13 @@ public class UDPConnection {
     private UDP_Server server = null;
     private SharedPreferences prefs;
     private static Context mCtx;
+    private static Handler mHandler;
 
     private boolean onlineMode = false;
 
-    public UDPConnection(Context context) {
+    public UDPConnection(Context context, Handler handler) {
         mCtx = context;
+        mHandler = handler;
         Utils = new utils(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -141,12 +141,12 @@ public class UDPConnection {
                                         Message m = new Message();
                                         m.what = controlCommands.LIST_WIFI_NETWORKS;
                                         m.obj = Data;
-                                        ((controller) mCtx).mHandler.sendMessage(m);
+                                        mHandler.sendMessage(m);
                                         Server_aktiv = false;
                                     } else {
                                         Message m = new Message();
                                         m.what = controlCommands.COMMAND_SUCCESS;
-                                        ((controller) mCtx).mHandler.sendMessage(m);
+                                        mHandler.sendMessage(m);
                                         Server_aktiv = false;
                                     }
                                 } else {
@@ -156,7 +156,7 @@ public class UDPConnection {
                                             Message m = new Message();
                                             m.what = controlCommands.DISCOVERED_DEVICE;
                                             m.obj = parts;
-                                            ((controller) mCtx).mHandler.sendMessage(m);
+                                            mHandler.sendMessage(m);
                                             Server_aktiv = false;
                                         }
                                     }
