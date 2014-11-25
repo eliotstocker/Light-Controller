@@ -216,12 +216,21 @@ public class controlCommands {
         appState.removeColor(zone);
     }
 
+    private int[] values = { 2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
+    private int LastBrightness = 20;
+    private int LastZone = 0;
+    private boolean finalSend = false;
+    public boolean touching = false;
     public void setBrightness(int zoneid, int brightness) {
+        if(brightness > values.length - 1) {
+            brightness = values.length - 1;
+        }
         if(!sleeping) {
+            Log.d("Send","send: "+brightness);
             LightsOn(zoneid);
             byte[] messageBA = new byte[3];
             messageBA[0] = 78;
-            messageBA[1] = (byte)(brightness);
+            messageBA[1] = (byte)(values[brightness]);
             messageBA[2] = 85;
             try {
                 UDPC.sendMessage(messageBA);
@@ -230,9 +239,15 @@ public class controlCommands {
                 //add alert to tell user we cant send command
             }
             appState.setBrighness(zoneid, brightness);
-            sleeping = true;
-            startTimeout();
+            if(finalSend) {
+                finalSend = false;
+            } else {
+                sleeping = true;
+                startTimeout();
+            }
         }
+        LastBrightness = brightness;
+        LastZone = zoneid;
     }
 
     public void startTimeout() {
@@ -243,6 +258,10 @@ public class controlCommands {
                 try {
                     sleep(100);
                     sleeping = false;
+                    if(!touching) {
+                        finalSend = true;
+                        setBrightness(LastZone, LastBrightness);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

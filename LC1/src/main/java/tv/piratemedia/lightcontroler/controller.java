@@ -632,12 +632,12 @@ public class controller extends ActionBarActivity {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-
+                        Controller.touching = true;
                     }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-
+                        Controller.touching = false;
                     }
                 });
 
