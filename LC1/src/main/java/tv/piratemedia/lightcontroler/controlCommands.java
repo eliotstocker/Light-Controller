@@ -138,6 +138,18 @@ public class controlCommands {
             case 4:
                 messageBA[0] = 75;
                 break;
+            case 5:
+                messageBA[0] = 56;
+                break;
+            case 6:
+                messageBA[0] = 61;
+                break;
+            case 7:
+                messageBA[0] = 55;
+                break;
+            case 8:
+                messageBA[0] = 50;
+                break;
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -173,6 +185,18 @@ public class controlCommands {
                 break;
             case 4:
                 messageBA[0] = 76;
+                break;
+            case 5:
+                messageBA[0] = 59;
+                break;
+            case 6:
+                messageBA[0] = 51;
+                break;
+            case 7:
+                messageBA[0] = 58;
+                break;
+            case 8:
+                messageBA[0] = 54;
                 break;
         }
         messageBA[1] = 0;
