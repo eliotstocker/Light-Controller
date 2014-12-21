@@ -162,7 +162,7 @@ public class controller extends ActionBarActivity {
                 .items(ShowNetworks)
                 .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, String text) {
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         final String[] NetworkInfo = Networks[which + 2].split(",");
                         if (NetworkInfo[3].equals("NONE")) {
                             Controller.setWifiNetwork(NetworkInfo[1]);
@@ -278,7 +278,7 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        tabs.setIndicatorColor(c);
+        tabs.setBackgroundColor(c);
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
