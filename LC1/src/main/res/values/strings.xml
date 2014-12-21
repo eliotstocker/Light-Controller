@@ -19,6 +19,10 @@
     <string name="port_head">Controller Port</string>
     <string name="port_summary">Port for the light control unit (Default 8899) only change if you need to</string>
     <string name="cat_zones_head">Zone Setup</string>
+    <string name="cat_rgbw_zones_head">RGBW Zones</string>
+    <string name="pref_rgbw_enable">Enable RGBW Zone Control</string>
+    <string name="cat_white_zones_head">White Zones</string>
+    <string name="pref_white_enable">Enable White Zone Control</string>
     <string name="pref_zone_1">Zone 1 Name</string>
     <string name="pref_zone_2">Zone 2 Name</string>
     <string name="pref_zone_3">Zone 3 Name</string>
