@@ -17,6 +17,7 @@
 */
 package tv.piratemedia.lightcontroler;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -269,11 +270,54 @@ public class controller extends ActionBarActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+        if(!prefs.getBoolean("rgbw_enabled", false) && !prefs.getBoolean("white_enabled", false)) {
+            askControlType();
+        } else {
 
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
-        tabs.setViewPager(pager);
+            ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+
+            tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+            tabs.setViewPager(pager);
+        }
+    }
+
+    private void askControlType() {
+        String[] Options = new String[3];
+        Options[0] = "White Bulbs Only";
+        Options[1] = "RGBW Bulbs Only";
+        Options[2] = "Both White and RGBW Bulbs";
+
+        final Activity _this = this;
+
+        new MaterialDialog.Builder(this)
+                .title("What bulbs do you have?")
+                .theme(Theme.LIGHT)
+                .items(Options)
+                .cancelable(false)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                break;
+                            case 1:
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                            case 2:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                        }
+                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
+                        ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
+                        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
+                        tabs.setViewPager(pager);
+                    }
+                })
+                .build()
+                .show();
     }
 
     private void setActionbarColor(int c) {
