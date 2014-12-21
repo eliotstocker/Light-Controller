@@ -16,6 +16,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,15 +50,23 @@ public class utils {
 
             switch(type) {
                 case BROADCAST_ADDRESS :
-                    int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
-                    byte[] quads = new byte[4];
-                    for (int k = 0; k < 4; k++)
-                        quads[k] = (byte) (broadcast >> (k * 8));
+                    Log.d("Utils", "get Broadcast");
+                    System.setProperty("java.net.preferIPv4Stack", "true");
                     try {
-                        return InetAddress.getByAddress(quads).getHostAddress();
-                    } catch (UnknownHostException e) {
+                        for(Enumeration<NetworkInterface> niEnum = NetworkInterface.getNetworkInterfaces(); niEnum.hasMoreElements();) {
+                            NetworkInterface ni = niEnum.nextElement();
+                            if (!ni.isLoopback()) {
+                                for (InterfaceAddress interfaceAddress : ni.getInterfaceAddresses()) {
+                                    if(interfaceAddress.getBroadcast() != null) {
+                                        return interfaceAddress.getBroadcast().toString().substring(1);
+                                    }
+                                }
+                            }
+                        }
+                    }catch (SocketException e) {
                         throw new ConnectionException("Cant get Address", ConnectionException.CANT_GET_ADDRESS);
                     }
+                    return null;
                 case IP_ADDRESS :
                     byte[] bytes = BigInteger.valueOf(dhcp.ipAddress).toByteArray();
                     try {
