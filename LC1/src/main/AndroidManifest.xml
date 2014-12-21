@@ -48,6 +48,16 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".controlWidgetConfig"
+            android:icon="@drawable/icon"
+            android:label="@string/app_widget_settings"
+            android:parentActivityName=".controller">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name="tv.piratemedia.lightcontroler.ui.EditActivity"
             android:exported="true"

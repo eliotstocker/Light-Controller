@@ -32,6 +32,10 @@
     <string name="lockscreen_notification_summary">Enable light switch toggle Notification when screen off (Shows on Android 5.0 Lockscreen)</string>
     <string name="cat_contributors">Light Controller Contributors</string>
 
+    <string name="control_widget_config_explaination">What type of bulbs would you like this widget to control?</string>
+    <string name="control_widget_rgbw">RGBW Bulbs</string>
+    <string name="control_widget_white">White Bulbs</string>
+
     <string name="widget_config_explaination">Please select the zone you wish to control from the added widget.</string>
     <string name="widget_show_title">Show Zone Title</string>
     <string name="widget_configure_done">Done</string>
