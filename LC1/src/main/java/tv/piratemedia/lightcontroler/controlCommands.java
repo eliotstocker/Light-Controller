@@ -326,7 +326,6 @@ public class controlCommands {
             brightness = values.length - 1;
         }
         if(!sleeping) {
-            Log.d("Send","send: "+brightness);
             LightsOn(zoneid);
             byte[] messageBA = new byte[3];
             messageBA[0] = 78;
@@ -396,6 +395,7 @@ public class controlCommands {
                 //add alert to tell user we cant send command
             }
             appState.setColor(zoneid, color);
+            touching = true;
             sleeping = true;
             startTimeout();
         }
