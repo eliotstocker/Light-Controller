@@ -103,6 +103,8 @@ public class switchWidgetConfig extends ActionBarActivity {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 7).commit();
                 } else if (checkedId == R.id.z8) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 8).commit();
+                } else if(checkedId == R.id.g2) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 9).commit();
                 }
             }
         });
@@ -157,6 +159,9 @@ public class switchWidgetConfig extends ActionBarActivity {
                             break;
                         case 8:
                             label = prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4));
+                            break;
+                        case 9:
+                            label = getBaseContext().getString(R.string.gloabl);
                             break;
                     }
                     views.setTextViewText(R.id.zone_label, label);

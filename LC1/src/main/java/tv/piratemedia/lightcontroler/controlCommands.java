@@ -150,6 +150,9 @@ public class controlCommands {
             case 8:
                 messageBA[0] = 50;
                 break;
+            case 9:
+                messageBA[0] = 53;
+                break;
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -198,6 +201,9 @@ public class controlCommands {
             case 8:
                 messageBA[0] = 54;
                 break;
+            case 9:
+                messageBA[0] = 57;
+                break;
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -238,6 +244,76 @@ public class controlCommands {
             //add alert to tell user we cant send command
         }
         appState.removeColor(zone);
+    }
+
+    public void setToFull(int zone) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 5:
+                messageBA[0] = (byte)184;
+                break;
+            case 6:
+                messageBA[0] = (byte)189;
+                break;
+            case 7:
+                messageBA[0] = (byte)183;
+                break;
+            case 8:
+                messageBA[0] = (byte)178;
+                break;
+            case 9:
+                messageBA[0] = (byte)181;
+                break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setToNight(int zone) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 5:
+                messageBA[0] = (byte)187;
+                break;
+            case 6:
+                messageBA[0] = (byte)179;
+                break;
+            case 7:
+                messageBA[0] = (byte)186;
+                break;
+            case 8:
+                messageBA[0] = (byte)182;
+                break;
+            case 9:
+                messageBA[0] = (byte)185;
+                break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
     }
 
     private int[] values = { 2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};

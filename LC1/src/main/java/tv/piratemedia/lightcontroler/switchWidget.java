@@ -83,6 +83,9 @@ public class switchWidget extends AppWidgetProvider {
                     case 8:
                         label = prefs.getString("pref_zone8", context.getString(R.string.Zone4));
                         break;
+                    case 9:
+                        label = context.getString(R.string.gloabl);
+                        break;
                 }
                 remoteViews.setTextViewText(R.id.zone_label, label);
                 remoteViews.setViewVisibility(R.id.zone_label, View.VISIBLE);

@@ -202,13 +202,13 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
                 remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
 
-                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
 
-                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(9,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));

@@ -167,6 +167,35 @@ public class controlPreferences extends ActionBarActivity {
                 }
             });
 
+            zone5.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone6.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone7.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone8.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+
             final Activity app = (controlPreferences)getActivity();
 
             try {

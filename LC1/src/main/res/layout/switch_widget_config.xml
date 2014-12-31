@@ -23,12 +23,6 @@
             android:id="@+id/group"
             android:layout_gravity="center_horizontal">
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gloabl"
-                android:id="@+id/g" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,6 +31,13 @@
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="10dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Color"
+                android:id="@+id/g"
+                android:checked="false" />
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -70,6 +71,13 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="10dp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All White"
+                android:id="@+id/g2"
+                android:checked="false" />
 
             <RadioButton
                 android:layout_width="wrap_content"

@@ -291,7 +291,7 @@ public class controller extends ActionBarActivity {
         final Activity _this = this;
 
         new MaterialDialog.Builder(this)
-                .title("What bulbs do you have?")
+                .title("Which bulbs do you have?")
                 .theme(Theme.LIGHT)
                 .items(Options)
                 .cancelable(false)
@@ -484,7 +484,8 @@ public class controller extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G = null;
+        Fragment G1 = null;
+        Fragment G2 = null;
         Fragment z1 = null;
         Fragment z2 = null;
         Fragment z3 = null;
@@ -507,10 +508,10 @@ public class controller extends ActionBarActivity {
             }
             switch(i) {
                 case 0:
-                    if(G == null) {
-                        G = RGBWFragment.newInstance(0);
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
                     }
-                    return G;
+                    return G1;
                 case 1:
                     if(z1 == null) {
                         z1 = RGBWFragment.newInstance(1);
@@ -532,41 +533,46 @@ public class controller extends ActionBarActivity {
                     }
                     return z4;
                 case 5:
+                    if(G2 == null) {
+                        G2 = WhiteFragment.newInstance(9);
+                    }
+                    return G2;
+                case 6:
                     if(z5 == null) {
                         z5 = WhiteFragment.newInstance(5);
                     }
                     return z5;
-                case 6:
+                case 7:
                     if(z6 == null) {
                         z6 = WhiteFragment.newInstance(6);
                     }
                     return z6;
-                case 7:
+                case 8:
                     if(z7 == null) {
                         z7 = WhiteFragment.newInstance(7);
                     }
                     return z7;
-                case 8:
+                case 9:
                     if(z8 == null) {
                         z8 = WhiteFragment.newInstance(8);
                     }
                     return z8;
                 default:
-                    if(G == null) {
-                        G = RGBWFragment.newInstance(0);
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
                     }
-                    return G;
+                    return G1;
             }
         }
 
         @Override
         public int getCount() {
-            int count = 1;
+            int count = 0;
             if(prefs.getBoolean("rgbw_enabled", false)) {
-                count += 4;
+                count += 5;
             }
             if(prefs.getBoolean("white_enabled", false)) {
-                count += 4;
+                count += 5;
             }
             return count;
         }
@@ -577,15 +583,16 @@ public class controller extends ActionBarActivity {
                 position += 4;
             }
             switch(position) {
-                case 0: return "Global";
+                case 0: return "All Color";
                 case 1: return prefs.getString("pref_zone1", "Zone 1");
                 case 2: return prefs.getString("pref_zone2", "Zone 2");
                 case 3: return prefs.getString("pref_zone3", "Zone 3");
                 case 4: return prefs.getString("pref_zone4", "Zone 4");
-                case 5: return prefs.getString("pref_zone5", "White 1");
-                case 6: return prefs.getString("pref_zone6", "White 2");
-                case 7: return prefs.getString("pref_zone7", "White 3");
-                case 8: return prefs.getString("pref_zone8", "White 4");
+                case 5: return "All White";
+                case 6: return prefs.getString("pref_zone5", "White 1");
+                case 7: return prefs.getString("pref_zone6", "White 2");
+                case 8: return prefs.getString("pref_zone7", "White 3");
+                case 9: return prefs.getString("pref_zone8", "White 4");
             }
             return "unknown";
         }
@@ -881,24 +888,23 @@ public class controller extends ActionBarActivity {
 
                 SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
                 ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                Button white = (Button) rootView.findViewById(R.id.white);
-                final ColorPicker color = (ColorPicker) rootView.findViewById(R.id.color);
+                Button full = (Button) rootView.findViewById(R.id.full);
+                Button night = (Button) rootView.findViewById(R.id.night);
 
                 //Return State
                 io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
                 brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
-                    color.setColor(savedColor);
-                    ((controller) getActivity()).setActionbarColor(savedColor);
+                    ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
                 }
 
                 brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        //Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
+                        //ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        //io.setChecked(true);
                     }
 
                     @Override
@@ -923,13 +929,21 @@ public class controller extends ActionBarActivity {
                     }
                 });
 
-                white.setOnClickListener(new View.OnClickListener() {
+                full.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToFull(getArguments().getInt(ARG_SECTION_NUMBER));
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
-                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                    }
+                });
+
+                night.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
                     }
                 });
 
