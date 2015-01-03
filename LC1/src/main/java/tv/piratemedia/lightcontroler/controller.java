@@ -66,6 +66,7 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
+import com.example.harry.wear.DataLayerListenerService;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -86,7 +87,6 @@ public class controller extends ActionBarActivity {
     private static boolean micStarted = false;
     private static boolean candleMode = false;
     private static Context ctx;
-
     private SaveState appState = null;
     private static SharedPreferences prefs;
 
@@ -124,6 +124,7 @@ public class controller extends ActionBarActivity {
 
         appState = new SaveState(this);
         Utils = new utils(this);
+        new DataLayerListenerService();
     }
 
     class MyHandler extends Handler {
