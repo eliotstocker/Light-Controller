@@ -96,6 +96,11 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
+        <service android:name=".DataLayerListenerService" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+            </intent-filter>
+        </service>
 
         <receiver android:name=".switchWidget" >
             <intent-filter>
