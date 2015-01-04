@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tv.piratemedia.lightcontroler"
     android:versionCode="15"
-    android:versionName="1.5">
+    android:versionName="1.5" >
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />

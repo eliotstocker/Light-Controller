@@ -1,57 +1,20 @@
 package tv.piratemedia.lightcontroler;
 
-import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.data.FreezableUtils;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
+import android.util.Log;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import tv.piratemedia.lightcontroler.controlCommands;
-import tv.piratemedia.lightcontroler.controller;
-
-/**
- * Created by harry on 3/01/15.
- */
-/*public class DataLayerListenerService extends WearableListenerService {
-    private Context mContext;
-    //private tv.piratemedia.lightcontroler.controller.MyHandler mHandler;
-
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent) {
-        super.onMessageReceived(messageEvent);
-        if ("/MESSAGE".equals(messageEvent.getPath())) {
-            // launch some Activity or do anything you like
-            Log.d("datalistener", "Cmd received inside if");
-            /*controlCommands cmd;
-            cmd = new controlCommands(mContext, mHandler);
-
-            cmd.LightsOff(2);
-     //   }
-        //Log.d("datalistener", "Cmd received outside if");
-   // }
-} */
 
 public class DataLayerListenerService extends WearableListenerService {
 
-    private static final String TAG = "DataLayerSample";
-    private static final String START_ACTIVITY_PATH = "/start-activity";
-    private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
+    private static final String TAG = "DataLayer";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         // if ("/MESSAGE".equals(messageEvent.getPath())) {
-        Log.d("datalistener", "message received" + messageEvent.getPath());
+        Log.d(TAG, "message received" + messageEvent.getPath());
         controller mCont = new controller();
         controlCommands cmd;
         cmd = new controlCommands(this, mCont.mHandler);
@@ -60,34 +23,52 @@ public class DataLayerListenerService extends WearableListenerService {
                 if (cmd.appState.getOnOff(1) == false) {
                     cmd.LightsOn(1);
                     cmd.appState.setOnOff(1, true);
+                    Log.d(TAG, "lights in zone 1 on");
                 }
                 else if (cmd.appState.getOnOff(1) == true){
                     cmd.LightsOff(1);
                     cmd.appState.setOnOff(1, false);
+                    Log.d(TAG, "lights in zone 1 off");
                 }
-                Log.d("datalistener","state of zone 1:" + cmd.appState.getOnOff(1));
-
-                Log.d("datalistener", "lights in zone 1 off");
                 break;
             case "/2":
-                cmd.LightsOff(2);
-                Log.d("datalistener", "lights in zone 2 off");
+                if (cmd.appState.getOnOff(2) == false) {
+                    cmd.LightsOn(2);
+                    cmd.appState.setOnOff(2, true);
+                    Log.d(TAG, "lights in zone 2 on");
+                }
+                else if (cmd.appState.getOnOff(2) == true){
+                    cmd.LightsOff(2);
+                    cmd.appState.setOnOff(2, false);
+                    Log.d(TAG, "lights in zone 2 off");
+                }
                 break;
             case "/3":
-                cmd.LightsOff(3);
-                Log.d("datalistener", "lights in zone 3 off");
+                if (cmd.appState.getOnOff(3) == false) {
+                    cmd.LightsOn(3);
+                    cmd.appState.setOnOff(3, true);
+                    Log.d(TAG, "lights in zone 3 on");
+                }
+                else if (cmd.appState.getOnOff(3) == true){
+                    cmd.LightsOff(3);
+                    cmd.appState.setOnOff(3, false);
+                    Log.d(TAG, "lights in zone 3 off");
+                }
                 break;
             case "/4":
-                cmd.LightsOff(4);
-                Log.d("datalistener", "lights in zone 4 off");
+                if (cmd.appState.getOnOff(4) == false) {
+                    cmd.LightsOn(4);
+                    cmd.appState.setOnOff(4, true);
+                    Log.d(TAG, "lights in zone 4 on");
+                }
+                else if (cmd.appState.getOnOff(4) == true){
+                    cmd.LightsOff(4);
+                    cmd.appState.setOnOff(4, false);
+                    Log.d(TAG, "lights in zone 4 off");
+                }
                 break;
         }
 
     //}
-    }
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, "onDataChanged: " + dataEvents);
-        }
     }
 }

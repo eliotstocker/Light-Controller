@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
-    tools:context=".MainActivity" tools:deviceIds="wear_square">
+    tools:context=".MainActivity" tools:deviceIds="wear_square"
+    android:weightSum="1">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,26 +15,26 @@
 
     <Button android:id="@+id/button1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:text="1"
         android:onClick="onButtonClicked" />
 
     <Button android:id="@+id/button2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:text="2"
         android:layout_gravity="right"
         android:onClick="onButtonClicked" />
 
     <Button android:id="@+id/button3"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:text="3"
         android:onClick="onButtonClicked" />
 
     <Button android:id="@+id/button4"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:text="4"
         android:layout_gravity="right"
         android:onClick="onButtonClicked" />
