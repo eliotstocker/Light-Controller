@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="RGBW"
+        android:text="White Lights"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
 

@@ -5,7 +5,6 @@
     android:versionName="1.5" >
 
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -21,10 +20,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name=".EXAMPLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>
