@@ -50,15 +50,31 @@ public class DataLayerListenerService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        if ("/MESSAGE".equals(messageEvent.getPath())) {
-            Log.d("datalistener", "Cmd received inside if");
-            controller mCont = new controller();
-            controlCommands cmd;
-            cmd = new controlCommands(this, mCont.mHandler);
-            cmd.LightsOff(2);
-            Log.d("datalistener","lights in zone 2 off");
+        // if ("/MESSAGE".equals(messageEvent.getPath())) {
+        Log.d("datalistener", "message received" + messageEvent.getPath());
+        controller mCont = new controller();
+        controlCommands cmd;
+        cmd = new controlCommands(this, mCont.mHandler);
+        switch (messageEvent.getPath()){
+            case "/1":
+                cmd.LightsOff(1);
+                Log.d("datalistener", "lights in zone 1 off");
+                break;
+            case "/2":
+                cmd.LightsOff(2);
+                Log.d("datalistener", "lights in zone 2 off");
+                break;
+            case "/3":
+                cmd.LightsOff(3);
+                Log.d("datalistener", "lights in zone 3 off");
+                break;
+            case "/4":
+                cmd.LightsOff(4);
+                Log.d("datalistener", "lights in zone 4 off");
+                break;
         }
 
+    //}
     }
     public void onDataChanged(DataEventBuffer dataEvents) {
         if (Log.isLoggable(TAG, Log.DEBUG)) {

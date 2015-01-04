@@ -2,6 +2,10 @@
 <resources>
 
     <string name="app_name">Light controller</string>
+    <item name="button1" type="id">1</item>
+    <item name="button2" type="id">2</item>
+    <item name="button3" type="id">3</item>
+    <item name="button4" type="id">4</item>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
 
