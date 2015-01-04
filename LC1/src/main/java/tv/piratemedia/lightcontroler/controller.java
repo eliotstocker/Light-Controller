@@ -86,7 +86,7 @@ public class controller extends ActionBarActivity {
     private static boolean micStarted = false;
     private static boolean candleMode = false;
     private static Context ctx;
-    private SaveState appState = null;
+    public SaveState appState = null;
     private static SharedPreferences prefs;
 
     private Toolbar mActionBarToolbar;

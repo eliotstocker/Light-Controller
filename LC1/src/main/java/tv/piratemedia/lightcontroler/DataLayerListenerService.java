@@ -57,7 +57,16 @@ public class DataLayerListenerService extends WearableListenerService {
         cmd = new controlCommands(this, mCont.mHandler);
         switch (messageEvent.getPath()){
             case "/1":
-                cmd.LightsOff(1);
+                if (cmd.appState.getOnOff(1) == false) {
+                    cmd.LightsOn(1);
+                    cmd.appState.setOnOff(1, true);
+                }
+                else if (cmd.appState.getOnOff(1) == true){
+                    cmd.LightsOff(1);
+                    cmd.appState.setOnOff(1, false);
+                }
+                Log.d("datalistener","state of zone 1:" + cmd.appState.getOnOff(1));
+
                 Log.d("datalistener", "lights in zone 1 off");
                 break;
             case "/2":
