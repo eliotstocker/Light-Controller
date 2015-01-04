@@ -66,7 +66,6 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
-import com.example.harry.wear.DataLayerListenerService;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;

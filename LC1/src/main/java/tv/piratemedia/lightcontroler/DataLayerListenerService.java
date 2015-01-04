@@ -1,4 +1,4 @@
-package com.example.harry.wear;
+package tv.piratemedia.lightcontroler;
 
 import android.content.Context;
 import android.net.Uri;
@@ -47,8 +47,16 @@ public class DataLayerListenerService extends WearableListenerService {
     private static final String START_ACTIVITY_PATH = "/start-activity";
     private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
 
+    public void main () {
+        Log.d("datalistener","I am running now");
+    }
+
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
+        super.onMessageReceived(messageEvent);
+        if ("/MESSAGE".equals(messageEvent.getPath())) {
+            Log.d("datalistener", "Cmd received inside if");
+        }
         Log.d("listener","Received");
         Log.d("listener", messageEvent.getPath());
 
