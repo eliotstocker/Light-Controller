@@ -47,18 +47,17 @@ public class DataLayerListenerService extends WearableListenerService {
     private static final String START_ACTIVITY_PATH = "/start-activity";
     private static final String DATA_ITEM_RECEIVED_PATH = "/data-item-received";
 
-    public void main () {
-        Log.d("datalistener","I am running now");
-    }
-
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         if ("/MESSAGE".equals(messageEvent.getPath())) {
             Log.d("datalistener", "Cmd received inside if");
+            controller mCont = new controller();
+            controlCommands cmd;
+            cmd = new controlCommands(this, mCont.mHandler);
+            cmd.LightsOff(2);
+            Log.d("datalistener","lights in zone 2 off");
         }
-        Log.d("listener","Received");
-        Log.d("listener", messageEvent.getPath());
 
     }
     public void onDataChanged(DataEventBuffer dataEvents) {

@@ -7,10 +7,4 @@
     app:rectLayout="@layout/rect_activity_main" app:roundLayout="@layout/round_activity_main"
     tools:context=".MainActivity"
     tools:deviceIds="wear">
-    <Button android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click me!"
-        android:layout_gravity="center"
-        android:onClick="onButtonClicked" />
     </android.support.wearable.view.WatchViewStub>

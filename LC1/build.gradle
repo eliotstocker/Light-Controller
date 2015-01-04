@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
@@ -29,5 +29,6 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
     compile 'com.afollestad:material-dialogs:0.4.6'
     compile 'com.google.android.gms:play-services:+'
+    wearApp project(':wear')
     //compile 'com.instabug.library:instabugsupport:1.1.+'
 }
