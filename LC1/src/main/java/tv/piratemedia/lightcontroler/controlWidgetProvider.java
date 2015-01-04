@@ -179,22 +179,42 @@ public class controlWidgetProvider extends AppWidgetProvider {
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-            remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
-            remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
-            remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
-            remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
+            if(prefs.getInt("widget_" + widgetId + "_type", 0) == 0) {
+                remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
+                remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
+                remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
+                remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
 
-            remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
 
-            remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+            } else {
+                remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone5", context.getString(R.string.Zone1)));
+                remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone6", context.getString(R.string.Zone2)));
+                remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
+                remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
+
+                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
+
+                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(8,context,false));
+            }
+
 
             Intent intent = new Intent(context, controlPreferences.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

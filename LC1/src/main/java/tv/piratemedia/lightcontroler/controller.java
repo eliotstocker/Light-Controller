@@ -17,6 +17,7 @@
 */
 package tv.piratemedia.lightcontroler;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -269,11 +270,54 @@ public class controller extends ActionBarActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+        if(!prefs.getBoolean("rgbw_enabled", false) && !prefs.getBoolean("white_enabled", false)) {
+            askControlType();
+        } else {
 
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
-        tabs.setViewPager(pager);
+            ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+
+            tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+            tabs.setViewPager(pager);
+        }
+    }
+
+    private void askControlType() {
+        String[] Options = new String[3];
+        Options[0] = "White Bulbs Only";
+        Options[1] = "RGBW Bulbs Only";
+        Options[2] = "Both White and RGBW Bulbs";
+
+        final Activity _this = this;
+
+        new MaterialDialog.Builder(this)
+                .title("What bulbs do you have?")
+                .theme(Theme.LIGHT)
+                .items(Options)
+                .cancelable(false)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                break;
+                            case 1:
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                            case 2:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                        }
+                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
+                        ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
+                        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
+                        tabs.setViewPager(pager);
+                    }
+                })
+                .build()
+                .show();
     }
 
     private void setActionbarColor(int c) {
@@ -340,6 +384,7 @@ public class controller extends ActionBarActivity {
                 closeMenu();
                 Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -444,6 +489,10 @@ public class controller extends ActionBarActivity {
         Fragment z2 = null;
         Fragment z3 = null;
         Fragment z4 = null;
+        Fragment z5 = null;
+        Fragment z6 = null;
+        Fragment z7 = null;
+        Fragment z8 = null;
         private controller mThis;
 
         public ControllerPager(FragmentManager fm, controller t) {
@@ -453,35 +502,58 @@ public class controller extends ActionBarActivity {
 
         @Override
         public android.support.v4.app.Fragment getItem(int i) {
+            if(!prefs.getBoolean("rgbw_enabled", false) && i > 0) {
+                i += 4;
+            }
             switch(i) {
                 case 0:
                     if(G == null) {
-                        G = PlaceholderFragment.newInstance(0);
+                        G = RGBWFragment.newInstance(0);
                     }
                     return G;
                 case 1:
                     if(z1 == null) {
-                        z1 = PlaceholderFragment.newInstance(1);
+                        z1 = RGBWFragment.newInstance(1);
                     }
                     return z1;
                 case 2:
                     if(z2 == null) {
-                        z2 = PlaceholderFragment.newInstance(2);
+                        z2 = RGBWFragment.newInstance(2);
                     }
                     return z2;
                 case 3:
                     if(z3 == null) {
-                        z3 = PlaceholderFragment.newInstance(3);
+                        z3 = RGBWFragment.newInstance(3);
                     }
                     return z3;
                 case 4:
                     if(z4 == null) {
-                        z4 = PlaceholderFragment.newInstance(4);
+                        z4 = RGBWFragment.newInstance(4);
                     }
                     return z4;
+                case 5:
+                    if(z5 == null) {
+                        z5 = WhiteFragment.newInstance(5);
+                    }
+                    return z5;
+                case 6:
+                    if(z6 == null) {
+                        z6 = WhiteFragment.newInstance(6);
+                    }
+                    return z6;
+                case 7:
+                    if(z7 == null) {
+                        z7 = WhiteFragment.newInstance(7);
+                    }
+                    return z7;
+                case 8:
+                    if(z8 == null) {
+                        z8 = WhiteFragment.newInstance(8);
+                    }
+                    return z8;
                 default:
                     if(G == null) {
-                        G = PlaceholderFragment.newInstance(0);
+                        G = RGBWFragment.newInstance(0);
                     }
                     return G;
             }
@@ -489,17 +561,31 @@ public class controller extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return 5;
+            int count = 1;
+            if(prefs.getBoolean("rgbw_enabled", false)) {
+                count += 4;
+            }
+            if(prefs.getBoolean("white_enabled", false)) {
+                count += 4;
+            }
+            return count;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
+            if(!prefs.getBoolean("rgbw_enabled", false) && position > 0) {
+                position += 4;
+            }
             switch(position) {
                 case 0: return "Global";
                 case 1: return prefs.getString("pref_zone1", "Zone 1");
                 case 2: return prefs.getString("pref_zone2", "Zone 2");
                 case 3: return prefs.getString("pref_zone3", "Zone 3");
                 case 4: return prefs.getString("pref_zone4", "Zone 4");
+                case 5: return prefs.getString("pref_zone5", "White 1");
+                case 6: return prefs.getString("pref_zone6", "White 2");
+                case 7: return prefs.getString("pref_zone7", "White 3");
+                case 8: return prefs.getString("pref_zone8", "White 4");
             }
             return "unknown";
         }
@@ -516,7 +602,7 @@ public class controller extends ActionBarActivity {
         }
     }
 
-    public static class PlaceholderFragment extends Fragment {
+    public static class RGBWFragment extends Fragment {
 
         public boolean recreateView = false;
         private View cacheView = null;
@@ -532,22 +618,22 @@ public class controller extends ActionBarActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static RGBWFragment newInstance(int sectionNumber) {
+            RGBWFragment fragment = new RGBWFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        public RGBWFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             if(!recreateView) {
-                final View rootView = inflater.inflate(R.layout.global_control, container, false);
+                final View rootView = inflater.inflate(R.layout.rgbw_control, container, false);
 
                 SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
                 ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
@@ -760,5 +846,115 @@ public class controller extends ActionBarActivity {
             }
         }
     }
+    public static class WhiteFragment extends Fragment {
 
+        public boolean recreateView = false;
+        private View cacheView = null;
+        private boolean disabled = true;
+
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static WhiteFragment newInstance(int sectionNumber) {
+            WhiteFragment fragment = new WhiteFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public WhiteFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            if(!recreateView) {
+                final View rootView = inflater.inflate(R.layout.white_control, container, false);
+
+                SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                Button white = (Button) rootView.findViewById(R.id.white);
+                final ColorPicker color = (ColorPicker) rootView.findViewById(R.id.color);
+
+                //Return State
+                io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
+                brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
+                int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
+                if(savedColor < 0) {
+                    color.setColor(savedColor);
+                    ((controller) getActivity()).setActionbarColor(savedColor);
+                }
+
+                brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        Controller.touching = true;
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        Controller.touching = false;
+                    }
+                });
+
+                io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        } else {
+                            Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                        }
+                    }
+                });
+
+                white.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
+                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                    }
+                });
+
+                recreateView = true;
+                cacheView = rootView;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        disabled = false;
+                    }
+                }, 500);
+                return rootView;
+            } else {
+                disabled = true;
+                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        disabled = false;
+                    }
+                }, 500);
+                return cacheView;
+            }
+        }
+    }
 }
