@@ -6,7 +6,11 @@ Light Controller
 [<img src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png">](https://play.google.com/store/apps/details?id=tv.piratemedia.lightcontroler)
 
 Adding in Android wear functionality. doesnt look very pretty at the moment though
+old build
 ![androidwear](wearapp.png)
+
+Latest build
+![androidwear](wearapp2.png)
 
 Description
 -----------
