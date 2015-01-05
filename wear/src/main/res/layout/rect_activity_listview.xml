@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/orange"
     tools:context=".MyActivity"
     tools:deviceIds="wear_square">
 
@@ -11,6 +12,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/orange"
         android:id="@+id/listView1"/>
 
 </LinearLayout>
