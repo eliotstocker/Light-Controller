@@ -6,6 +6,8 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tv.piratemedia.lightcontroler.MainActivity"
+    app:rectLayout="@layout/rect_activity_listview"
+    app:roundLayout="@layout/round_activity_listview"
+    tools:context=".MyActivity"
     tools:deviceIds="wear">
 </android.support.wearable.view.WatchViewStub>
