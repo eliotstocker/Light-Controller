@@ -9,14 +9,15 @@ import com.google.android.gms.wearable.WearableListenerService;
 public class DataLayerListenerService extends WearableListenerService {
 
     private static final String TAG = "DataLayer";
-
+    controller mCont = new controller();
+    controlCommands cmd = new controlCommands(this, mCont.mHandler);
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         // if ("/MESSAGE".equals(messageEvent.getPath())) {
         Log.d(TAG, "message received" + messageEvent.getPath());
-        controller mCont = new controller();
-        controlCommands cmd;
+        //controller mCont = new controller();
+        //controlCommands cmd;
         cmd = new controlCommands(this, mCont.mHandler);
         switch (messageEvent.getPath()){
             case "/0":
