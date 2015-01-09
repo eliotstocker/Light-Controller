@@ -6,7 +6,8 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange"
+    android:scrollbars="none"
+    android:dividerHeight="0dp"
     tools:context="tv.piratemedia.lightcontroler.MainActivity"
     tools:deviceIds="wear">
 </android.support.wearable.view.WatchViewStub>
