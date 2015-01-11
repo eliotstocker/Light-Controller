@@ -4,12 +4,14 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -22,11 +24,17 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity implements WearableListView.ClickListener{
+public class MainActivity extends Activity implements WearableListView.ClickListener, WearableListView.OnCenterProximityListener{
 
     private WearableListView mListView;
     private GoogleApiClient mGoogleApiClient;
+    private ImageView mCircle;
+    private TextView mName;
 
+    //private final float mFadedTextAlpha =
+    private final float mFadedTextAlpha = R.integer.action_text_faded_alpha / 100f;
+    private final int mFadedCircleColor = R.color.wl_gray;
+    private final int mChosenCircleColor = R.color.wl_blue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +131,25 @@ public class MainActivity extends Activity implements WearableListView.ClickList
     @Override
     public void onTopEmptyRegionClick() {
 
+    }
+
+    /*@Override
+    protected void onFinishInflate() {
+        //super.onFinishInflate();
+        mCircle = (ImageView) findViewById(R.id.circle);
+        mName = (TextView) findViewById(R.id.textView);
+    }*/
+
+    @Override
+    public void onCenterPosition(boolean animate) {
+        mName.setAlpha(1f);
+        ((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
+    }
+
+    @Override
+    public void onNonCenterPosition(boolean animate) {
+        ((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
+        mName.setAlpha(mFadedTextAlpha);
     }
 
     private class MyAdapter extends WearableListView.Adapter {
