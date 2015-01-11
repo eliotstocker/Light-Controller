@@ -10,6 +10,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.support.wearable.view.WearableListView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -135,11 +136,11 @@ public class MainActivity extends Activity implements WearableListView.ClickList
 
     /*@Override
     protected void onFinishInflate() {
-        //super.onFinishInflate();
+        super.onFinishInflate();
         mCircle = (ImageView) findViewById(R.id.circle);
         mName = (TextView) findViewById(R.id.textView);
-    }*/
-
+    }
+*/
     @Override
     public void onCenterPosition(boolean animate) {
         mName.setAlpha(1f);
