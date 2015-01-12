@@ -5,6 +5,7 @@
     <color name="colorPrimary">#FFef6c00</color>
     <color name="colorPrimaryDark">#FFe65100</color>
     <color name="colorAccent">#FFef6c00</color>
+    <color name="colorAccentLow">#6eef6c00</color>
     <color name="colorTabs">#FFFFFFFF</color>
     <color name="widgetText">#FFFFFFFF</color>
     <color name="widgetBackground">#22000000</color>

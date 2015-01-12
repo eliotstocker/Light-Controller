@@ -1,1 +1,1 @@
-include ':LC1'
+include ':LC1', ':circularseekbar'

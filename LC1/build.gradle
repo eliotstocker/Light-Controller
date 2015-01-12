@@ -28,5 +28,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
     compile 'com.afollestad:material-dialogs:0.4.6'
+    compile project(':circularseekbar')
     //compile 'com.instabug.library:instabugsupport:1.1.+'
 }

@@ -67,6 +67,7 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
+import com.devadvance.circularseekbar.CircularSeekBar;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -886,7 +887,10 @@ public class controller extends ActionBarActivity {
             if(!recreateView) {
                 final View rootView = inflater.inflate(R.layout.white_control, container, false);
 
-                SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                CircularSeekBar brightness = (CircularSeekBar) rootView.findViewById(R.id.brightness);
+                CircularSeekBar warmth = (CircularSeekBar) rootView.findViewById(R.id.warmth);
+                final TextView brightnessvalue = (TextView) rootView.findViewById(R.id.brightnessvalue);
+                final TextView warmthvalue = (TextView) rootView.findViewById(R.id.warmthvalue);
                 ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                 Button full = (Button) rootView.findViewById(R.id.full);
                 Button night = (Button) rootView.findViewById(R.id.night);
@@ -899,7 +903,54 @@ public class controller extends ActionBarActivity {
                     ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
                 }
 
-                brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                brightness.setProgress(8);
+                brightness.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        if(progress < 9) {
+                            brightnessvalue.setText(""+(progress - 8));
+                        } else {
+                            brightnessvalue.setText("+"+(progress - 8));
+                        }
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        seekBar.setProgress(8);
+                        brightnessvalue.setAlpha(0.0f);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        brightnessvalue.setAlpha(1.0f);
+                    }
+                });
+
+                warmth.setProgress(8);
+                warmth.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        progress = 16 - progress;
+                        if(progress < 9) {
+                            warmthvalue.setText(""+(progress - 8));
+                        } else {
+                            warmthvalue.setText("+"+(progress - 8));
+                        }
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        seekBar.setProgress(8);
+                        warmthvalue.setAlpha(0.0f);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        warmthvalue.setAlpha(1.0f);
+                    }
+                });
+
+                /*brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         //Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
@@ -916,7 +967,7 @@ public class controller extends ActionBarActivity {
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         Controller.touching = false;
                     }
-                });
+                });*/
 
                 io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
