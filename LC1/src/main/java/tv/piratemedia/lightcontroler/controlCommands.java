@@ -246,6 +246,114 @@ public class controlCommands {
         appState.removeColor(zone);
     }
 
+    public void setBrightnessJog(int zone, int value) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(value < 0) {
+            for (int i = 0; i > value; i--) {
+                setBrightnessUpOne();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (int i = 0; i < value; i++) {
+                setBrightnessDownOne();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void setBrightnessUpOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 60;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setBrightnessDownOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 52;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setWarmthJog(int zone, int value) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(value < 0) {
+            for (int i = 0; i > value; i--) {
+                setWarmthDownOne();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (int i = 0; i < value; i++) {
+                setWarmthUpOne();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void setWarmthUpOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 62;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setWarmthDownOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 63;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
     public void setToFull(int zone) {
         LightsOn(zone);
         try {

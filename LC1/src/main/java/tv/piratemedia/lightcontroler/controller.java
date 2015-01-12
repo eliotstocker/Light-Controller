@@ -918,6 +918,7 @@ public class controller extends ActionBarActivity {
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
                         seekBar.setProgress(8);
                         brightnessvalue.setAlpha(0.0f);
+                        Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), seekBar.getProgress() - 8);
                     }
 
                     @Override
@@ -942,6 +943,7 @@ public class controller extends ActionBarActivity {
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
                         seekBar.setProgress(8);
                         warmthvalue.setAlpha(0.0f);
+                        Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), seekBar.getProgress() - 8);
                     }
 
                     @Override
@@ -949,25 +951,6 @@ public class controller extends ActionBarActivity {
                         warmthvalue.setAlpha(1.0f);
                     }
                 });
-
-                /*brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        //Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
-                        //ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        //io.setChecked(true);
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = true;
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = false;
-                    }
-                });*/
 
                 io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
