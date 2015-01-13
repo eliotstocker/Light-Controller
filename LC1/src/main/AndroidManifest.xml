@@ -134,6 +134,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="controller" />
         </activity>
+
+        <receiver android:name=".APIReciever" >
+            <intent-filter>
+                <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>
+                <action android:name="tv.piratemedia.lightcontroler.LightOn"/>
+                <action android:name="tv.piratemedia.lightcontroler.LightOff"/>
+                <action android:name="tv.piratemedia.lightcontroler.LightColor"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

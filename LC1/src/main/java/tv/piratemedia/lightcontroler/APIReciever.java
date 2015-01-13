@@ -1,27 +1,79 @@
 package tv.piratemedia.lightcontroler;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
-/**
- * Created by eliotstocker on 13/01/15.
- */
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 public class APIReciever extends BroadcastReceiver {
+    public static final String REQUEST_API_PERMISSION = "tv.piratemedia.lightcontroler.requestAPIPermission";
     public static final String LIGHT_ON_INTENT = "tv.piratemedia.lightcontroler.LightOn";
     public static final String LIGHT_OFF_INTENT = "tv.piratemedia.lightcontroler.LightOff";
     public static final String LIGHT_COLOR_INTENT = "tv.piratemedia.lightcontroler.LightColor";
 
+    private static final String ACCEPT_APP_INTENT = "tv.piratemedia.lightcontroler.internal.AcceptApp";
+    private static final String DENY_APP_INTENT = "tv.piratemedia.lightcontroler.internal.DenyApp";
+
     public static final String TYPE_WHITE = "white";
     public static final String TYPE_COLOR = "color";
 
+    private int mId = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
+        if(intent.getAction().equals(ACCEPT_APP_INTENT) || intent.getAction().equals(DENY_APP_INTENT)) {
+            parseIntentRequest(context, intent);
+        } else if(intent.hasExtra("app_id")) {
+            String appId = intent.getStringExtra("app_id");
+            if(!enabled.contains(appId)) {
+                //show popup
+                mId = makeIdFromPackage(appId);
+                onRequestAPIPermisson(context, appId, intent);
+            } else {
+                parseIntentRequest(context, intent);
+            }
+        } else {
+            Log.e("Light Controller API","No app id received");
+        }
+    }
+
+    private void parseIntentRequest(Context context, Intent intent) {
         controlCommands c = new controlCommands(context, null);
-        switch(intent.getAction()) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        switch (intent.getAction()) {
+            case ACCEPT_APP_INTENT:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+                Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
+                String appId = intent.getStringExtra("app_id");
+                enabled.add(appId);
+                prefs.edit().putStringSet("enabled_api_apps", enabled).commit();
+                manager.cancel(intent.getIntExtra("notification", -1));
+                if(!intent.getStringExtra("initialAction").equals(REQUEST_API_PERMISSION)) {
+                    intent.setAction(intent.getStringExtra("initialAction"));
+                    parseIntentRequest(context, intent);
+                }
+                break;
+            case DENY_APP_INTENT:
+                Log.d("intent", "remove notification: "+intent.getIntExtra("notification", -1));
+                manager.cancel(intent.getIntExtra("notification", -1));
+                break;
             case LIGHT_ON_INTENT:
-                if(intent.getStringExtra("type").equals(TYPE_WHITE)) {
-                    switch(intent.getIntExtra("zone", -1)) {
+                if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    Log.d("Lights on ", "Zone: "+intent.getIntExtra("zone", -1));
+                    switch (intent.getIntExtra("zone", -1)) {
                         case 0:
                             c.LightsOn(0);
                             break;
@@ -38,8 +90,8 @@ public class APIReciever extends BroadcastReceiver {
                             c.LightsOn(4);
                             break;
                     }
-                } else if(intent.getStringExtra("type").equals(TYPE_COLOR)) {
-                    switch(intent.getIntExtra("zone", -1)) {
+                } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
+                    switch (intent.getIntExtra("zone", -1)) {
                         case 0:
                             c.LightsOn(9);
                             break;
@@ -59,8 +111,8 @@ public class APIReciever extends BroadcastReceiver {
                 }
                 break;
             case LIGHT_OFF_INTENT:
-                if(intent.getStringExtra("type").equals(TYPE_COLOR)) {
-                    switch(intent.getIntExtra("zone", -1)) {
+                if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    switch (intent.getIntExtra("zone", -1)) {
                         case 0:
                             c.LightsOff(0);
                             break;
@@ -77,8 +129,8 @@ public class APIReciever extends BroadcastReceiver {
                             c.LightsOff(4);
                             break;
                     }
-                } else if(intent.getStringExtra("type").equals(TYPE_WHITE)) {
-                    switch(intent.getIntExtra("zone", -1)) {
+                } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
+                    switch (intent.getIntExtra("zone", -1)) {
                         case 0:
                             c.LightsOff(9);
                             break;
@@ -98,16 +150,84 @@ public class APIReciever extends BroadcastReceiver {
                 }
                 break;
             case LIGHT_COLOR_INTENT:
-                if(intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     int color = intent.getIntExtra("color", -1);
-                    if(color != -1) {
+                    if (color != -1) {
                         int zone = intent.getIntExtra("zone", -1);
-                        if(zone > -1 && zone < 5) {
+                        if (zone > -1 && zone < 5) {
                             c.setColor(zone, color);
                         }
                     }
                 }
                 break;
         }
+    }
+
+    private void onRequestAPIPermisson(Context context, String appID, Intent in) {
+        final PackageManager pm = context.getPackageManager();
+        ApplicationInfo ai;
+        try {
+            ai = pm.getApplicationInfo( appID, 0);
+        } catch (final PackageManager.NameNotFoundException e) {
+            ai = null;
+        }
+        if(ai != null) {
+            final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+
+            NotificationCompat.BigTextStyle notiStyle = new
+                    NotificationCompat.BigTextStyle();
+            notiStyle.setBigContentTitle("Light Control Permission");
+            notiStyle.bigText("'"+applicationName+"' is requesting permission to control your lights");
+
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(R.drawable.icon)
+                            .setContentTitle("Light Control Permission")
+                            .setContentText("'"+applicationName+"' is requesting permission to control your lights")
+                            .addAction(android.R.drawable.ic_menu_view, "Accept", AcceptControlRequest(context, in))
+                            .addAction(android.R.drawable.ic_delete, "Decline", DeclineControlRequest(context))
+                             .setStyle(notiStyle);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(mId, mBuilder.build());
+        }
+    }
+
+    public PendingIntent AcceptControlRequest(Context cont, Intent in) {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(cont, APIReciever.class);
+        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        launchIntent.setAction(ACCEPT_APP_INTENT);
+        launchIntent.putExtras(in.getExtras());
+        launchIntent.putExtra("initialAction", in.getAction());
+        Log.d("new intent", "notification id: "+mId);
+        launchIntent.putExtra("notification", mId);
+        PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                launchIntent, 0 /* no flags */);
+        return pi;
+    }
+
+    public PendingIntent DeclineControlRequest(Context cont) {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(cont, APIReciever.class);
+        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        launchIntent.setAction(DENY_APP_INTENT);
+        Log.d("new intent", "notification id: "+mId);
+        launchIntent.putExtra("notification", mId);
+        PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                launchIntent, 0 /* no flags */);
+        return pi;
+    }
+
+    private int makeIdFromPackage(String pid) {
+        String[] pack = pid.split("\\.");
+        int ID = 0;
+        for(int i = 0; i < pack.length; i++) {
+            ID += Character.getNumericValue(pack[i].charAt(0));
+            ID += Character.getNumericValue(pack[i].charAt(1));
+        }
+        return ID;
     }
 }
