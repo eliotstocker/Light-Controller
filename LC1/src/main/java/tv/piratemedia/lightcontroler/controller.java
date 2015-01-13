@@ -41,6 +41,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -916,9 +917,12 @@ public class controller extends ActionBarActivity {
 
                     @Override
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
-                        seekBar.setProgress(8);
                         brightnessvalue.setAlpha(0.0f);
-                        Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), seekBar.getProgress() - 8);
+                        int brightness = seekBar.getProgress() - 8;
+                        if(brightness != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), brightness);
+                        }
                     }
 
                     @Override
@@ -941,9 +945,12 @@ public class controller extends ActionBarActivity {
 
                     @Override
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
-                        seekBar.setProgress(8);
                         warmthvalue.setAlpha(0.0f);
-                        Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), seekBar.getProgress() - 8);
+                        int warmth = seekBar.getProgress() - 8;
+                        if(warmth != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), warmth);
+                        }
                     }
 
                     @Override

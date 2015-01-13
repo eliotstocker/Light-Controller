@@ -255,7 +255,7 @@ public class controlCommands {
         }
         if(value < 0) {
             for (int i = 0; i > value; i--) {
-                setBrightnessUpOne();
+                setBrightnessDownOne();
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -264,7 +264,7 @@ public class controlCommands {
             }
         } else {
             for (int i = 0; i < value; i++) {
-                setBrightnessDownOne();
+                setBrightnessUpOne();
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
