@@ -74,17 +74,54 @@
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_contributors" >
-        <EditTextPreference
-            android:title="Created By"
-            android:summary="Eliot Stocker"
-            android:key="contrib1"
-            android:enabled="false"
-            android:alpha="1"/>
-        <EditTextPreference
-            android:title="Major Contributor"
-            android:summary="Louis Orleans"
-            android:key="contrib2"
-            android:enabled="false"
-            android:alpha="1"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Created By">
+        <Preference
+            android:title="Eliot Stocker"
+            android:summary="https://github.com/eliotstocker"
+            android:key="contrib1">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/eliotstocker"
+                />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Contributors">
+        <Preference
+            android:title="Louis Orleans"
+            android:summary="https://github.com/dudeofawesome"
+            android:key="contrib2">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/dudeofawesome"
+                />
+        </Preference>
+        <Preference
+            android:title="AppLamp"
+            android:summary="https://github.com/AppLamp-API"
+            android:key="contrib3">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/AppLamp-API"
+                />
+        </Preference>
+        <Preference
+            android:title="Harry Sibenaler"
+            android:summary="https://github.com/mrwhale"
+            android:key="contrib4">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/mrwhale"
+                />
+        </Preference>
+        <Preference
+            android:title="Matthew Nagel"
+            android:summary="https://github.com/nagelm"
+            android:key="contrib5">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/nagelm"
+                />
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>
