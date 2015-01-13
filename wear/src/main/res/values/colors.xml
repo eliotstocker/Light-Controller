@@ -18,4 +18,6 @@
     <color name="wl_blue">#2878ff</color>
     <color name="wl_gray">#c1c1c1</color>
     <color name="text_color">#434343</color>
+    <color name="colorAccent">#FFef6c00</color>
+
 </resources>

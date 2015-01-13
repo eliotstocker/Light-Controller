@@ -6,7 +6,7 @@
     android:id="@+id/watch_view_stub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange"
+    android:background="@color/colorAccent"
     app:rectLayout="@layout/rect_activity_listview"
     app:roundLayout="@layout/round_activity_listview"
     tools:context=".MyActivity"

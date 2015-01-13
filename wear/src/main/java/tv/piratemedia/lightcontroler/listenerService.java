@@ -31,8 +31,7 @@ public class listenerService extends WearableListenerService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("You are in wifi Range")
-                        .setContentText("You can control your lights if you want:)")
+                        .setContentTitle("Control me")
                         .setContentIntent(viewPendingIntent);
 
 // Get an instance of the NotificationManager service
