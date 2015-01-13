@@ -84,11 +84,14 @@ public class utils extends Activity implements GoogleApiClient.ConnectionCallbac
                         if (nodes != null) {
                             for (int i = 0; i < nodes.size(); i++) {
                                 final Node node = nodes.get(i);
+                                Log.d("utils","message sent");
                                 Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/Hi there", null);
                             }
                         }
                     }
                 });
+
+
             }
             switch(type) {
                 case BROADCAST_ADDRESS :
