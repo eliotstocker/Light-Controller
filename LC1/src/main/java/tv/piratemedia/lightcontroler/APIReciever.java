@@ -8,11 +8,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -35,6 +40,10 @@ public class APIReciever extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
         if(intent.getAction().equals(ACCEPT_APP_INTENT) || intent.getAction().equals(DENY_APP_INTENT)) {
+            Iterator<String> it = intent.getExtras().keySet().iterator();
+            while(it.hasNext()) {
+                Log.d("Intent", "key: "+it.next());
+            }
             parseIntentRequest(context, intent);
         } else if(intent.hasExtra("app_id")) {
             String appId = intent.getStringExtra("app_id");
@@ -60,15 +69,15 @@ public class APIReciever extends BroadcastReceiver {
                 String appId = intent.getStringExtra("app_id");
                 enabled.add(appId);
                 prefs.edit().putStringSet("enabled_api_apps", enabled).commit();
-                manager.cancel(intent.getIntExtra("notification", -1));
+                manager.cancel(intent.getIntExtra("notifID", -1));
                 if(!intent.getStringExtra("initialAction").equals(REQUEST_API_PERMISSION)) {
                     intent.setAction(intent.getStringExtra("initialAction"));
                     parseIntentRequest(context, intent);
                 }
                 break;
             case DENY_APP_INTENT:
-                Log.d("intent", "remove notification: "+intent.getIntExtra("notification", -1));
-                manager.cancel(intent.getIntExtra("notification", -1));
+                Log.d("intent", "remove notification: "+intent.getIntExtra("notifID", -1));
+                manager.cancel(intent.getIntExtra("notifID", -1));
                 break;
             case LIGHT_ON_INTENT:
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
@@ -179,14 +188,23 @@ public class APIReciever extends BroadcastReceiver {
             notiStyle.setBigContentTitle("Light Control Permission");
             notiStyle.bigText("'"+applicationName+"' is requesting permission to control your lights");
 
+            long[] pattern = {0, 100, 100};
+
+            Drawable d = pm.getApplicationIcon(ai);
+            Bitmap bitmapIcon = ((BitmapDrawable)d).getBitmap();
+
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.icon)
+                            .setLargeIcon(bitmapIcon)
+                            .setSmallIcon(R.drawable.bulb)
+                            .setColor(context.getResources().getColor(R.color.colorAccent))
                             .setContentTitle("Light Control Permission")
                             .setContentText("'"+applicationName+"' is requesting permission to control your lights")
                             .addAction(android.R.drawable.ic_menu_view, "Accept", AcceptControlRequest(context, in))
                             .addAction(android.R.drawable.ic_delete, "Decline", DeclineControlRequest(context))
-                             .setStyle(notiStyle);
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setVibrate(pattern)
+                            .setStyle(notiStyle);
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -198,12 +216,10 @@ public class APIReciever extends BroadcastReceiver {
     public PendingIntent AcceptControlRequest(Context cont, Intent in) {
         Intent launchIntent = new Intent();
         launchIntent.setClass(cont, APIReciever.class);
-        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         launchIntent.setAction(ACCEPT_APP_INTENT);
         launchIntent.putExtras(in.getExtras());
+        launchIntent.putExtra("notifID", mId);
         launchIntent.putExtra("initialAction", in.getAction());
-        Log.d("new intent", "notification id: "+mId);
-        launchIntent.putExtra("notification", mId);
         PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                 launchIntent, 0 /* no flags */);
         return pi;
@@ -212,10 +228,8 @@ public class APIReciever extends BroadcastReceiver {
     public PendingIntent DeclineControlRequest(Context cont) {
         Intent launchIntent = new Intent();
         launchIntent.setClass(cont, APIReciever.class);
-        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
         launchIntent.setAction(DENY_APP_INTENT);
-        Log.d("new intent", "notification id: "+mId);
-        launchIntent.putExtra("notification", mId);
+        launchIntent.putExtra("notifID", mId);
         PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                 launchIntent, 0 /* no flags */);
         return pi;
