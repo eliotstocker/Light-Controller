@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:id="@+id/linearLayout"
+        android:background="#22000000"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="ON"
+                android:id="@+id/ig"
+                android:background="@drawable/button_background_white"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="OFF"
+                android:id="@+id/og"
+                android:background="@drawable/button_background_white_off"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Zone"
+                android:id="@+id/zone_label"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:singleLine="true" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

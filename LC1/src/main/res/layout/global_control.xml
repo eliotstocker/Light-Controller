@@ -1,0 +1,199 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="tv.piratemedia.lightcontroler.controller$PlaceholderFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Power"
+                    android:id="@+id/textView"
+                    android:textSize="12dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:id="@+id/onoff"
+                    android:checked="false"
+                    style="@style/ToggleLightController"
+                    android:textOn=""
+                    android:textOff=""/>
+
+                <Button
+                    style="@style/ButtonLightController"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:text="white"
+                    android:id="@+id/white"
+                    android:layout_marginTop="55dp"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+            <com.larswerkman.holocolorpicker.ColorPicker
+                android:id="@+id/color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_weight="4"
+                android:layout_marginLeft="-15dp"
+                android:layout_marginRight="-15dp"
+                android:layout_marginTop="-10dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center_horizontal"
+                android:id="@+id/linearLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brightness"
+                    android:id="@+id/textView2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+
+                <tv.piratemedia.lightcontroler.verticalSeekBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/brightness"
+                    android:layout_gravity="center_horizontal"
+                    android:max="20"
+                    android:progress="20"
+                    style="@style/SeekBarLightController" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#0affffff">
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/movement_modes"
+                style="@style/SpinnerLightController"
+                android:spinnerMode="dropdown" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/modes_container"
+                android:gravity="center_vertical|center_horizontal">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
+
+                    <Button
+                        style="@style/ButtonLightController"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:id="@+id/dminus" />
+
+                    <Button
+                        style="@style/ButtonLightController"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Disco"
+                        android:id="@+id/disco" />
+
+                    <Button
+                        style="@style/ButtonLightController"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+"
+                        android:id="@+id/dplus" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/mic"
+                        android:text="Start Listening"
+                        style="@style/ButtonLightController" />
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/mictolerance"
+                        android:layout_gravity="center_horizontal"
+                        android:max="32767"
+                        android:progress="25000"
+                        style="@style/SeekBarLightController"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone"
+                    android:id="@+id/linearLayout2">
+
+                    <Button
+                        style="@style/ButtonLightController"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/candle_mode"
+                        android:text="Start Candle Mode" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
