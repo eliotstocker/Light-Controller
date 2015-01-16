@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="@dimen/abc_config_prefDialogWidth"
+        android:layout_height="wrap_content"
+        android:background="@color/background_floating_material_light"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/abc_action_bar_default_height_material"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:padding="@dimen/abc_action_bar_default_padding_material">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zone Selection"
+                android:id="@+id/textView3"
+                android:textColor="@color/md_title_dark"
+                android:textSize="@dimen/abc_text_size_title_material_toolbar" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/group"
+            android:layout_marginTop="7dp">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gloabl"
+                android:id="@+id/g" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Zone1"
+                android:id="@+id/z1" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Zone2"
+                android:id="@+id/z2" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Zone3"
+                android:id="@+id/z3" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Zone4"
+                android:id="@+id/z4" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:longClickable="true"
+            android:gravity="right"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                android:id="@+id/cancel" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select"
+                android:id="@+id/select" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

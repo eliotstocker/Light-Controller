@@ -135,6 +135,15 @@
                 android:value="controller" />
         </activity>
 
+        <activity
+            android:name=".APIZoneSelector"
+            android:label="Zone Select"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <receiver android:name=".APIReciever" >
             <intent-filter>
                 <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>

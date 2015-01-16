@@ -9,6 +9,8 @@
     <string name="Zone2">Zone 2</string>
     <string name="Zone3">Zone 3</string>
     <string name="Zone4">Zone 4</string>
+    <string name="cancel">Cancel</string>
+    <string name="select">Select</string>
     <string name="action_settings">Settings</string>
     <string name="action_report_bug">Report Bug</string>
     <string name="action_send_feedback">Send Feedback</string>
