@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class APIReciever extends BroadcastReceiver {
     public static final String LIGHT_ON_INTENT = "tv.piratemedia.lightcontroler.LightOn";
     public static final String LIGHT_OFF_INTENT = "tv.piratemedia.lightcontroler.LightOff";
     public static final String LIGHT_COLOR_INTENT = "tv.piratemedia.lightcontroler.LightColor";
+    public static final String LIGHT_SET_DEFAULT = "tv.piratemedia.lightcontroler.LightDefault";
 
     private static final String ACCEPT_APP_INTENT = "tv.piratemedia.lightcontroler.internal.AcceptApp";
     private static final String DENY_APP_INTENT = "tv.piratemedia.lightcontroler.internal.DenyApp";
@@ -37,6 +39,9 @@ public class APIReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
         if(intent.getAction().equals(ACCEPT_APP_INTENT) || intent.getAction().equals(DENY_APP_INTENT)) {
@@ -164,9 +169,36 @@ public class APIReciever extends BroadcastReceiver {
                     if (color != -1) {
                         int zone = intent.getIntExtra("zone", -1);
                         if (zone > -1 && zone < 5) {
+                            switch (intent.getIntExtra("zone", -1)) {
+                                case 0:
+                                    c.LightsOn(0);
+                                    break;
+                                case 1:
+                                    c.LightsOn(1);
+                                    break;
+                                case 2:
+                                    c.LightsOn(2);
+                                    break;
+                                case 3:
+                                    c.LightsOn(3);
+                                    break;
+                                case 4:
+                                    c.LightsOn(4);
+                                    break;
+                            }
                             c.setColor(zone, color);
                         }
                     }
+                }
+                break;
+            case LIGHT_SET_DEFAULT:
+                if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    int zone = intent.getIntExtra("zone", -1);
+                    if (zone > -1 && zone < 5) {
+                        c.setToWhite(zone);
+                    }
+                } else {
+                    int zone = intent.getIntExtra("zone", -1);
                 }
                 break;
         }
