@@ -169,23 +169,6 @@ public class APIReciever extends BroadcastReceiver {
                     if (color != -1) {
                         int zone = intent.getIntExtra("zone", -1);
                         if (zone > -1 && zone < 5) {
-                            switch (intent.getIntExtra("zone", -1)) {
-                                case 0:
-                                    c.LightsOn(0);
-                                    break;
-                                case 1:
-                                    c.LightsOn(1);
-                                    break;
-                                case 2:
-                                    c.LightsOn(2);
-                                    break;
-                                case 3:
-                                    c.LightsOn(3);
-                                    break;
-                                case 4:
-                                    c.LightsOn(4);
-                                    break;
-                            }
                             c.setColor(zone, color);
                         }
                     }
@@ -195,6 +178,23 @@ public class APIReciever extends BroadcastReceiver {
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     int zone = intent.getIntExtra("zone", -1);
                     if (zone > -1 && zone < 5) {
+                        switch (intent.getIntExtra("zone", -1)) {
+                            case 0:
+                                c.LightsOn(0);
+                                break;
+                            case 1:
+                                c.LightsOn(1);
+                                break;
+                            case 2:
+                                c.LightsOn(2);
+                                break;
+                            case 3:
+                                c.LightsOn(3);
+                                break;
+                            case 4:
+                                c.LightsOn(4);
+                                break;
+                        }
                         c.setToWhite(zone);
                     }
                 } else {
