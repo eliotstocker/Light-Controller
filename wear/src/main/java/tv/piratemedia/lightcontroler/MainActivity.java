@@ -24,7 +24,11 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+        * Created by mrwhale
+        * This class is the main activity class for the wear device, and will, onclick, send message to handheld to turn lights on/off
+        * This had to be in its own class as it needs to have the same package name as the mainactivity on the handheld to work properly
+        */
 public class MainActivity extends Activity implements WearableListView.ClickListener, WearableListView.OnCenterProximityListener{
 
     private WearableListView mListView;

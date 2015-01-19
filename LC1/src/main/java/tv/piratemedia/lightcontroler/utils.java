@@ -42,8 +42,6 @@ public class utils extends Activity implements GoogleApiClient.ConnectionCallbac
     public final static int IP_ADDRESS = 0;
     public final static int BROADCAST_ADDRESS = 1;
 
-    private GoogleApiClient mApiClient;
-
     private Context mCtx;
 
     public utils(Context ctx) {
@@ -62,37 +60,6 @@ public class utils extends Activity implements GoogleApiClient.ConnectionCallbac
             WifiManager wifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
             DhcpInfo dhcp = wifi.getDhcpInfo();
             // handle null somehow
-
-            //TODO: Have this in settings so user can set their SSID that has the wifi bridge, or automatically retrieve and save it when issuing successful commands
-            // This will eventually put a card notification on the wear watch when the user is wifi range of the SSID that has the wifi bridge, The card will then be
-            // used to swipe across to commands list. This is so the commands are even more accessible. Instead of having to start the app when you want to do it. It
-            // will always be there when connected.
-            // Can probably put this in the notification class or a new one that handles wear notifs. here is good for now because I know it will get executed :P
-            if(getWifiName().equalsIgnoreCase("ivegotinternet24"))
-            {
-                Log.d("utils","you are connected to SSID");
-                mApiClient = new GoogleApiClient.Builder(mCtx)
-                        .addApi( Wearable.API )
-                        .build();
-                mApiClient.connect();
-                final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
-                nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-
-                    @Override
-                    public void onResult(NodeApi.GetConnectedNodesResult result) {
-                        final List<Node> nodes = result.getNodes();
-                        if (nodes != null) {
-                            for (int i = 0; i < nodes.size(); i++) {
-                                final Node node = nodes.get(i);
-                                Log.d("utils","message sent");
-                                Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/Hi there", null);
-                            }
-                        }
-                    }
-                });
-
-
-            }
             switch(type) {
                 case BROADCAST_ADDRESS :
                     Log.d("Utils", "get Broadcast");

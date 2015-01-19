@@ -112,6 +112,13 @@
                     />
             </intent-filter>
         </service>
+        <receiver android:name=".broadcastListener">
+            <intent-filter>
+                <action
+                android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".switchWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

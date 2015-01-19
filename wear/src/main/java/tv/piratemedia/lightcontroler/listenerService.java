@@ -31,7 +31,8 @@ public class listenerService extends WearableListenerService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Control me")
+                        .setContentTitle("Turn me on")
+                        .setContentText("Swipe left to open app")
                         .setContentIntent(viewPendingIntent);
 
 // Get an instance of the NotificationManager service
