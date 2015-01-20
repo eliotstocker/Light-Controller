@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
@@ -179,6 +180,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
+            Log.d("appWidget", widgetId + " - type: " + prefs.getInt("widget_" + widgetId + "_type", 0));
             if(prefs.getInt("widget_" + widgetId + "_type", 0) == 0) {
                 remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
                 remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
@@ -259,21 +261,26 @@ public class controlWidgetProvider extends AppWidgetProvider {
         } else {
             hourString = Integer.toString(hour);
         }
-        try {
-            remoteViews.setTextViewText(R.id.timeHour, hourString);
-            remoteViews.setTextViewText(R.id.timeMinute, minString);
-            remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-            String month_name = month_date.format(c.getTime());
-            remoteViews.setTextViewText(R.id.dateMonth, month_name);
-        } catch(NullPointerException e) {
-            e.printStackTrace();
-        }
+        int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
+        for (int widgetId : allWidgetIds) {
+            remoteViews = new RemoteViews(ctx.getPackageName(),
+                    R.layout.control_widget_init);
+            try {
+                remoteViews.setTextViewText(R.id.timeHour, hourString);
+                remoteViews.setTextViewText(R.id.timeMinute, minString);
+                remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+                SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                String month_name = month_date.format(c.getTime());
+                remoteViews.setTextViewText(R.id.dateMonth, month_name);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
-        try {
-            aWM.updateAppWidget(thisWidget, remoteViews);
-        } catch(NullPointerException e) {
-            e.printStackTrace();
+            try {
+                aWM.updateAppWidget(widgetId, remoteViews);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
     }
 
