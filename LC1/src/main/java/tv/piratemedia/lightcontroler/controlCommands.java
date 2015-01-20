@@ -246,35 +246,8 @@ public class controlCommands {
         appState.removeColor(zone);
     }
 
-    public void setBrightnessJog(int zone, int value) {
-        LightsOn(zone);
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(value < 0) {
-            for (int i = 0; i > value; i--) {
-                setBrightnessDownOne();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            for (int i = 0; i < value; i++) {
-                setBrightnessUpOne();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public void setBrightnessUpOne() {
+        Log.d("bright","up one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 60;
         messageBA[1] = 0;
@@ -288,6 +261,7 @@ public class controlCommands {
     }
 
     public void setBrightnessDownOne() {
+        Log.d("bright","down one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 52;
         messageBA[1] = 0;
@@ -300,35 +274,8 @@ public class controlCommands {
         }
     }
 
-    public void setWarmthJog(int zone, int value) {
-        LightsOn(zone);
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(value < 0) {
-            for (int i = 0; i > value; i--) {
-                setWarmthDownOne();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            for (int i = 0; i < value; i++) {
-                setWarmthUpOne();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public void setWarmthUpOne() {
+        Log.d("warm","up one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 62;
         messageBA[1] = 0;
@@ -342,6 +289,7 @@ public class controlCommands {
     }
 
     public void setWarmthDownOne() {
+        Log.d("warm","down one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 63;
         messageBA[1] = 0;
