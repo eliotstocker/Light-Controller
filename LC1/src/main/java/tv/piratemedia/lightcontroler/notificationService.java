@@ -44,43 +44,7 @@ public class notificationService extends Service {
                  */
                 public void onReceive(Context context, Intent intent) {
                     prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-                    if(prefs.getBoolean("lockscreen_notification", false)) {
-                        if(prefs.getBoolean("rgbw_enabled", false)) {
-                            nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-                            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                                RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.control_notification);
-                                contentView.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
-                                contentView.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
-                                contentView.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
-                                contentView.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
-
-                                contentView.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
-                                contentView.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
-                                contentView.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
-                                contentView.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
-                                contentView.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
-
-                                contentView.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
-                                contentView.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
-                                contentView.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
-                                contentView.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
-                                contentView.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
-
-                                Notif = new NotificationCompat.Builder(context)
-                                        .setContentTitle("Light Controller")
-                                        .setContentText("Control RGBW Lights from here")
-                                        .setOngoing(true)
-                                        .setSmallIcon(R.drawable.bulb)
-                                        .setPriority(NotificationCompat.PRIORITY_MAX)
-                                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                                        .build();
-                                Notif.flags |= Notification.FLAG_NO_CLEAR;
-                                Notif.contentView = contentView;
-                                nm.notify(Notif_id, Notif);
-                            } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
-                                nm.cancel(Notif_id);
-                            }
-                        }
+                    if(prefs.getBoolean("lockscreen_notification_white", false)) {
                         if(prefs.getBoolean("white_enabled", false)) {
                             if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                                 RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.control_notification);
@@ -89,13 +53,13 @@ public class notificationService extends Service {
                                 contentView.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
                                 contentView.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
 
-                                contentView.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                                contentView.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,context,true));
                                 contentView.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
                                 contentView.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
                                 contentView.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
                                 contentView.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
 
-                                contentView.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+                                contentView.setOnClickPendingIntent(R.id.og,createPendingIntent(9,context,false));
                                 contentView.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
                                 contentView.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
                                 contentView.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
@@ -114,6 +78,44 @@ public class notificationService extends Service {
                                 nm.notify(Notif_id_w, Notif);
                             } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
                                 nm.cancel(Notif_id_w);
+                            }
+                        }
+                    }
+                    if(prefs.getBoolean("lockscreen_notification", false)) {
+                        if (prefs.getBoolean("rgbw_enabled", false)) {
+                            nm = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                                RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.control_notification);
+                                contentView.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
+                                contentView.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
+                                contentView.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
+                                contentView.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
+
+                                contentView.setOnClickPendingIntent(R.id.ig, createPendingIntent(0, context, true));
+                                contentView.setOnClickPendingIntent(R.id.i1, createPendingIntent(1, context, true));
+                                contentView.setOnClickPendingIntent(R.id.i2, createPendingIntent(2, context, true));
+                                contentView.setOnClickPendingIntent(R.id.i3, createPendingIntent(3, context, true));
+                                contentView.setOnClickPendingIntent(R.id.i4, createPendingIntent(4, context, true));
+
+                                contentView.setOnClickPendingIntent(R.id.og, createPendingIntent(0, context, false));
+                                contentView.setOnClickPendingIntent(R.id.o1, createPendingIntent(1, context, false));
+                                contentView.setOnClickPendingIntent(R.id.o2, createPendingIntent(2, context, false));
+                                contentView.setOnClickPendingIntent(R.id.o3, createPendingIntent(3, context, false));
+                                contentView.setOnClickPendingIntent(R.id.o4, createPendingIntent(4, context, false));
+
+                                Notif = new NotificationCompat.Builder(context)
+                                        .setContentTitle("Light Controller")
+                                        .setContentText("Control RGBW Lights from here")
+                                        .setOngoing(true)
+                                        .setSmallIcon(R.drawable.bulb)
+                                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                        .build();
+                                Notif.flags |= Notification.FLAG_NO_CLEAR;
+                                Notif.contentView = contentView;
+                                nm.notify(Notif_id, Notif);
+                            } else if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
+                                nm.cancel(Notif_id);
                             }
                         }
                     }
