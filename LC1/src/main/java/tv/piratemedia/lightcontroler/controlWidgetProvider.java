@@ -261,26 +261,22 @@ public class controlWidgetProvider extends AppWidgetProvider {
         } else {
             hourString = Integer.toString(hour);
         }
-        int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
-        for (int widgetId : allWidgetIds) {
-            remoteViews = new RemoteViews(ctx.getPackageName(),
-                    R.layout.control_widget_init);
-            try {
-                remoteViews.setTextViewText(R.id.timeHour, hourString);
-                remoteViews.setTextViewText(R.id.timeMinute, minString);
-                remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-                SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-                String month_name = month_date.format(c.getTime());
-                remoteViews.setTextViewText(R.id.dateMonth, month_name);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+        try {
+            int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
+            for (int widgetId : allWidgetIds) {
+                remoteViews = new RemoteViews(ctx.getPackageName(),
+                        R.layout.control_widget_init);
+                    remoteViews.setTextViewText(R.id.timeHour, hourString);
+                    remoteViews.setTextViewText(R.id.timeMinute, minString);
+                    remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+                    SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                    String month_name = month_date.format(c.getTime());
+                    remoteViews.setTextViewText(R.id.dateMonth, month_name);
 
-            try {
-                aWM.updateAppWidget(widgetId, remoteViews);
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+                    aWM.updateAppWidget(widgetId, remoteViews);
             }
+        } catch(NullPointerException e) {
+            //dont need to do anything really
         }
     }
 
