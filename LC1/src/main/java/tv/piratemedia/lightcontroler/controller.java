@@ -69,6 +69,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.devadvance.circularseekbar.CircularSeekBar;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -94,7 +97,7 @@ public class controller extends ActionBarActivity {
     private static SharedPreferences prefs;
 
     private Toolbar mActionBarToolbar;
-    private PagerSlidingTabStrip tabs;
+    //private PagerSlidingTabStrip tabs;
     private PopupWindow mMenu;
     private View MenuView;
 
@@ -104,6 +107,8 @@ public class controller extends ActionBarActivity {
     private boolean gotDevice = false;
 
     private String DeviceMac = "";
+
+    private DrawerFrameLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,11 +127,25 @@ public class controller extends ActionBarActivity {
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
         appState = new SaveState(this);
         Utils = new utils(this);
+    }
+
+    private void setupDrawer() {
+        drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
+        drawer.setProfile(
+                new DrawerProfile()
+                        .setAvatar(getResources().getDrawable(R.drawable.icon))
+                        .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
+                        .setName("Light Controller")
+        );
+
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
     }
 
     class MyHandler extends Handler {
@@ -275,12 +294,51 @@ public class controller extends ActionBarActivity {
         if(!prefs.getBoolean("rgbw_enabled", false) && !prefs.getBoolean("white_enabled", false)) {
             askControlType();
         } else {
+            setupDrawer();
 
-            ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
             pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+            pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
-            tabs.setViewPager(pager);
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            this.setTitle(pager.getAdapter().getPageTitle(0));
+            mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
+
+            //tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+            //tabs.setViewPager(pager);
+
+            for(int i = 0; i < pager.getAdapter().getCount(); i++) {
+                if(i == 5) {
+                    drawer.addDivider();
+                }
+                drawer.addItem(new DrawerItem()
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                int item = i2;
+                                if(item > 4) {
+                                    item--;
+                                }
+                                pager.setCurrentItem(item, true);
+                                drawer.closeDrawer();
+                            }
+                        }));
+            }
         }
     }
 
@@ -312,10 +370,10 @@ public class controller extends ActionBarActivity {
                                 prefs.edit().putBoolean("rgbw_enabled", true).apply();
                                 break;
                         }
-                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
+                        //tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
                         ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
                         pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
-                        tabs.setViewPager(pager);
+                        //tabs.setViewPager(pager);
                     }
                 })
                 .build()
@@ -324,7 +382,7 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        tabs.setBackgroundColor(c);
+        //tabs.setBackgroundColor(c);
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
@@ -332,7 +390,8 @@ public class controller extends ActionBarActivity {
         c = Color.HSVToColor(hsv);
 
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(c);
+            //getWindow().setStatusBarColor(c);
+            drawer.setStatusBarBackgroundColor(c);
         }
     }
 
@@ -444,9 +503,11 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        }  else if(id == R.id.action_menu) {
+        } else if(id == R.id.action_menu) {
             popupMenu();
             return true;
+        } else if(id == android.R.id.home) {
+            drawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }

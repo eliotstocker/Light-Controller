@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <include layout="@layout/toolbar"/>
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/pager_title_strip"
-        android:layout_width="match_parent"
-        android:layout_height="48dip"
-        android:background="@color/colorAccent"
-        app:pstsDividerColor="@android:color/transparent"
-        app:pstsIndicatorColor="@color/colorTabs"
-        app:pstsTextAllCaps="true"
-        android:textColor="@color/colorTabs"/>
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
-</LinearLayout>
+    android:fitsSystemWindows="true">
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/container">
+
+        <include layout="@layout/toolbar"/>
+        <!--com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:background="@color/colorAccent"
+            app:pstsDividerColor="@android:color/transparent"
+            app:pstsIndicatorColor="@color/colorTabs"
+            app:pstsTextAllCaps="true"
+            android:textColor="@color/colorTabs"/-->
+        <android.support.v4.view.ViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+</com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout>
