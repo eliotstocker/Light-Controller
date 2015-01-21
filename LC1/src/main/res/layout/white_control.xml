@@ -51,8 +51,8 @@
 
                 <Button
                     style="@style/ButtonLightController"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/full_label"
                     android:id="@+id/full"
                     android:layout_marginTop="55dp"
@@ -72,8 +72,9 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="200dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
+                android:layout_marginBottom="-150dp"
                 android:id="@+id/linearLayout">
 
                 <TextView
@@ -96,8 +97,9 @@
                     app:end_angle="-10"
                     app:circle_x_radius="200"
                     app:circle_y_radius="200"
+                    app:pointer_radius="12"
                     app:use_custom_radii="true"
-                    app:progress="8"
+                    app:progress="10"
                     app:circle_progress_color="#00000000"
                     app:pointer_color="@color/colorAccent"
                     app:pointer_halo_color="@color/colorAccentLow"
@@ -114,7 +116,8 @@
                     app:circle_x_radius="200"
                     app:circle_y_radius="200"
                     app:use_custom_radii="true"
-                    app:progress="8"
+                    app:progress="10"
+                    app:pointer_radius="12"
                     app:circle_progress_color="#00000000"
                     app:pointer_color="@color/colorAccent"
                     app:pointer_halo_color="@color/colorAccentLow"
