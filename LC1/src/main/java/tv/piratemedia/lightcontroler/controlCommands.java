@@ -247,7 +247,6 @@ public class controlCommands {
     }
 
     public void setBrightnessUpOne() {
-        Log.d("bright","up one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 60;
         messageBA[1] = 0;
@@ -261,7 +260,6 @@ public class controlCommands {
     }
 
     public void setBrightnessDownOne() {
-        Log.d("bright","down one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 52;
         messageBA[1] = 0;
@@ -275,7 +273,6 @@ public class controlCommands {
     }
 
     public void setWarmthUpOne() {
-        Log.d("warm","up one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 62;
         messageBA[1] = 0;
@@ -289,7 +286,6 @@ public class controlCommands {
     }
 
     public void setWarmthDownOne() {
-        Log.d("warm","down one");
         byte[] messageBA = new byte[3];
         messageBA[0] = 63;
         messageBA[1] = 0;

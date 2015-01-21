@@ -990,15 +990,15 @@ public class controller extends ActionBarActivity {
                     ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
                 }
 
-                brightness.setProgress(8);
+                brightness.setProgress(10);
                 brightness.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
                         if(brightnessTouching) {
-                            if (progress < 9) {
-                                brightnessvalue.setText("" + (progress - 8));
+                            if (progress < 11) {
+                                brightnessvalue.setText("" + (progress - 10));
                             } else {
-                                brightnessvalue.setText("+" + (progress - 8));
+                                brightnessvalue.setText("+" + (progress - 10));
                             }
                             if (progress > BrightnessCache) {
                                 for (int i = progress; i > BrightnessCache; i--) {
@@ -1018,33 +1018,33 @@ public class controller extends ActionBarActivity {
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
                         brightnessTouching = false;
                         brightnessvalue.setAlpha(0.0f);
-                        int brightness = seekBar.getProgress() - 8;
+                        int brightness = seekBar.getProgress() - 10;
                         /*if(brightness != 0) {
                             seekBar.setProgress(8);
                             Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), brightness);
                         }*/
-                        seekBar.setProgress(8);
+                        seekBar.setProgress(10);
                     }
 
                     @Override
                     public void onStartTrackingTouch(CircularSeekBar seekBar) {
                         brightnessvalue.setAlpha(1.0f);
-                        BrightnessCache = 9;
+                        BrightnessCache = 11;
                         Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                         brightnessTouching = true;
                     }
                 });
 
-                warmth.setProgress(8);
+                warmth.setProgress(10);
                 warmth.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
                         if(warmthTouching) {
-                            progress = 16 - progress;
-                            if (progress < 9) {
-                                warmthvalue.setText("" + (progress - 8));
+                            progress = 20 - progress;
+                            if (progress < 11) {
+                                warmthvalue.setText("" + (progress - 10));
                             } else {
-                                warmthvalue.setText("+" + (progress - 8));
+                                warmthvalue.setText("+" + (progress - 10));
                             }
                             if (progress > WarmthCache) {
                                 for (int i = progress; i > WarmthCache; i--) {
@@ -1064,18 +1064,18 @@ public class controller extends ActionBarActivity {
                     public void onStopTrackingTouch(CircularSeekBar seekBar) {
                         warmthTouching = false;
                         warmthvalue.setAlpha(0.0f);
-                        int warmth = seekBar.getProgress() - 8;
+                        int warmth = seekBar.getProgress() - 10;
                         /*if(warmth != 0) {
                             seekBar.setProgress(8);
                             Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), warmth);
                         }*/
-                        seekBar.setProgress(8);
+                        seekBar.setProgress(10);
                     }
 
                     @Override
                     public void onStartTrackingTouch(CircularSeekBar seekBar) {
                         warmthvalue.setAlpha(1.0f);
-                        WarmthCache = 9;
+                        WarmthCache = 11;
                         Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                         warmthTouching = true;
                     }
