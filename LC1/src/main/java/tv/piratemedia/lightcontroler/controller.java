@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -69,6 +70,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.devadvance.circularseekbar.CircularSeekBar;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -105,6 +109,8 @@ public class controller extends ActionBarActivity {
 
     private String DeviceMac = "";
 
+    private DrawerFrameLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +128,8 @@ public class controller extends ActionBarActivity {
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
         appState = new SaveState(this);
@@ -276,11 +283,81 @@ public class controller extends ActionBarActivity {
             askControlType();
         } else {
 
-            ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
             pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
 
             tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
             tabs.setViewPager(pager);
+
+            drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
+            if(!prefs.getBoolean("navigation_tabs", false)) {
+                drawer.setProfile(
+                        new DrawerProfile()
+                                .setAvatar(getResources().getDrawable(R.drawable.icon))
+                                .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
+                                .setName("Light Controller")
+                );
+
+                mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+                mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+
+                pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+                this.setTitle(pager.getAdapter().getPageTitle(0));
+                mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
+                tabs.setVisibility(View.GONE);
+
+                for(int i = 0; i < pager.getAdapter().getCount(); i++) {
+                    if(i == 5) {
+                        drawer.addDivider();
+                    }
+                    drawer.addItem(new DrawerItem()
+                            .setTextMode(DrawerItem.SINGLE_LINE)
+                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    int item = i2;
+                                    if(item > 4) {
+                                        item--;
+                                    }
+                                    pager.setCurrentItem(item, true);
+                                    drawer.closeDrawer();
+                                }
+                            }));
+                }
+                drawer.addDivider();
+                drawer.addItem(new DrawerItem()
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(getResources().getString(R.string.action_settings))
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                                startActivity(intent);
+                                finish();
+                                drawer.closeDrawer();
+                            }
+                        }));
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+
         }
     }
 
@@ -324,7 +401,7 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        tabs.setBackgroundColor(c);
+        //tabs.setBackgroundColor(c);
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
@@ -332,7 +409,8 @@ public class controller extends ActionBarActivity {
         c = Color.HSVToColor(hsv);
 
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(c);
+            //getWindow().setStatusBarColor(c);
+            drawer.setStatusBarBackgroundColor(c);
         }
     }
 
@@ -358,7 +436,9 @@ public class controller extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.controller, menu);
+        if(prefs.getBoolean("navigation_tabs", false)) {
+            getMenuInflater().inflate(R.menu.controller, menu);
+        }
         return true;
     }
 
@@ -444,9 +524,11 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        }  else if(id == R.id.action_menu) {
+        } else if(id == R.id.action_menu) {
             popupMenu();
             return true;
+        } else if(id == android.R.id.home) {
+            drawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
