@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
@@ -97,7 +98,7 @@ public class controller extends ActionBarActivity {
     private static SharedPreferences prefs;
 
     private Toolbar mActionBarToolbar;
-    //private PagerSlidingTabStrip tabs;
+    private PagerSlidingTabStrip tabs;
     private PopupWindow mMenu;
     private View MenuView;
 
@@ -133,19 +134,6 @@ public class controller extends ActionBarActivity {
 
         appState = new SaveState(this);
         Utils = new utils(this);
-    }
-
-    private void setupDrawer() {
-        drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
-        drawer.setProfile(
-                new DrawerProfile()
-                        .setAvatar(getResources().getDrawable(R.drawable.icon))
-                        .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
-                        .setName("Light Controller")
-        );
-
-        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
-        mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
     }
 
     class MyHandler extends Handler {
@@ -294,51 +282,82 @@ public class controller extends ActionBarActivity {
         if(!prefs.getBoolean("rgbw_enabled", false) && !prefs.getBoolean("white_enabled", false)) {
             askControlType();
         } else {
-            setupDrawer();
 
             final ViewPager pager = (ViewPager) findViewById(R.id.pager);
             pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
-            pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+            tabs.setViewPager(pager);
+
+            drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
+            if(!prefs.getBoolean("navigation_tabs", false)) {
+                drawer.setProfile(
+                        new DrawerProfile()
+                                .setAvatar(getResources().getDrawable(R.drawable.icon))
+                                .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
+                                .setName("Light Controller")
+                );
+
+                mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+                mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+
+                pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+                this.setTitle(pager.getAdapter().getPageTitle(0));
+                mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
+                tabs.setVisibility(View.GONE);
+
+                for(int i = 0; i < pager.getAdapter().getCount(); i++) {
+                    if(i == 5) {
+                        drawer.addDivider();
+                    }
+                    drawer.addItem(new DrawerItem()
+                            .setTextMode(DrawerItem.SINGLE_LINE)
+                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    int item = i2;
+                                    if(item > 4) {
+                                        item--;
+                                    }
+                                    pager.setCurrentItem(item, true);
+                                    drawer.closeDrawer();
+                                }
+                            }));
                 }
-
-                @Override
-                public void onPageSelected(int position) {
-                    mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-            this.setTitle(pager.getAdapter().getPageTitle(0));
-            mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
-
-            //tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
-            //tabs.setViewPager(pager);
-
-            for(int i = 0; i < pager.getAdapter().getCount(); i++) {
-                if(i == 5) {
-                    drawer.addDivider();
-                }
+                drawer.addDivider();
                 drawer.addItem(new DrawerItem()
                         .setTextMode(DrawerItem.SINGLE_LINE)
-                        .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                        .setTextPrimary(getResources().getString(R.string.action_settings))
                         .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                             @Override
                             public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                int item = i2;
-                                if(item > 4) {
-                                    item--;
-                                }
-                                pager.setCurrentItem(item, true);
+                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                                startActivity(intent);
+                                finish();
                                 drawer.closeDrawer();
                             }
                         }));
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
+
+
         }
     }
 
@@ -370,10 +389,10 @@ public class controller extends ActionBarActivity {
                                 prefs.edit().putBoolean("rgbw_enabled", true).apply();
                                 break;
                         }
-                        //tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
+                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
                         ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
                         pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
-                        //tabs.setViewPager(pager);
+                        tabs.setViewPager(pager);
                     }
                 })
                 .build()
@@ -417,7 +436,9 @@ public class controller extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.controller, menu);
+        if(prefs.getBoolean("navigation_tabs", false)) {
+            getMenuInflater().inflate(R.menu.controller, menu);
+        }
         return true;
     }
 

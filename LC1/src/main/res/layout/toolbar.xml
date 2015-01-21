@@ -4,7 +4,6 @@
     xmlns:iosched="http://schemas.android.com/apk/res-auto"
     iosched:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     iosched:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    iosched:navigationIcon="@drawable/ic_menu_white_24dp"
     android:id="@+id/toolbar_actionbar"
     android:background="@color/colorAccent"
     android:layout_width="match_parent"

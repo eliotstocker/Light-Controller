@@ -136,13 +136,18 @@ public class controlWidgetProvider extends AppWidgetProvider {
     private static final int LIGHT_OFF = 1;
 
     private controlCommands Controller;
-    private static RemoteViews remoteViews;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
+
+        thisWidget = new ComponentName(context,
+                controlWidgetProvider.class);
+
+        aWM = appWidgetManager;
+
         updateNames(context, appWidgetManager);
 
         Intent i = new Intent(context, ClockUpdateService.class);
@@ -169,14 +174,10 @@ public class controlWidgetProvider extends AppWidgetProvider {
     }
 
     public void updateNames(Context context, AppWidgetManager appWidgetManager) {
-        thisWidget = new ComponentName(context,
-                controlWidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
-            remoteViews = new RemoteViews(context.getPackageName(),
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.control_widget_init);
-
-            aWM = appWidgetManager;
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -264,8 +265,9 @@ public class controlWidgetProvider extends AppWidgetProvider {
         try {
             int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
             for (int widgetId : allWidgetIds) {
-                remoteViews = new RemoteViews(ctx.getPackageName(),
-                        R.layout.control_widget_init);
+                try {
+                    RemoteViews remoteViews = new RemoteViews(ctx.getPackageName(),
+                            R.layout.control_widget_init);
                     remoteViews.setTextViewText(R.id.timeHour, hourString);
                     remoteViews.setTextViewText(R.id.timeMinute, minString);
                     remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
@@ -274,6 +276,9 @@ public class controlWidgetProvider extends AppWidgetProvider {
                     remoteViews.setTextViewText(R.id.dateMonth, month_name);
 
                     aWM.updateAppWidget(widgetId, remoteViews);
+                } catch(NullPointerException e) {
+                    //dont need to do anything really
+                }
             }
         } catch(NullPointerException e) {
             //dont need to do anything really

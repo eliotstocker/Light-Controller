@@ -12,7 +12,7 @@
         android:id="@+id/container">
 
         <include layout="@layout/toolbar"/>
-        <!--com.astuetz.PagerSlidingTabStrip
+        <com.astuetz.PagerSlidingTabStrip
             android:id="@+id/pager_title_strip"
             android:layout_width="match_parent"
             android:layout_height="48dip"
@@ -20,7 +20,7 @@
             app:pstsDividerColor="@android:color/transparent"
             app:pstsIndicatorColor="@color/colorTabs"
             app:pstsTextAllCaps="true"
-            android:textColor="@color/colorTabs"/-->
+            android:textColor="@color/colorTabs"/>
         <android.support.v4.view.ViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"

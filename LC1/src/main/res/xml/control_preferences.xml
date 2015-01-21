@@ -16,6 +16,12 @@
             android:maxLength="5"
             android:defaultValue="8899"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="Interface Settings" >
+        <CheckBoxPreference
+            android:title="Use Tabs for Navigation"
+            android:summary="Disable the Naviagation draw and enable tabs (Like Older Versions)"
+            android:key="navigation_tabs"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_zones_head" >
         <PreferenceScreen android:title="RGBW Zones"
             android:key="pref_screen_rgbw">
