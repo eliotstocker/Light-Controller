@@ -27,6 +27,7 @@
     <string name="pref_zone_2">Zone 2 Name</string>
     <string name="pref_zone_3">Zone 3 Name</string>
     <string name="pref_zone_4">Zone 4 Name</string>
+    <string name="ssid_name">ivegotinternet24</string>
     <string name="notifications">Notifications</string>
     <string name="lockscreen_notification_head">Notification When Locked</string>
     <string name="lockscreen_notification_summary">Enable light switch toggle Notification when screen off (Shows on Android 5.0 Lockscreen)</string>

@@ -3,6 +3,7 @@ package tv.piratemedia.lightcontroler;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -21,25 +22,36 @@ public class broadcastListener extends BroadcastReceiver {
     //private Context mCtx;
     private GoogleApiClient mApiClient;
 
+    public void connectToWatch(Context context){
+        //setup google API connnection to wearable
+        mApiClient = new GoogleApiClient.Builder(context)
+                .addApi( Wearable.API )
+                .build();
+        mApiClient.connect();
+
+    }
     @Override
     public void onReceive(Context context, Intent intent) {
         //TODO: Have this in settings so user can set their SSID that has the wifi bridge, or automatically retrieve and save it when issuing successful commands
-        // This will eventually put a card notification on the wear watch when the user is wifi range of the SSID that has the wifi bridge, The card will then be
-        // used to swipe across to commands list. This is so the commands are even more accessible. Instead of having to start the app when you want to do it. It
-        // will always be there when connected.
+        // Need help with setting up the ssid_name variable to be changeable by user. (unsure how it all works in the current setup, Need to talk to Eliot)
+
+
+
         Log.d("BroadcastListener", "There was a change in state");
 
         utils cmd = new utils(context);
+        //Go\et SSID from prefs to do the check on
+        final String ssid = context.getString(R.string.ssid_name);
+        Log.d("broadcastlistener","ssid from prefs " + ssid);
+        // todo Send up zone names to watch so it can rename them all on the watch. send in array.
+
+
         if(cmd.getWifiName().equalsIgnoreCase("ivegotinternet24"))
         {
             Log.d("broadcastListener", "you are connected to SSID");
-            mApiClient = new GoogleApiClient.Builder(context)
-                    .addApi( Wearable.API )
-                    .build();
-            mApiClient.connect();
+            connectToWatch(context);
             final com.google.android.gms.common.api.PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
             nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-
                 @Override
                 public void onResult(NodeApi.GetConnectedNodesResult result) {
                     final List<Node> nodes = result.getNodes();

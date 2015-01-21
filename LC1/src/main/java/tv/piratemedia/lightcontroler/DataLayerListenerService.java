@@ -10,11 +10,10 @@ Created by Harry Sibenaler (mrwhale)
 */
 
 public class DataLayerListenerService extends WearableListenerService {
-
     private static final String TAG = "DataLayer";
 
     @Override
-    //On message received event, does an action when the handheld app receiveds a message from the watch
+    //On message received event, does an action when the handheld app receives a message from the watch
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         // if ("/MESSAGE".equals(messageEvent.getPath())) {
