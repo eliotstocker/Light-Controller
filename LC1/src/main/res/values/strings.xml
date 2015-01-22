@@ -12,6 +12,13 @@
     <string name="action_settings">Settings</string>
     <string name="action_report_bug">Report Bug</string>
     <string name="action_send_feedback">Send Feedback</string>
+    <string name="warmth_label">Color Temperature</string>
+    <string name="brightness_label">Brightness</string>
+    <string name="power_label">Power</string>
+    <string name="white_label">White</string>
+    <string name="night_label">Night</string>
+    <string name="full_label">Full</string>
+
     <string name="cat_head">Control Unit Preferences</string>
     <string name="ip_head">Controller IP</string>
     <string name="ip_summary">IP of the light control unit</string>

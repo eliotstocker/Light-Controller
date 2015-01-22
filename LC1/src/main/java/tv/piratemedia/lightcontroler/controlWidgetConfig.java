@@ -68,6 +68,7 @@ public class controlWidgetConfig extends ActionBarActivity {
                 if (checkedId == R.id.rgbw) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_type", 0).commit();
                 } else if (checkedId == R.id.white) {
+                    Log.d("appWidget", "set as white");
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_type", 1).commit();
                 }
             }
@@ -107,13 +108,13 @@ public class controlWidgetConfig extends ActionBarActivity {
                     views.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", getBaseContext().getString(R.string.Zone3)));
                     views.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4)));
 
-                    views.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,getBaseContext(),true));
+                    views.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,getBaseContext(),true));
 
-                    views.setOnClickPendingIntent(R.id.og,createPendingIntent(0,getBaseContext(),false));
+                    views.setOnClickPendingIntent(R.id.og,createPendingIntent(9,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,getBaseContext(),false));

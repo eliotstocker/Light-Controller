@@ -43,6 +43,7 @@ public class UDPConnection {
     private SharedPreferences prefs;
     private static Context mCtx;
     private static Handler mHandler;
+    private String NetworkBroadCast;
 
     private boolean onlineMode = false;
 
@@ -51,6 +52,14 @@ public class UDPConnection {
         mHandler = handler;
         Utils = new utils(context);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        NetworkBroadCast = "192.168.0.255";
+        try {
+            NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            return;
+        }
     }
 
     public void setOnlineMode(boolean online) {
@@ -59,13 +68,6 @@ public class UDPConnection {
 
     public void sendMessage(byte[] Bytes) throws IOException {
         if(!onlineMode) {
-            String NetworkBroadCast = "192.168.0.255";
-            try {
-                NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
-            } catch (ConnectionException e) {
-                e.printStackTrace();
-                return;
-            }
             CONTROLLERIP = prefs.getString("pref_light_controller_ip", NetworkBroadCast);
             CONTROLLERPORT = Integer.parseInt(prefs.getString("pref_light_controller_port", "8899"));
             DatagramSocket s = new DatagramSocket();

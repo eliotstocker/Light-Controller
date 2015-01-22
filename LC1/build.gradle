@@ -31,4 +31,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:+'
     wearApp project(':wear');
     //compile 'com.instabug.library:instabugsupport:1.1.+'
+    compile project(':circularseekbar')
+    compile 'com.heinrichreimersoftware.materialdrawer:library:1.4.1'
 }

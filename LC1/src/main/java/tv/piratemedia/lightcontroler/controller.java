@@ -38,9 +38,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -67,6 +69,10 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
+import com.devadvance.circularseekbar.CircularSeekBar;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -102,6 +108,8 @@ public class controller extends ActionBarActivity {
 
     private String DeviceMac = "";
 
+    private DrawerFrameLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +127,8 @@ public class controller extends ActionBarActivity {
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
         appState = new SaveState(this);
@@ -274,11 +283,81 @@ public class controller extends ActionBarActivity {
             askControlType();
         } else {
 
-            ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
             pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
 
             tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
             tabs.setViewPager(pager);
+
+            drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
+            if(!prefs.getBoolean("navigation_tabs", false)) {
+                drawer.setProfile(
+                        new DrawerProfile()
+                                .setAvatar(getResources().getDrawable(R.drawable.icon))
+                                .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
+                                .setName("Light Controller")
+                );
+
+                mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+                mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+
+                pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+                this.setTitle(pager.getAdapter().getPageTitle(0));
+                mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
+                tabs.setVisibility(View.GONE);
+
+                for(int i = 0; i < pager.getAdapter().getCount(); i++) {
+                    if(i == 5) {
+                        drawer.addDivider();
+                    }
+                    drawer.addItem(new DrawerItem()
+                            .setTextMode(DrawerItem.SINGLE_LINE)
+                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    int item = i2;
+                                    if(item > 4) {
+                                        item--;
+                                    }
+                                    pager.setCurrentItem(item, true);
+                                    drawer.closeDrawer();
+                                }
+                            }));
+                }
+                drawer.addDivider();
+                drawer.addItem(new DrawerItem()
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(getResources().getString(R.string.action_settings))
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                                startActivity(intent);
+                                finish();
+                                drawer.closeDrawer();
+                            }
+                        }));
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+
         }
     }
 
@@ -291,7 +370,7 @@ public class controller extends ActionBarActivity {
         final Activity _this = this;
 
         new MaterialDialog.Builder(this)
-                .title("What bulbs do you have?")
+                .title("Which bulbs do you have?")
                 .theme(Theme.LIGHT)
                 .items(Options)
                 .cancelable(false)
@@ -322,7 +401,7 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        tabs.setBackgroundColor(c);
+        //tabs.setBackgroundColor(c);
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
@@ -330,7 +409,8 @@ public class controller extends ActionBarActivity {
         c = Color.HSVToColor(hsv);
 
         if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(c);
+            //getWindow().setStatusBarColor(c);
+            drawer.setStatusBarBackgroundColor(c);
         }
     }
 
@@ -356,7 +436,9 @@ public class controller extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.controller, menu);
+        if(prefs.getBoolean("navigation_tabs", false)) {
+            getMenuInflater().inflate(R.menu.controller, menu);
+        }
         return true;
     }
 
@@ -442,9 +524,11 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        }  else if(id == R.id.action_menu) {
+        } else if(id == R.id.action_menu) {
             popupMenu();
             return true;
+        } else if(id == android.R.id.home) {
+            drawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -484,7 +568,8 @@ public class controller extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G = null;
+        Fragment G1 = null;
+        Fragment G2 = null;
         Fragment z1 = null;
         Fragment z2 = null;
         Fragment z3 = null;
@@ -507,10 +592,10 @@ public class controller extends ActionBarActivity {
             }
             switch(i) {
                 case 0:
-                    if(G == null) {
-                        G = RGBWFragment.newInstance(0);
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
                     }
-                    return G;
+                    return G1;
                 case 1:
                     if(z1 == null) {
                         z1 = RGBWFragment.newInstance(1);
@@ -532,41 +617,46 @@ public class controller extends ActionBarActivity {
                     }
                     return z4;
                 case 5:
+                    if(G2 == null) {
+                        G2 = WhiteFragment.newInstance(9);
+                    }
+                    return G2;
+                case 6:
                     if(z5 == null) {
                         z5 = WhiteFragment.newInstance(5);
                     }
                     return z5;
-                case 6:
+                case 7:
                     if(z6 == null) {
                         z6 = WhiteFragment.newInstance(6);
                     }
                     return z6;
-                case 7:
+                case 8:
                     if(z7 == null) {
                         z7 = WhiteFragment.newInstance(7);
                     }
                     return z7;
-                case 8:
+                case 9:
                     if(z8 == null) {
                         z8 = WhiteFragment.newInstance(8);
                     }
                     return z8;
                 default:
-                    if(G == null) {
-                        G = RGBWFragment.newInstance(0);
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
                     }
-                    return G;
+                    return G1;
             }
         }
 
         @Override
         public int getCount() {
-            int count = 1;
+            int count = 0;
             if(prefs.getBoolean("rgbw_enabled", false)) {
-                count += 4;
+                count += 5;
             }
             if(prefs.getBoolean("white_enabled", false)) {
-                count += 4;
+                count += 5;
             }
             return count;
         }
@@ -577,15 +667,16 @@ public class controller extends ActionBarActivity {
                 position += 4;
             }
             switch(position) {
-                case 0: return "Global";
+                case 0: return "All Color";
                 case 1: return prefs.getString("pref_zone1", "Zone 1");
                 case 2: return prefs.getString("pref_zone2", "Zone 2");
                 case 3: return prefs.getString("pref_zone3", "Zone 3");
                 case 4: return prefs.getString("pref_zone4", "Zone 4");
-                case 5: return prefs.getString("pref_zone5", "White 1");
-                case 6: return prefs.getString("pref_zone6", "White 2");
-                case 7: return prefs.getString("pref_zone7", "White 3");
-                case 8: return prefs.getString("pref_zone8", "White 4");
+                case 5: return "All White";
+                case 6: return prefs.getString("pref_zone5", "White 1");
+                case 7: return prefs.getString("pref_zone6", "White 2");
+                case 8: return prefs.getString("pref_zone7", "White 3");
+                case 9: return prefs.getString("pref_zone8", "White 4");
             }
             return "unknown";
         }
@@ -851,6 +942,10 @@ public class controller extends ActionBarActivity {
         public boolean recreateView = false;
         private View cacheView = null;
         private boolean disabled = true;
+        private int BrightnessCache = 0;
+        private int WarmthCache = 0;
+        private boolean brightnessTouching = false;
+        private boolean warmthTouching = false;
 
         /**
          * The fragment argument representing the section number for this
@@ -879,36 +974,110 @@ public class controller extends ActionBarActivity {
             if(!recreateView) {
                 final View rootView = inflater.inflate(R.layout.white_control, container, false);
 
-                SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                final CircularSeekBar brightness = (CircularSeekBar) rootView.findViewById(R.id.brightness);
+                CircularSeekBar warmth = (CircularSeekBar) rootView.findViewById(R.id.warmth);
+                final TextView brightnessvalue = (TextView) rootView.findViewById(R.id.brightnessvalue);
+                final TextView warmthvalue = (TextView) rootView.findViewById(R.id.warmthvalue);
                 ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                Button white = (Button) rootView.findViewById(R.id.white);
-                final ColorPicker color = (ColorPicker) rootView.findViewById(R.id.color);
+                Button full = (Button) rootView.findViewById(R.id.full);
+                Button night = (Button) rootView.findViewById(R.id.night);
 
                 //Return State
                 io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
                 brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
-                    color.setColor(savedColor);
-                    ((controller) getActivity()).setActionbarColor(savedColor);
+                    ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
                 }
 
-                brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                brightness.setProgress(10);
+                brightness.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
                     @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        if(brightnessTouching) {
+                            if (progress < 11) {
+                                brightnessvalue.setText("" + (progress - 10));
+                            } else {
+                                brightnessvalue.setText("+" + (progress - 10));
+                            }
+                            if (progress > BrightnessCache) {
+                                for (int i = progress; i > BrightnessCache; i--) {
+                                    Controller.setBrightnessUpOne();
+                                }
+                            } else if (progress < BrightnessCache) {
+                                for (int i = progress; i < BrightnessCache; i++) {
+                                    Controller.setBrightnessDownOne();
+                                }
+                            }
+
+                            BrightnessCache = progress;
+                        }
                     }
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = true;
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        brightnessTouching = false;
+                        brightnessvalue.setAlpha(0.0f);
+                        int brightness = seekBar.getProgress() - 10;
+                        /*if(brightness != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), brightness);
+                        }*/
+                        seekBar.setProgress(10);
                     }
 
                     @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = false;
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        brightnessvalue.setAlpha(1.0f);
+                        BrightnessCache = 11;
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        brightnessTouching = true;
+                    }
+                });
+
+                warmth.setProgress(10);
+                warmth.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        if(warmthTouching) {
+                            progress = 20 - progress;
+                            if (progress < 11) {
+                                warmthvalue.setText("" + (progress - 10));
+                            } else {
+                                warmthvalue.setText("+" + (progress - 10));
+                            }
+                            if (progress > WarmthCache) {
+                                for (int i = progress; i > WarmthCache; i--) {
+                                    Controller.setWarmthUpOne();
+                                }
+                            } else if (progress < WarmthCache) {
+                                for (int i = progress; i < WarmthCache; i++) {
+                                    Controller.setWarmthDownOne();
+                                }
+                            }
+
+                            WarmthCache = progress;
+                        }
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        warmthTouching = false;
+                        warmthvalue.setAlpha(0.0f);
+                        int warmth = seekBar.getProgress() - 10;
+                        /*if(warmth != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), warmth);
+                        }*/
+                        seekBar.setProgress(10);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        warmthvalue.setAlpha(1.0f);
+                        WarmthCache = 11;
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        warmthTouching = true;
                     }
                 });
 
@@ -923,13 +1092,21 @@ public class controller extends ActionBarActivity {
                     }
                 });
 
-                white.setOnClickListener(new View.OnClickListener() {
+                full.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToFull(getArguments().getInt(ARG_SECTION_NUMBER));
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
-                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                    }
+                });
+
+                night.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
                     }
                 });
 
