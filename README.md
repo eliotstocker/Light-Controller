@@ -7,10 +7,16 @@ Light Controller
 
 Adding in Android wear functionality. doesnt look very pretty at the moment though
 old build
+
 ![androidwear](wearapp.png)
 
 Latest build
-![androidwear](wearapp2.png)
+
+![<img src="https://cloud.githubusercontent.com/assets/7307429/5735984/c53b7282-9c23-11e4-87c7-6f3159bbca71.png">](screen1.png)
+
+
+![<img src="https://cloud.githubusercontent.com/assets/7307429/5731062/a36e6a4c-9bd3-11e4-97f4-fb2dee3cd38e.png">](screen2.png)
+
 
 Description
 -----------
