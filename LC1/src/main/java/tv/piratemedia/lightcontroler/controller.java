@@ -119,6 +119,8 @@ public class controller extends ActionBarActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
+
         setupApp();
 
         mHandler = new MyHandler();
@@ -127,10 +129,8 @@ public class controller extends ActionBarActivity {
         Intent i = new Intent(this, notificationService.class);
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
-        if(Build.VERSION.SDK_INT == 21) {
-            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
+
+        drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
         appState = new SaveState(this);
         Utils = new utils(this);
@@ -289,7 +289,6 @@ public class controller extends ActionBarActivity {
             tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
             tabs.setViewPager(pager);
 
-            drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
             if(!prefs.getBoolean("navigation_tabs", false)) {
                 drawer.setProfile(
                         new DrawerProfile()
@@ -401,17 +400,18 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        //tabs.setBackgroundColor(c);
+        tabs.setBackgroundColor(c);
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
         hsv[2] *= 0.8f; // value component
         c = Color.HSVToColor(hsv);
 
-        if(Build.VERSION.SDK_INT == 21) {
-            //getWindow().setStatusBarColor(c);
-            drawer.setStatusBarBackgroundColor(c);
-        }
+        drawer.setStatusBarBackgroundColor(c);
+
+        //little hack to make the statusbar background redraw when called from another thread
+        drawer.openDrawer();
+        drawer.closeDrawer();
     }
 
 
@@ -792,7 +792,7 @@ public class controller extends ActionBarActivity {
                     public void onColorChanged(int i) {
                         if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
-                            ((controller) getActivity()).setActionbarColor(color.getColor());
+                            ((controller) getActivity()).setActionbarColor(i);
                             ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);
                         }
