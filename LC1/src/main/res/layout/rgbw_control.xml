@@ -52,7 +52,7 @@
                     style="@style/ButtonLightController"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:text="white"
+                    android:text="@string/white_label"
                     android:id="@+id/white"
                     android:layout_marginTop="55dp"
                     android:textSize="13dp" />
@@ -78,7 +78,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Brightness"
+                    android:text="@string/brightness_label"
                     android:id="@+id/textView2"
                     android:textColor="#FFFFFF"
                     android:textSize="12dp"

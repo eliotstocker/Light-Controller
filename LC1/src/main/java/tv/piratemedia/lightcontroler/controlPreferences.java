@@ -24,9 +24,11 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -79,15 +81,62 @@ public class controlPreferences extends ActionBarActivity {
 
             EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");
 
-            EditTextPreference zone1 = (EditTextPreference) findPreference("pref_zone1");
-            EditTextPreference zone2 = (EditTextPreference) findPreference("pref_zone2");
-            EditTextPreference zone3 = (EditTextPreference) findPreference("pref_zone3");
-            EditTextPreference zone4 = (EditTextPreference) findPreference("pref_zone4");
+            CheckBoxPreference rgbEnable = (CheckBoxPreference) findPreference("rgbw_enabled");
+            final EditTextPreference zone1 = (EditTextPreference) findPreference("pref_zone1");
+            final EditTextPreference zone2 = (EditTextPreference) findPreference("pref_zone2");
+            final EditTextPreference zone3 = (EditTextPreference) findPreference("pref_zone3");
+            final EditTextPreference zone4 = (EditTextPreference) findPreference("pref_zone4");
+
+            CheckBoxPreference whiteEnable = (CheckBoxPreference) findPreference("white_enabled");
+            final EditTextPreference zone5 = (EditTextPreference) findPreference("pref_zone5");
+            final EditTextPreference zone6 = (EditTextPreference) findPreference("pref_zone6");
+            final EditTextPreference zone7 = (EditTextPreference) findPreference("pref_zone7");
+            final EditTextPreference zone8 = (EditTextPreference) findPreference("pref_zone8");
+
+            if(!rgbEnable.isChecked()) {
+                zone1.setEnabled(false);
+                zone2.setEnabled(false);
+                zone3.setEnabled(false);
+                zone4.setEnabled(false);
+            }
+
+            rgbEnable.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        zone1.setEnabled((Boolean) newValue);
+                        zone2.setEnabled((Boolean) newValue);
+                        zone3.setEnabled((Boolean) newValue);
+                        zone4.setEnabled((Boolean) newValue);
+                    return true;
+                }
+            });
+
+            if(!whiteEnable.isChecked()) {
+                zone5.setEnabled(false);
+                zone6.setEnabled(false);
+                zone7.setEnabled(false);
+                zone8.setEnabled(false);
+            }
+
+            whiteEnable.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    zone5.setEnabled((Boolean) newValue);
+                    zone6.setEnabled((Boolean) newValue);
+                    zone7.setEnabled((Boolean) newValue);
+                    zone8.setEnabled((Boolean) newValue);
+                    return true;
+                }
+            });
 
             zone1.setSummary(zone1.getText());
             zone2.setSummary(zone2.getText());
             zone3.setSummary(zone3.getText());
             zone4.setSummary(zone4.getText());
+            zone5.setSummary(zone5.getText());
+            zone6.setSummary(zone6.getText());
+            zone7.setSummary(zone7.getText());
+            zone8.setSummary(zone8.getText());
 
             zone1.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -111,6 +160,35 @@ public class controlPreferences extends ActionBarActivity {
                 }
             });
             zone4.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+
+            zone5.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone6.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone7.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary((CharSequence)newValue);
+                    return true;
+                }
+            });
+            zone8.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     preference.setSummary((CharSequence)newValue);
@@ -151,5 +229,7 @@ public class controlPreferences extends ActionBarActivity {
         int[] ids = {R.xml.control_appwidget_info};
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         sendBroadcast(intent);
+
+        startActivity(getParentActivityIntent());
     }
 }

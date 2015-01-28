@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
@@ -135,13 +136,18 @@ public class controlWidgetProvider extends AppWidgetProvider {
     private static final int LIGHT_OFF = 1;
 
     private controlCommands Controller;
-    private static RemoteViews remoteViews;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
+
+        thisWidget = new ComponentName(context,
+                controlWidgetProvider.class);
+
+        aWM = appWidgetManager;
+
         updateNames(context, appWidgetManager);
 
         Intent i = new Intent(context, ClockUpdateService.class);
@@ -168,33 +174,50 @@ public class controlWidgetProvider extends AppWidgetProvider {
     }
 
     public void updateNames(Context context, AppWidgetManager appWidgetManager) {
-        thisWidget = new ComponentName(context,
-                controlWidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
-            remoteViews = new RemoteViews(context.getPackageName(),
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.control_widget_init);
-
-            aWM = appWidgetManager;
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-            remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
-            remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
-            remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
-            remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
+            Log.d("appWidget", widgetId + " - type: " + prefs.getInt("widget_" + widgetId + "_type", 0));
+            if(prefs.getInt("widget_" + widgetId + "_type", 0) == 0) {
+                remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
+                remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
+                remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
+                remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
 
-            remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
-            remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
 
-            remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
-            remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+            } else {
+                remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone5", context.getString(R.string.Zone1)));
+                remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone6", context.getString(R.string.Zone2)));
+                remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
+                remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
+
+                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
+
+                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(9,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(8,context,false));
+            }
+
 
             Intent intent = new Intent(context, controlPreferences.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
@@ -240,20 +263,25 @@ public class controlWidgetProvider extends AppWidgetProvider {
             hourString = Integer.toString(hour);
         }
         try {
-            remoteViews.setTextViewText(R.id.timeHour, hourString);
-            remoteViews.setTextViewText(R.id.timeMinute, minString);
-            remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-            String month_name = month_date.format(c.getTime());
-            remoteViews.setTextViewText(R.id.dateMonth, month_name);
-        } catch(NullPointerException e) {
-            e.printStackTrace();
-        }
+            int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
+            for (int widgetId : allWidgetIds) {
+                try {
+                    RemoteViews remoteViews = new RemoteViews(ctx.getPackageName(),
+                            R.layout.control_widget_init);
+                    remoteViews.setTextViewText(R.id.timeHour, hourString);
+                    remoteViews.setTextViewText(R.id.timeMinute, minString);
+                    remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+                    SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                    String month_name = month_date.format(c.getTime());
+                    remoteViews.setTextViewText(R.id.dateMonth, month_name);
 
-        try {
-            aWM.updateAppWidget(thisWidget, remoteViews);
+                    aWM.updateAppWidget(widgetId, remoteViews);
+                } catch(NullPointerException e) {
+                    //dont need to do anything really
+                }
+            }
         } catch(NullPointerException e) {
-            e.printStackTrace();
+            //dont need to do anything really
         }
     }
 

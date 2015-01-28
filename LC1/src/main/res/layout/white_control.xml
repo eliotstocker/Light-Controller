@@ -1,0 +1,160 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="tv.piratemedia.lightcontroler.controller$PlaceholderFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Power"
+                    android:id="@+id/textView"
+                    android:textSize="12dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp" />
+
+                <ToggleButton
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:id="@+id/onoff"
+                    android:checked="false"
+                    style="@style/ToggleLightController"
+                    android:textOn=""
+                    android:textOff=""/>
+
+                <Button
+                    style="@style/ButtonLightController"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/full_label"
+                    android:id="@+id/full"
+                    android:layout_marginTop="55dp"
+                    android:textSize="13dp" />
+
+                <Button
+                    style="@style/ButtonLightController"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/night_label"
+                    android:id="@+id/night"
+                    android:layout_marginTop="10dp"
+                    android:textSize="13dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginBottom="-150dp"
+                android:id="@+id/linearLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/brightness_label"
+                    android:id="@+id/textView2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+
+                <com.devadvance.circularseekbar.CircularSeekBar
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/brightness"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    app:start_angle="190"
+                    app:end_angle="-10"
+                    app:circle_x_radius="200"
+                    app:circle_y_radius="200"
+                    app:pointer_radius="12"
+                    app:use_custom_radii="true"
+                    app:progress="10"
+                    app:circle_progress_color="#00000000"
+                    app:pointer_color="@color/colorAccent"
+                    app:pointer_halo_color="@color/colorAccentLow"
+                    app:max="20"/>
+
+                <com.devadvance.circularseekbar.CircularSeekBar
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/warmth"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="-200dp"
+                    app:start_angle="10"
+                    app:end_angle="170"
+                    app:circle_x_radius="200"
+                    app:circle_y_radius="200"
+                    app:use_custom_radii="true"
+                    app:progress="10"
+                    app:pointer_radius="12"
+                    app:circle_progress_color="#00000000"
+                    app:pointer_color="@color/colorAccent"
+                    app:pointer_halo_color="@color/colorAccentLow"
+                    app:max="20"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/brightnessvalue"
+                    android:text="+0"
+                    android:textSize="20dp"
+                    android:layout_marginTop="-170dp"
+                    android:alpha="0"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/warmthvalue"
+                    android:text="+0"
+                    android:textSize="20dp"
+                    android:layout_marginTop="80dp"
+                    android:layout_marginBottom="40dp"
+                    android:alpha="0"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/warmth_label"
+                    android:id="@+id/textView3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

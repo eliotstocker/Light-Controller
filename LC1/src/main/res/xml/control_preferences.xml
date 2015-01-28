@@ -16,42 +16,124 @@
             android:maxLength="5"
             android:defaultValue="8899"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/notifications">
-        <CheckBoxPreference android:title="@string/lockscreen_notification_head"
-            android:key="lockscreen_notification"
-            android:defaultValue="false"
-            android:summary="@string/lockscreen_notification_summary"/>
+    <PreferenceCategory android:title="Interface Settings" >
+        <CheckBoxPreference
+            android:title="Use Tabs for Navigation"
+            android:summary="Disable the Naviagation draw and enable tabs (Like Older Versions)"
+            android:key="navigation_tabs"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_zones_head" >
-        <EditTextPreference
-            android:title="@string/pref_zone_1"
-            android:key="pref_zone1"
-            android:defaultValue="@string/Zone1"/>
-        <EditTextPreference
-            android:title="@string/pref_zone_2"
-            android:key="pref_zone2"
-            android:defaultValue="@string/Zone2"/>
-        <EditTextPreference
-            android:title="@string/pref_zone_3"
-            android:key="pref_zone3"
-            android:defaultValue="@string/Zone3"/>
-        <EditTextPreference
-            android:title="@string/pref_zone_4"
-            android:key="pref_zone4"
-            android:defaultValue="@string/Zone4"/>
+        <PreferenceScreen android:title="RGBW Zones"
+            android:key="pref_screen_rgbw">
+            <PreferenceCategory android:title="@string/cat_rgbw_zones_head" >
+                <CheckBoxPreference
+                    android:title="@string/pref_rgbw_enable"
+                    android:defaultValue="false"
+                    android:key="rgbw_enabled"/>
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/notifications">
+                <CheckBoxPreference android:title="@string/lockscreen_notification_head"
+                    android:key="lockscreen_notification"
+                    android:defaultValue="false"
+                    android:summary="@string/lockscreen_notification_summary"/>
+            </PreferenceCategory>
+            <EditTextPreference
+                android:title="@string/pref_zone_1"
+                android:key="pref_zone1"
+                android:defaultValue="@string/Zone1"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_2"
+                android:key="pref_zone2"
+                android:defaultValue="@string/Zone2"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_3"
+                android:key="pref_zone3"
+                android:defaultValue="@string/Zone3"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_4"
+                android:key="pref_zone4"
+                android:defaultValue="@string/Zone4"/>
+        </PreferenceScreen>
+        <PreferenceScreen android:title="White Zones">
+            <PreferenceCategory android:title="@string/cat_white_zones_head" >
+                <CheckBoxPreference
+                    android:title="@string/pref_white_enable"
+                    android:defaultValue="false"
+                    android:key="white_enabled"/>
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/notifications">
+                <CheckBoxPreference android:title="@string/lockscreen_notification_head"
+                    android:key="lockscreen_notification_white"
+                    android:defaultValue="false"
+                    android:summary="@string/lockscreen_notification_summary"/>
+            </PreferenceCategory>
+            <EditTextPreference
+                android:title="@string/pref_zone_1"
+                android:key="pref_zone5"
+                android:defaultValue="@string/Zone1"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_2"
+                android:key="pref_zone6"
+                android:defaultValue="@string/Zone2"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_3"
+                android:key="pref_zone7"
+                android:defaultValue="@string/Zone3"/>
+            <EditTextPreference
+                android:title="@string/pref_zone_4"
+                android:key="pref_zone8"
+                android:defaultValue="@string/Zone4"/>
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_contributors" >
-        <EditTextPreference
-            android:title="Created By"
-            android:summary="Eliot Stocker"
-            android:key="contrib1"
-            android:enabled="false"
-            android:alpha="1"/>
-        <EditTextPreference
-            android:title="Major Contributor"
-            android:summary="Louis Orleans"
-            android:key="contrib2"
-            android:enabled="false"
-            android:alpha="1"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Created By">
+        <Preference
+            android:title="Eliot Stocker"
+            android:summary="https://github.com/eliotstocker"
+            android:key="contrib1">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/eliotstocker"
+                />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Contributors">
+        <Preference
+            android:title="Louis Orleans"
+            android:summary="https://github.com/dudeofawesome"
+            android:key="contrib2">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/dudeofawesome"
+                />
+        </Preference>
+        <Preference
+            android:title="AppLamp"
+            android:summary="https://github.com/AppLamp-API"
+            android:key="contrib3">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/AppLamp-API"
+                />
+        </Preference>
+        <Preference
+            android:title="Harry Sibenaler"
+            android:summary="https://github.com/mrwhale"
+            android:key="contrib4">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/mrwhale"
+                />
+        </Preference>
+        <Preference
+            android:title="Matthew Nagel"
+            android:summary="https://github.com/nagelm"
+            android:key="contrib5">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/nagelm"
+                />
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

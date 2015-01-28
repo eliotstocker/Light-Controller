@@ -12,34 +12,20 @@
 
 package tv.piratemedia.lightcontroler.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.ToggleButton;
 
 import tv.piratemedia.lightcontroler.DataTypes.TaskerCommand;
 import tv.piratemedia.lightcontroler.R;
 import tv.piratemedia.lightcontroler.bundle.BundleScrubber;
 import tv.piratemedia.lightcontroler.bundle.PluginBundleManager;
-import tv.piratemedia.lightcontroler.controller;
 //import com.instabug.library.Instabug;
 //import com.instabug.wrapper.impl.v14.InstabugAnnotationActivity;
 import com.larswerkman.holocolorpicker.ColorPicker;
@@ -90,7 +76,7 @@ public final class EditActivity extends AbstractPluginActivity
         }
 
         if(!recreateView) {
-            final View rootView = getLayoutInflater().inflate(R.layout.global_control, (ViewGroup) findViewById(R.id.main), false);
+            final View rootView = getLayoutInflater().inflate(R.layout.rgbw_control, (ViewGroup) findViewById(R.id.main), false);
 
             SeekBar brightness = (SeekBar) findViewById(R.id.brightness);
             ToggleButton io = (ToggleButton) findViewById(R.id.onoff);

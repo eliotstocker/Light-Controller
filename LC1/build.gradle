@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 15
-        versionName "1.5"
+        versionCode 16
+        versionName "1.6"
     }
     buildTypes {
         release {
@@ -28,5 +28,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
     compile 'com.afollestad:material-dialogs:0.4.6'
-    //compile 'com.instabug.library:instabugsupport:1.1.+'
+    compile project(':circularseekbar')
+    compile 'com.heinrichreimersoftware.materialdrawer:library:1.4.1'
 }

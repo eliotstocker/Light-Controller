@@ -138,6 +138,21 @@ public class controlCommands {
             case 4:
                 messageBA[0] = 75;
                 break;
+            case 5:
+                messageBA[0] = 56;
+                break;
+            case 6:
+                messageBA[0] = 61;
+                break;
+            case 7:
+                messageBA[0] = 55;
+                break;
+            case 8:
+                messageBA[0] = 50;
+                break;
+            case 9:
+                messageBA[0] = 53;
+                break;
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
@@ -173,6 +188,21 @@ public class controlCommands {
                 break;
             case 4:
                 messageBA[0] = 76;
+                break;
+            case 5:
+                messageBA[0] = 59;
+                break;
+            case 6:
+                messageBA[0] = 51;
+                break;
+            case 7:
+                messageBA[0] = 58;
+                break;
+            case 8:
+                messageBA[0] = 54;
+                break;
+            case 9:
+                messageBA[0] = 57;
                 break;
         }
         messageBA[1] = 0;
@@ -216,6 +246,128 @@ public class controlCommands {
         appState.removeColor(zone);
     }
 
+    public void setBrightnessUpOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 60;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setBrightnessDownOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 52;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setWarmthUpOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 62;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setWarmthDownOne() {
+        byte[] messageBA = new byte[3];
+        messageBA[0] = 63;
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setToFull(int zone) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 5:
+                messageBA[0] = (byte)184;
+                break;
+            case 6:
+                messageBA[0] = (byte)189;
+                break;
+            case 7:
+                messageBA[0] = (byte)183;
+                break;
+            case 8:
+                messageBA[0] = (byte)178;
+                break;
+            case 9:
+                messageBA[0] = (byte)181;
+                break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
+    public void setToNight(int zone) {
+        LightsOn(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 5:
+                messageBA[0] = (byte)187;
+                break;
+            case 6:
+                messageBA[0] = (byte)179;
+                break;
+            case 7:
+                messageBA[0] = (byte)186;
+                break;
+            case 8:
+                messageBA[0] = (byte)182;
+                break;
+            case 9:
+                messageBA[0] = (byte)185;
+                break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
+
     private int[] values = { 2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
     private int LastBrightness = 20;
     private int LastZone = 0;
@@ -226,7 +378,6 @@ public class controlCommands {
             brightness = values.length - 1;
         }
         if(!sleeping) {
-            Log.d("Send","send: "+brightness);
             LightsOn(zoneid);
             byte[] messageBA = new byte[3];
             messageBA[0] = 78;
@@ -296,6 +447,7 @@ public class controlCommands {
                 //add alert to tell user we cant send command
             }
             appState.setColor(zoneid, color);
+            touching = true;
             sleeping = true;
             startTimeout();
         }

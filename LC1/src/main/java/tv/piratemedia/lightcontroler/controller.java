@@ -17,6 +17,7 @@
 */
 package tv.piratemedia.lightcontroler;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -37,9 +38,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -66,6 +69,10 @@ import android.support.v7.app.ActionBarActivity;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
+import com.devadvance.circularseekbar.CircularSeekBar;
+import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
+import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import java.io.File;
@@ -102,6 +109,8 @@ public class controller extends ActionBarActivity {
 
     private String DeviceMac = "";
 
+    private DrawerFrameLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +118,8 @@ public class controller extends ActionBarActivity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
 
         setupApp();
 
@@ -118,9 +129,8 @@ public class controller extends ActionBarActivity {
         Intent i = new Intent(this, notificationService.class);
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
-        if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
+
+        drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
         appState = new SaveState(this);
         Utils = new utils(this);
@@ -269,11 +279,123 @@ public class controller extends ActionBarActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+        if(!prefs.getBoolean("rgbw_enabled", false) && !prefs.getBoolean("white_enabled", false)) {
+            askControlType();
+        } else {
 
-        tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
-        tabs.setViewPager(pager);
+            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+            pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+
+            tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
+            tabs.setViewPager(pager);
+
+            if(!prefs.getBoolean("navigation_tabs", false)) {
+                drawer.setProfile(
+                        new DrawerProfile()
+                                .setAvatar(getResources().getDrawable(R.drawable.icon))
+                                .setBackground(getResources().getDrawable(R.drawable.drawer_profile_background))
+                                .setName("Light Controller")
+                );
+
+                mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+                mActionBarToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+
+                pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(position));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+                this.setTitle(pager.getAdapter().getPageTitle(0));
+                mActionBarToolbar.setTitle(pager.getAdapter().getPageTitle(0));
+                tabs.setVisibility(View.GONE);
+
+                for(int i = 0; i < pager.getAdapter().getCount(); i++) {
+                    if(i == 5) {
+                        drawer.addDivider();
+                    }
+                    drawer.addItem(new DrawerItem()
+                            .setTextMode(DrawerItem.SINGLE_LINE)
+                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    int item = i2;
+                                    if(item > 4) {
+                                        item--;
+                                    }
+                                    pager.setCurrentItem(item, true);
+                                    drawer.closeDrawer();
+                                }
+                            }));
+                }
+                drawer.addDivider();
+                drawer.addItem(new DrawerItem()
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(getResources().getString(R.string.action_settings))
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                                startActivity(intent);
+                                finish();
+                                drawer.closeDrawer();
+                            }
+                        }));
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+
+        }
+    }
+
+    private void askControlType() {
+        String[] Options = new String[3];
+        Options[0] = "White Bulbs Only";
+        Options[1] = "RGBW Bulbs Only";
+        Options[2] = "Both White and RGBW Bulbs";
+
+        final Activity _this = this;
+
+        new MaterialDialog.Builder(this)
+                .title("Which bulbs do you have?")
+                .theme(Theme.LIGHT)
+                .items(Options)
+                .cancelable(false)
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                break;
+                            case 1:
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                            case 2:
+                                prefs.edit().putBoolean("white_enabled", true).apply();
+                                prefs.edit().putBoolean("rgbw_enabled", true).apply();
+                                break;
+                        }
+                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
+                        ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
+                        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
+                        tabs.setViewPager(pager);
+                    }
+                })
+                .build()
+                .show();
     }
 
     private void setActionbarColor(int c) {
@@ -285,9 +407,11 @@ public class controller extends ActionBarActivity {
         hsv[2] *= 0.8f; // value component
         c = Color.HSVToColor(hsv);
 
-        if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(c);
-        }
+        drawer.setStatusBarBackgroundColor(c);
+
+        //little hack to make the statusbar background redraw when called from another thread
+        drawer.openDrawer();
+        drawer.closeDrawer();
     }
 
 
@@ -312,7 +436,9 @@ public class controller extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.controller, menu);
+        if(prefs.getBoolean("navigation_tabs", false)) {
+            getMenuInflater().inflate(R.menu.controller, menu);
+        }
         return true;
     }
 
@@ -340,6 +466,7 @@ public class controller extends ActionBarActivity {
                 closeMenu();
                 Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -397,9 +524,11 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        }  else if(id == R.id.action_menu) {
+        } else if(id == R.id.action_menu) {
             popupMenu();
             return true;
+        } else if(id == android.R.id.home) {
+            drawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -439,11 +568,16 @@ public class controller extends ActionBarActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G = null;
+        Fragment G1 = null;
+        Fragment G2 = null;
         Fragment z1 = null;
         Fragment z2 = null;
         Fragment z3 = null;
         Fragment z4 = null;
+        Fragment z5 = null;
+        Fragment z6 = null;
+        Fragment z7 = null;
+        Fragment z8 = null;
         private controller mThis;
 
         public ControllerPager(FragmentManager fm, controller t) {
@@ -453,53 +587,96 @@ public class controller extends ActionBarActivity {
 
         @Override
         public android.support.v4.app.Fragment getItem(int i) {
+            if(!prefs.getBoolean("rgbw_enabled", false) && i > 0) {
+                i += 4;
+            }
             switch(i) {
                 case 0:
-                    if(G == null) {
-                        G = PlaceholderFragment.newInstance(0);
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
                     }
-                    return G;
+                    return G1;
                 case 1:
                     if(z1 == null) {
-                        z1 = PlaceholderFragment.newInstance(1);
+                        z1 = RGBWFragment.newInstance(1);
                     }
                     return z1;
                 case 2:
                     if(z2 == null) {
-                        z2 = PlaceholderFragment.newInstance(2);
+                        z2 = RGBWFragment.newInstance(2);
                     }
                     return z2;
                 case 3:
                     if(z3 == null) {
-                        z3 = PlaceholderFragment.newInstance(3);
+                        z3 = RGBWFragment.newInstance(3);
                     }
                     return z3;
                 case 4:
                     if(z4 == null) {
-                        z4 = PlaceholderFragment.newInstance(4);
+                        z4 = RGBWFragment.newInstance(4);
                     }
                     return z4;
-                default:
-                    if(G == null) {
-                        G = PlaceholderFragment.newInstance(0);
+                case 5:
+                    if(G2 == null) {
+                        G2 = WhiteFragment.newInstance(9);
                     }
-                    return G;
+                    return G2;
+                case 6:
+                    if(z5 == null) {
+                        z5 = WhiteFragment.newInstance(5);
+                    }
+                    return z5;
+                case 7:
+                    if(z6 == null) {
+                        z6 = WhiteFragment.newInstance(6);
+                    }
+                    return z6;
+                case 8:
+                    if(z7 == null) {
+                        z7 = WhiteFragment.newInstance(7);
+                    }
+                    return z7;
+                case 9:
+                    if(z8 == null) {
+                        z8 = WhiteFragment.newInstance(8);
+                    }
+                    return z8;
+                default:
+                    if(G1 == null) {
+                        G1 = RGBWFragment.newInstance(0);
+                    }
+                    return G1;
             }
         }
 
         @Override
         public int getCount() {
-            return 5;
+            int count = 0;
+            if(prefs.getBoolean("rgbw_enabled", false)) {
+                count += 5;
+            }
+            if(prefs.getBoolean("white_enabled", false)) {
+                count += 5;
+            }
+            return count;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
+            if(!prefs.getBoolean("rgbw_enabled", false) && position > 0) {
+                position += 4;
+            }
             switch(position) {
-                case 0: return "Global";
+                case 0: return "All Color";
                 case 1: return prefs.getString("pref_zone1", "Zone 1");
                 case 2: return prefs.getString("pref_zone2", "Zone 2");
                 case 3: return prefs.getString("pref_zone3", "Zone 3");
                 case 4: return prefs.getString("pref_zone4", "Zone 4");
+                case 5: return "All White";
+                case 6: return prefs.getString("pref_zone5", "White 1");
+                case 7: return prefs.getString("pref_zone6", "White 2");
+                case 8: return prefs.getString("pref_zone7", "White 3");
+                case 9: return prefs.getString("pref_zone8", "White 4");
             }
             return "unknown";
         }
@@ -516,7 +693,7 @@ public class controller extends ActionBarActivity {
         }
     }
 
-    public static class PlaceholderFragment extends Fragment {
+    public static class RGBWFragment extends Fragment {
 
         public boolean recreateView = false;
         private View cacheView = null;
@@ -532,22 +709,22 @@ public class controller extends ActionBarActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static RGBWFragment newInstance(int sectionNumber) {
+            RGBWFragment fragment = new RGBWFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        public RGBWFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             if(!recreateView) {
-                final View rootView = inflater.inflate(R.layout.global_control, container, false);
+                final View rootView = inflater.inflate(R.layout.rgbw_control, container, false);
 
                 SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
                 ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
@@ -615,7 +792,7 @@ public class controller extends ActionBarActivity {
                     public void onColorChanged(int i) {
                         if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
-                            ((controller) getActivity()).setActionbarColor(color.getColor());
+                            ((controller) getActivity()).setActionbarColor(i);
                             ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);
                         }
@@ -760,5 +937,201 @@ public class controller extends ActionBarActivity {
             }
         }
     }
+    public static class WhiteFragment extends Fragment {
 
+        public boolean recreateView = false;
+        private View cacheView = null;
+        private boolean disabled = true;
+        private int BrightnessCache = 0;
+        private int WarmthCache = 0;
+        private boolean brightnessTouching = false;
+        private boolean warmthTouching = false;
+
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static WhiteFragment newInstance(int sectionNumber) {
+            WhiteFragment fragment = new WhiteFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public WhiteFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            if(!recreateView) {
+                final View rootView = inflater.inflate(R.layout.white_control, container, false);
+
+                final CircularSeekBar brightness = (CircularSeekBar) rootView.findViewById(R.id.brightness);
+                CircularSeekBar warmth = (CircularSeekBar) rootView.findViewById(R.id.warmth);
+                final TextView brightnessvalue = (TextView) rootView.findViewById(R.id.brightnessvalue);
+                final TextView warmthvalue = (TextView) rootView.findViewById(R.id.warmthvalue);
+                ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                Button full = (Button) rootView.findViewById(R.id.full);
+                Button night = (Button) rootView.findViewById(R.id.night);
+
+                //Return State
+                io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
+                brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
+                int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
+                if(savedColor < 0) {
+                    ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
+                }
+
+                brightness.setProgress(10);
+                brightness.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        if(brightnessTouching) {
+                            if (progress < 11) {
+                                brightnessvalue.setText("" + (progress - 10));
+                            } else {
+                                brightnessvalue.setText("+" + (progress - 10));
+                            }
+                            if (progress > BrightnessCache) {
+                                for (int i = progress; i > BrightnessCache; i--) {
+                                    Controller.setBrightnessUpOne();
+                                }
+                            } else if (progress < BrightnessCache) {
+                                for (int i = progress; i < BrightnessCache; i++) {
+                                    Controller.setBrightnessDownOne();
+                                }
+                            }
+
+                            BrightnessCache = progress;
+                        }
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        brightnessTouching = false;
+                        brightnessvalue.setAlpha(0.0f);
+                        int brightness = seekBar.getProgress() - 10;
+                        /*if(brightness != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setBrightnessJog(getArguments().getInt(ARG_SECTION_NUMBER), brightness);
+                        }*/
+                        seekBar.setProgress(10);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        brightnessvalue.setAlpha(1.0f);
+                        BrightnessCache = 11;
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        brightnessTouching = true;
+                    }
+                });
+
+                warmth.setProgress(10);
+                warmth.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+                        if(warmthTouching) {
+                            progress = 20 - progress;
+                            if (progress < 11) {
+                                warmthvalue.setText("" + (progress - 10));
+                            } else {
+                                warmthvalue.setText("+" + (progress - 10));
+                            }
+                            if (progress > WarmthCache) {
+                                for (int i = progress; i > WarmthCache; i--) {
+                                    Controller.setWarmthUpOne();
+                                }
+                            } else if (progress < WarmthCache) {
+                                for (int i = progress; i < WarmthCache; i++) {
+                                    Controller.setWarmthDownOne();
+                                }
+                            }
+
+                            WarmthCache = progress;
+                        }
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(CircularSeekBar seekBar) {
+                        warmthTouching = false;
+                        warmthvalue.setAlpha(0.0f);
+                        int warmth = seekBar.getProgress() - 10;
+                        /*if(warmth != 0) {
+                            seekBar.setProgress(8);
+                            Controller.setWarmthJog(getArguments().getInt(ARG_SECTION_NUMBER), warmth);
+                        }*/
+                        seekBar.setProgress(10);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(CircularSeekBar seekBar) {
+                        warmthvalue.setAlpha(1.0f);
+                        WarmthCache = 11;
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        warmthTouching = true;
+                    }
+                });
+
+                io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        } else {
+                            Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                        }
+                    }
+                });
+
+                full.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToFull(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
+                    }
+                });
+
+                night.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
+                    }
+                });
+
+                recreateView = true;
+                cacheView = rootView;
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        disabled = false;
+                    }
+                }, 500);
+                return rootView;
+            } else {
+                disabled = true;
+                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable(){
+                    @Override
+                    public void run(){
+                        disabled = false;
+                    }
+                }, 500);
+                return cacheView;
+            }
+        }
+    }
 }

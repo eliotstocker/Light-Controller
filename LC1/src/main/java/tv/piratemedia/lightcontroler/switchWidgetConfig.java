@@ -62,6 +62,10 @@ public class switchWidgetConfig extends ActionBarActivity {
         RadioButton z2 = (RadioButton)findViewById(R.id.z2);
         RadioButton z3 = (RadioButton)findViewById(R.id.z3);
         RadioButton z4 = (RadioButton)findViewById(R.id.z4);
+        RadioButton z5 = (RadioButton)findViewById(R.id.z5);
+        RadioButton z6 = (RadioButton)findViewById(R.id.z6);
+        RadioButton z7 = (RadioButton)findViewById(R.id.z7);
+        RadioButton z8 = (RadioButton)findViewById(R.id.z8);
         RadioGroup rg = (RadioGroup)findViewById(R.id.group);
         Button done = (Button)findViewById(R.id.done);
         CheckBox show = (CheckBox)findViewById(R.id.show_title);
@@ -70,6 +74,11 @@ public class switchWidgetConfig extends ActionBarActivity {
         z2.setText(prefs.getString("pref_zone2", "Zone 2"));
         z3.setText(prefs.getString("pref_zone3", "Zone 3"));
         z4.setText(prefs.getString("pref_zone4", "Zone 4"));
+
+        z5.setText(prefs.getString("pref_zone5", "Zone 1"));
+        z6.setText(prefs.getString("pref_zone6", "Zone 2"));
+        z7.setText(prefs.getString("pref_zone7", "Zone 3"));
+        z8.setText(prefs.getString("pref_zone8", "Zone 4"));
 
         Log.d("widgetID", "id: " + mAppWidgetId);
 
@@ -86,6 +95,16 @@ public class switchWidgetConfig extends ActionBarActivity {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 3).commit();
                 } else if (checkedId == R.id.z4) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 4).commit();
+                } else if (checkedId == R.id.z5) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 5).commit();
+                } else if (checkedId == R.id.z6) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 6).commit();
+                } else if (checkedId == R.id.z7) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 7).commit();
+                } else if (checkedId == R.id.z8) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 8).commit();
+                } else if(checkedId == R.id.g2) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 9).commit();
                 }
             }
         });
@@ -128,6 +147,21 @@ public class switchWidgetConfig extends ActionBarActivity {
                             break;
                         case 4:
                             label = prefs.getString("pref_zone4", getBaseContext().getString(R.string.Zone4));
+                            break;
+                        case 5:
+                            label = prefs.getString("pref_zone5", getBaseContext().getString(R.string.Zone1));
+                            break;
+                        case 6:
+                            label = prefs.getString("pref_zone6", getBaseContext().getString(R.string.Zone2));
+                            break;
+                        case 7:
+                            label = prefs.getString("pref_zone7", getBaseContext().getString(R.string.Zone3));
+                            break;
+                        case 8:
+                            label = prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4));
+                            break;
+                        case 9:
+                            label = getBaseContext().getString(R.string.gloabl);
                             break;
                     }
                     views.setTextViewText(R.id.zone_label, label);
