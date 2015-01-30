@@ -388,10 +388,7 @@ public class controller extends ActionBarActivity {
                                 prefs.edit().putBoolean("rgbw_enabled", true).apply();
                                 break;
                         }
-                        tabs = (PagerSlidingTabStrip) _this.findViewById(R.id.pager_title_strip);
-                        ViewPager pager = (ViewPager) _this.findViewById(R.id.pager);
-                        pager.setAdapter(new ControllerPager(getSupportFragmentManager(), (controller) _this));
-                        tabs.setViewPager(pager);
+                        setupApp();
                     }
                 })
                 .build()
@@ -400,7 +397,11 @@ public class controller extends ActionBarActivity {
 
     private void setActionbarColor(int c) {
         mActionBarToolbar.setBackgroundColor(c);
-        tabs.setBackgroundColor(c);
+        try {
+            tabs.setBackgroundColor(c);
+        } catch(Exception e) {
+            //do nothing
+        }
 
         float[] hsv = new float[3];
         Color.colorToHSV(c, hsv);
