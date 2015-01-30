@@ -199,6 +199,26 @@ public class APIReciever extends BroadcastReceiver {
                     }
                 } else {
                     int zone = intent.getIntExtra("zone", -1);
+                    if (zone > -1 && zone < 5) {
+                        switch (intent.getIntExtra("zone", -1)) {
+                            case 0:
+                                c.LightsOn(9);
+                                break;
+                            case 1:
+                                c.LightsOn(5);
+                                break;
+                            case 2:
+                                c.LightsOn(6);
+                                break;
+                            case 3:
+                                c.LightsOn(7);
+                                break;
+                            case 4:
+                                c.LightsOn(8);
+                                break;
+                        }
+                        c.setToFull(zone);
+                    }
                 }
                 break;
         }

@@ -28,42 +28,115 @@
                 android:textSize="@dimen/abc_text_size_title_material_toolbar" />
         </LinearLayout>
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/group"
-            android:layout_marginTop="7dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp">
 
-            <RadioButton
-                android:layout_width="wrap_content"
+            <RadioGroup
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/gloabl"
-                android:id="@+id/g" />
+                android:id="@+id/group"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Zone1"
-                android:id="@+id/z1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="RGBW Zones"
+                    android:id="@+id/textView5"
+                    android:textColor="@color/abc_primary_text_material_light" />
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Zone2"
-                android:id="@+id/z2" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gloabl"
+                    android:id="@+id/g"
+                    android:textColor="@color/abc_primary_text_material_light" />
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Zone3"
-                android:id="@+id/z3" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone1"
+                    android:id="@+id/z1"
+                    android:textColor="@color/abc_primary_text_material_light" />
 
-            <RadioButton
-                android:layout_width="wrap_content"
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone2"
+                    android:id="@+id/z2"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone3"
+                    android:id="@+id/z3"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone4"
+                    android:id="@+id/z4"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+            </RadioGroup>
+
+            <RadioGroup
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/Zone4"
-                android:id="@+id/z4" />
-        </RadioGroup>
+                android:id="@+id/group2"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="White Zones"
+                    android:id="@+id/textView6"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gloabl"
+                    android:id="@+id/g2"
+                    android:checked="false"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone1"
+                    android:id="@+id/z5"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone2"
+                    android:id="@+id/z6"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone3"
+                    android:id="@+id/z7"
+                    android:textColor="@color/abc_primary_text_material_light" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Zone4"
+                    android:id="@+id/z8"
+                    android:textColor="@color/abc_primary_text_material_light" />
+            </RadioGroup>
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -71,7 +144,6 @@
             android:layout_height="wrap_content"
             android:longClickable="true"
             android:gravity="right"
-            android:layout_marginTop="10dp"
             android:background="#FFFFFF">
 
             <Button
@@ -86,6 +158,7 @@
                 android:text="@string/select"
                 android:id="@+id/select" />
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
