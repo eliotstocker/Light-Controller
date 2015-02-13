@@ -1,1 +1,2 @@
+include ':LC1', ':wear'
 include ':LC1', ':circularseekbar'
