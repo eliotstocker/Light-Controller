@@ -233,7 +233,7 @@ public class APIReciever extends BroadcastReceiver {
             ai = null;
         }
         if(ai != null) {
-            final String applicationName = (String) (ai != null ? pm.getApplicationLabel(ai) : "(unknown)");
+            final String applicationName = (String) pm.getApplicationLabel(ai);
 
             NotificationCompat.BigTextStyle notiStyle = new
                     NotificationCompat.BigTextStyle();

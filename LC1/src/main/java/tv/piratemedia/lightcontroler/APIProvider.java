@@ -5,23 +5,65 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class APIProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher;
+    private MatrixCursor ZonesCursor;
     private SharedPreferences prefs;
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI("tv.piratemedia.lightcontroler.api", "zones", 1);
         sUriMatcher.addURI("tv.piratemedia.lightcontroler.api", "zones/#", 2);
-        sUriMatcher.addURI("tv.piratemedia.lightcontroler.api", "permission", 3);
+        sUriMatcher.addURI("tv.piratemedia.lightcontroler.api", "permission/*", 3);
     }
 
         @Override
     public boolean onCreate() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+
+        String[] zone = new String[5];
+        zone[0] = "id";
+        zone[1] = "name";
+        zone[2] = "type";
+        zone[3] = "global";
+        zone[4] = "index";
+
+        ZonesCursor = new MatrixCursor(zone);
+        Object[] glz = new Object[4];
+        glz[0] = 0;
+        glz[1] = "All Color";
+        glz[2] = "color";
+        glz[3] = true;
+        glz[4] = 0;
+        ZonesCursor.addRow(glz);
+        glz[1] = "All White";
+        glz[2] = "white";
+        glz[4] = 9;
+        ZonesCursor.addRow(glz);
+        for(int i = 1; i < 9; i++) {
+            int id = i;
+            String type = "color";
+            if(i > 4) {
+                id = i - 4;
+                type = "white";
+            }
+            Object[] lz = new Object[4];
+            lz[0] = id;
+            lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
+            lz[2] = type;
+            lz[3] = false;
+            lz[4] = i;
+            ZonesCursor.addRow(lz);
+        }
         return false;
     }
 
@@ -29,20 +71,63 @@ public class APIProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         switch (sUriMatcher.match(uri)) {
             case 1:
-
-                break;
+                return ZonesCursor;
             case 2:
+                int i = Integer.decode(uri.getLastPathSegment());
+                String[] zone = new String[5];
+                zone[0] = "id";
+                zone[1] = "name";
+                zone[2] = "type";
+                zone[3] = "global";
+                zone[4] = "index";
 
-                break;
+                int id = i;
+                String type = "color";
+                if(i > 4) {
+                    id = i - 4;
+                    type = "white";
+                }
+
+                MatrixCursor ZoneCursor = new MatrixCursor(zone);
+                Object[] lz = new Object[4];
+                lz[0] = id;
+                lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
+                lz[2] = type;
+                lz[3] = false;
+                lz[4] = i;
+                ZoneCursor.addRow(lz);
+
+                return ZoneCursor;
             case 3:
+                String[] perm = new String[5];
+                perm[0] = "id";
+                perm[1] = "allowed";
 
-                break;
+                Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
+
+                MatrixCursor PermCursor = new MatrixCursor(perm);
+                Object[] lp = new Object[2];
+                lp[0] = uri.getLastPathSegment();
+                lp[1] = enabled.contains(uri.getLastPathSegment());
+
+                PermCursor.addRow(lp);
+
+                return PermCursor;
         }
+
         return null;
     }
 
     @Override
     public String getType(Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case 1:
+                return "vnd.android.cursor.dir/vnd.tv.piratemedia.lightcontroler.api.zones";
+            case 2:
+                return "vnd.android.cursor.item/vnd.tv.piratemedia.lightcontroler.api.zones";
+            case 3:
+                return "vnd.android.cursor.item/vnd.tv.piratemedia.lightcontroler.api.permission";
+        }
         return null;
     }
 

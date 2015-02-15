@@ -40,6 +40,9 @@
     <string name="lockscreen_notification_head">Notification When Locked</string>
     <string name="lockscreen_notification_summary">Enable light switch toggle Notification when screen off (Shows on Android 5.0 Lockscreen)</string>
     <string name="cat_contributors">Light Controller Contributors</string>
+    <string name="cat_api">Light Controller API</string>
+    <string name="pref_api_permissions">API Permissions</string>
+    <string name="pref_api_permissions_desc">List and Remove Applications that are allowed to use the Light Controller API</string>
 
     <string name="control_widget_config_explaination">What type of bulbs would you like this widget to control?</string>
     <string name="control_widget_rgbw">RGBW Bulbs</string>

@@ -85,6 +85,16 @@
                 android:defaultValue="@string/Zone4"/>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cat_api">
+        <Preference
+            android:title="@string/pref_api_permissions"
+            android:summary="@string/pref_api_permissions_desc">
+            <!--intent
+                android:action="android.intent.action.main"
+                android:targetClass=""
+                /-->
+        </Preference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_contributors" >
     </PreferenceCategory>
     <PreferenceCategory android:title="Created By">
