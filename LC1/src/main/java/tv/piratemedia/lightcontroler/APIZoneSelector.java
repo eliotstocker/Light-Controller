@@ -11,6 +11,8 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import tv.piratemedia.lightcontroler.api.LightZone;
+
 public class APIZoneSelector extends Activity {
     private int selectedZone = -2;
     private String selectedType = "color";
@@ -138,9 +140,15 @@ public class APIZoneSelector extends Activity {
     private void selctionComplete() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Intent i = new Intent();
-        i.putExtra("zone", selectedZone);
+        LightZone lz = new LightZone();
+        lz.Name = selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.gloabl);
+        lz.Type = selectedType;
+        lz.ID = selectedZone;
+        lz.Global = selectedZone > 0 && selectedZone < 9;
+        i.putExtra("LightZone", (java.io.Serializable) lz);
+        /*i.putExtra("zone", selectedZone);
         i.putExtra("type", selectedType);
-        i.putExtra("name", selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.gloabl));
+        i.putExtra("name", selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.gloabl));*/
         setResult(RESULT_OK, i);
         finish();
     }
