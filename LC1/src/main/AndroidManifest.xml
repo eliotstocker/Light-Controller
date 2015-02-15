@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="tv.piratemedia.lightcontroler.api.read" />
 
     <application
         android:allowBackup="true"
@@ -148,7 +149,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".APIReciever" >
+        <receiver
+            android:name=".APIReciever"
+            android:permission="tv.piratemedia.lightcontroler.api.read">
             <intent-filter>
                 <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightOn"/>
@@ -156,6 +159,21 @@
                 <action android:name="tv.piratemedia.lightcontroler.LightColor"/>
             </intent-filter>
         </receiver>
-    </application>
 
+        <provider
+            android:authorities="tv.piratemedia.lightcontroler.api"
+            android:name=".APIProvider"
+            android:grantUriPermissions="true"
+            android:label="@string/app_name"
+            android:exported="true"
+            android:readPermission="tv.piratemedia.lightcontroler.api.read"
+        />
+
+    </application>
+    <permission
+        android:name="tv.piratemedia.lightcontroler.api.read"
+        android:description="@string/api_description"
+        android:label="@string/api_name"
+        android:protectionLevel="signature"
+    />
 </manifest>

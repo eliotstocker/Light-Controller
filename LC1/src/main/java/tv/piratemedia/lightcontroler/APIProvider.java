@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,11 +39,11 @@ public class APIProvider extends ContentProvider {
         zone[4] = "index";
 
         ZonesCursor = new MatrixCursor(zone);
-        Object[] glz = new Object[4];
+        Object[] glz = new Object[5];
         glz[0] = 0;
         glz[1] = "All Color";
         glz[2] = "color";
-        glz[3] = true;
+        glz[3] = 1;
         glz[4] = 0;
         ZonesCursor.addRow(glz);
         glz[1] = "All White";
@@ -56,11 +57,11 @@ public class APIProvider extends ContentProvider {
                 id = i - 4;
                 type = "white";
             }
-            Object[] lz = new Object[4];
+            Object[] lz = new Object[5];
             lz[0] = id;
             lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
             lz[2] = type;
-            lz[3] = false;
+            lz[3] = 0;
             lz[4] = i;
             ZonesCursor.addRow(lz);
         }
@@ -69,6 +70,7 @@ public class APIProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Log.d("Light Controller Query", "Query: "+uri);
         switch (sUriMatcher.match(uri)) {
             case 1:
                 return ZonesCursor;
@@ -89,17 +91,17 @@ public class APIProvider extends ContentProvider {
                 }
 
                 MatrixCursor ZoneCursor = new MatrixCursor(zone);
-                Object[] lz = new Object[4];
+                Object[] lz = new Object[5];
                 lz[0] = id;
                 lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
                 lz[2] = type;
-                lz[3] = false;
+                lz[3] = 0;
                 lz[4] = i;
                 ZoneCursor.addRow(lz);
 
                 return ZoneCursor;
             case 3:
-                String[] perm = new String[5];
+                String[] perm = new String[2];
                 perm[0] = "id";
                 perm[1] = "allowed";
 
@@ -108,7 +110,7 @@ public class APIProvider extends ContentProvider {
                 MatrixCursor PermCursor = new MatrixCursor(perm);
                 Object[] lp = new Object[2];
                 lp[0] = uri.getLastPathSegment();
-                lp[1] = enabled.contains(uri.getLastPathSegment());
+                lp[1] = enabled.contains(uri.getLastPathSegment()) ? 1 : 0;
 
                 PermCursor.addRow(lp);
 
