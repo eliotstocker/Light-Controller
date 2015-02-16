@@ -89,10 +89,10 @@
         <Preference
             android:title="@string/pref_api_permissions"
             android:summary="@string/pref_api_permissions_desc">
-            <!--intent
+            <intent
                 android:action="android.intent.action.main"
-                android:targetClass=""
-                /-->
+                android:targetClass="tv.piratemedia.lightcontroler.api.APIPermissionManager"
+                android:targetPackage="tv.piratemedia.lightcontroler"/>
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_contributors" >

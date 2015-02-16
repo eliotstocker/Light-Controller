@@ -1,4 +1,4 @@
-package tv.piratemedia.lightcontroler;
+package tv.piratemedia.lightcontroler.api;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

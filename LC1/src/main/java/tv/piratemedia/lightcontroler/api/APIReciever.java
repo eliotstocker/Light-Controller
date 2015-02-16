@@ -1,4 +1,4 @@
-package tv.piratemedia.lightcontroler;
+package tv.piratemedia.lightcontroler.api;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.StrictMode;
@@ -20,7 +19,9 @@ import android.util.Log;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.regex.Pattern;
+
+import tv.piratemedia.lightcontroler.R;
+import tv.piratemedia.lightcontroler.controlCommands;
 
 public class APIReciever extends BroadcastReceiver {
     public static final String REQUEST_API_PERMISSION = "tv.piratemedia.lightcontroler.requestAPIPermission";
