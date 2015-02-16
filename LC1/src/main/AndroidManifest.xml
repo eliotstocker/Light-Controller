@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="tv.piratemedia.lightcontroler.api.read" />
+    <uses-permission android:name="tv.piratemedia.lightcontroler.api" />
 
     <application
         android:allowBackup="true"
@@ -114,7 +114,8 @@
         <activity
             android:name=".api.APIZoneSelector"
             android:label="Zone Select"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:permission="tv.piratemedia.lightcontroler.api">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -123,7 +124,7 @@
         <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar">
+            android:theme="@style/LightController">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -131,12 +132,13 @@
 
         <receiver
             android:name=".api.APIReciever"
-            android:permission="tv.piratemedia.lightcontroler.api.read">
+            android:permission="tv.piratemedia.lightcontroler.api">
             <intent-filter>
                 <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightOn"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightOff"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightColor"/>
+                <action android:name="tv.piratemedia.lightcontroler.LightDefault"/>
             </intent-filter>
         </receiver>
 
@@ -146,12 +148,12 @@
             android:grantUriPermissions="true"
             android:label="@string/app_name"
             android:exported="true"
-            android:readPermission="tv.piratemedia.lightcontroler.api.read"
+            android:readPermission="tv.piratemedia.lightcontroler.api"
         />
 
     </application>
     <permission
-        android:name="tv.piratemedia.lightcontroler.api.read"
+        android:name="tv.piratemedia.lightcontroler.api"
         android:description="@string/api_description"
         android:label="@string/api_name"
         android:protectionLevel="signature"

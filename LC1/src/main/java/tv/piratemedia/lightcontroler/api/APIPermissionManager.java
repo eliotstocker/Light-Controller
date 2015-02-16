@@ -1,14 +1,16 @@
 package tv.piratemedia.lightcontroler.api;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +27,12 @@ import java.util.Set;
 
 import tv.piratemedia.lightcontroler.R;
 
-public class APIPermissionManager extends Activity {
+public class APIPermissionManager extends ActionBarActivity {
     private SharedPreferences prefs;
     private ListView PermsList;
     private ListAdapter PermsAdapter;
     private Set<String> enabled;
+    private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,20 @@ public class APIPermissionManager extends Activity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         PermsList = (ListView) findViewById(R.id.permission_list);
+
+        if(Build.VERSION.SDK_INT == 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
+        mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        setSupportActionBar(mActionBarToolbar);
+        mActionBarToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                APIPermissionManager.this.finish();
+            }
+        });
     }
 
     @Override
