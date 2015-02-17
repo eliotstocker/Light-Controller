@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -80,6 +81,7 @@ public class APIPermissionManager extends ActionBarActivity {
                                 enabled.remove(a.pkg);
                                 setUpAdapter();
                                 prefs.getStringSet("enabled_api_apps", enabled);
+                                _this.getContentResolver().notifyChange(Uri.parse("content://tv.piratemedia.lightcontroler.api/permission"), null);
                             }
                         })
                         .positiveText("Remove")

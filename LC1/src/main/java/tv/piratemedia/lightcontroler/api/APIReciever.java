@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -80,6 +81,7 @@ public class APIReciever extends BroadcastReceiver {
                     intent.setAction(intent.getStringExtra("initialAction"));
                     parseIntentRequest(context, intent);
                 }
+                context.getContentResolver().notifyChange(Uri.parse("content://tv.piratemedia.lightcontroler.api/permission"), null);
                 break;
             case DENY_APP_INTENT:
                 Log.d("intent", "remove notification: "+intent.getIntExtra("notifID", -1));
