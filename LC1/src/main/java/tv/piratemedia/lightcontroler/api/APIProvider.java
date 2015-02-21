@@ -30,58 +30,49 @@ public class APIProvider extends ContentProvider {
         @Override
     public boolean onCreate() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        return false;
+    }
 
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         String[] zone = new String[5];
         zone[0] = "id";
         zone[1] = "name";
         zone[2] = "type";
         zone[3] = "global";
         zone[4] = "index";
-
-        ZonesCursor = new MatrixCursor(zone);
-        Object[] glz = new Object[5];
-        glz[0] = 0;
-        glz[1] = "All Color";
-        glz[2] = "color";
-        glz[3] = 1;
-        glz[4] = 0;
-        ZonesCursor.addRow(glz);
-        glz[1] = "All White";
-        glz[2] = "white";
-        glz[4] = 9;
-        ZonesCursor.addRow(glz);
-        for(int i = 1; i < 9; i++) {
-            int id = i;
-            String type = "color";
-            if(i > 4) {
-                id = i - 4;
-                type = "white";
-            }
-            Object[] lz = new Object[5];
-            lz[0] = id;
-            lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
-            lz[2] = type;
-            lz[3] = 0;
-            lz[4] = i;
-            ZonesCursor.addRow(lz);
-        }
-        return false;
-    }
-
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        Log.d("Light Controller Query", "Query: "+uri);
         switch (sUriMatcher.match(uri)) {
             case 1:
+                ZonesCursor = new MatrixCursor(zone);
+                Object[] glz = new Object[5];
+                glz[0] = 0;
+                glz[1] = "All Color";
+                glz[2] = "color";
+                glz[3] = 1;
+                glz[4] = 0;
+                ZonesCursor.addRow(glz);
+                glz[1] = "All White";
+                glz[2] = "white";
+                glz[4] = 9;
+                ZonesCursor.addRow(glz);
+                for(int i = 1; i < 9; i++) {
+                    int id = i;
+                    String type = "color";
+                    if(i > 4) {
+                        id = i - 4;
+                        type = "white";
+                    }
+                    Object[] lz = new Object[5];
+                    lz[0] = id;
+                    lz[1] = prefs.getString("pref_zone"+i, "Zone "+id);
+                    lz[2] = type;
+                    lz[3] = 0;
+                    lz[4] = i;
+                    ZonesCursor.addRow(lz);
+                }
                 return ZonesCursor;
             case 2:
                 int i = Integer.decode(uri.getLastPathSegment());
-                String[] zone = new String[5];
-                zone[0] = "id";
-                zone[1] = "name";
-                zone[2] = "type";
-                zone[3] = "global";
-                zone[4] = "index";
 
                 int id = i;
                 String type = "color";
