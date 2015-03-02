@@ -44,7 +44,7 @@ public class controlCommands {
     private boolean measuring = false;
     private boolean candling = false;
     public final int[] tolerance = new int[1];
-    private SaveState appState = null;
+    public SaveState appState = null;
 
     public controlCommands(Context context, Handler handler) {
         UDPC = new UDPConnection(context, handler);
