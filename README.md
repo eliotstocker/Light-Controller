@@ -5,19 +5,6 @@ Light Controller
 
 [<img src="https://developer.android.com/images/brand/en_app_rgb_wo_60.png">](https://play.google.com/store/apps/details?id=tv.piratemedia.lightcontroler)
 
-Adding in Android wear functionality. doesnt look very pretty at the moment though
-old build
-
-![androidwear](wearapp.png)
-
-Latest build
-
-![<img src="https://cloud.githubusercontent.com/assets/7307429/5735984/c53b7282-9c23-11e4-87c7-6f3159bbca71.png">](https://cloud.githubusercontent.com/assets/7307429/5735984/c53b7282-9c23-11e4-87c7-6f3159bbca71.png)
-
-
-![<img src="https://cloud.githubusercontent.com/assets/7307429/5731062/a36e6a4c-9bd3-11e4-97f4-fb2dee3cd38e.png">](https://cloud.githubusercontent.com/assets/7307429/5731062/a36e6a4c-9bd3-11e4-97f4-fb2dee3cd38e.png)
-
-
 Description
 -----------
 have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app if you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
