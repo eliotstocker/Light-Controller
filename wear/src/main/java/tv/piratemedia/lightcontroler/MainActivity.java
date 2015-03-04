@@ -59,6 +59,27 @@ public class MainActivity extends FragmentActivity {
                         getSupportFragmentManager());
         ZonePager = (ViewPager) findViewById(R.id.pager);
         ZonePager.setAdapter(FragAdapter);
+        ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if(FragAdapter.isColor(i)) {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                } else {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
 
         mGestureDetector = new GestureDetector(this, new LongPressListener());
     }

@@ -16,14 +16,14 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.List;
 
-public class ColorZoneFragment extends Fragment {
+public class WhiteZoneFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
     public static final String ARG_COUNT = "count";
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        
+
         View rootView = inflater.inflate(
                 R.layout.color_zone, container, false);
         final Bundle args = getArguments();
