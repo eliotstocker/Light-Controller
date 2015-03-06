@@ -28,21 +28,38 @@ public class listenerService extends WearableListenerService {
         switch(messageEvent.getPath()) {
             case "/zones":
                 //recieved zone list, cache locally
+                boolean changes = false;
                 ObjectInputStream ois = null;
                 try {
                     ois = new ObjectInputStream(new ByteArrayInputStream(messageEvent.getData()));
                     List<String> list = (List<String>) ois.readObject();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    prefs.edit().putString("pref_zone0", list.get(0))
-                            .putString("pref_zone1", list.get(1))
-                            .putString("pref_zone2", list.get(2))
-                            .putString("pref_zone3", list.get(3))
-                            .putString("pref_zone4", list.get(4))
-                            .putString("pref_zone5", list.get(5))
-                            .putString("pref_zone6", list.get(6))
-                            .putString("pref_zone7", list.get(7))
-                            .putString("pref_zone8", list.get(8))
-                            .putString("pref_zone9", list.get(9)).apply();
+                    
+                    if(!prefs.getString("pref_zone0", null).equals(list.get(0)) ||
+                            !prefs.getString("pref_zone1", null).equals(list.get(1)) ||
+                            !prefs.getString("pref_zone2", null).equals(list.get(2)) ||
+                            !prefs.getString("pref_zone3", null).equals(list.get(3)) ||
+                            !prefs.getString("pref_zone4", null).equals(list.get(4)) ||
+                            !prefs.getString("pref_zone5", null).equals(list.get(5)) ||
+                            !prefs.getString("pref_zone6", null).equals(list.get(6)) ||
+                            !prefs.getString("pref_zone7", null).equals(list.get(7)) ||
+                            !prefs.getString("pref_zone8", null).equals(list.get(8)) ||
+                            !prefs.getString("pref_zone9", null).equals(list.get(9))) {
+                        changes = true;
+                    }
+                    
+                    if(changes) {
+                        prefs.edit().putString("pref_zone0", list.get(0))
+                                .putString("pref_zone1", list.get(1))
+                                .putString("pref_zone2", list.get(2))
+                                .putString("pref_zone3", list.get(3))
+                                .putString("pref_zone4", list.get(4))
+                                .putString("pref_zone5", list.get(5))
+                                .putString("pref_zone6", list.get(6))
+                                .putString("pref_zone7", list.get(7))
+                                .putString("pref_zone8", list.get(8))
+                                .putString("pref_zone9", list.get(9)).apply();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -52,10 +69,12 @@ public class listenerService extends WearableListenerService {
                         e.printStackTrace();
                     }
                 }
-                Intent intent = new Intent( this, MainActivity.class );
-                intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-                intent.putExtra("updated", true);
-                startActivity( intent );
+                if(changes) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("updated", true);
+                    startActivity(intent);
+                }
                 break;
             case "/wifi-connected":
                 int notificationId = 001;

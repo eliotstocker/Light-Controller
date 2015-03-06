@@ -101,14 +101,14 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
-        <service android:name=".DataLayerListenerService" >
+        <service android:name=".wear.DataLayerListenerService" >
             <intent-filter>
                 <action
                     android:name="com.google.android.gms.wearable.BIND_LISTENER"
                     />
             </intent-filter>
         </service>
-        <receiver android:name=".broadcastListener">
+        <receiver android:name=".wear.wifiConnectionListener">
             <intent-filter>
                 <action
                 android:name="android.net.conn.CONNECTIVITY_CHANGE"
@@ -137,6 +137,15 @@
         <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
+            android:theme="@style/LightController">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".wear.WearSettings"
+            android:label="Wear Settings"
             android:theme="@style/LightController">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,9 +1,10 @@
-package tv.piratemedia.lightcontroler;
+package tv.piratemedia.lightcontroler.wear;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -14,11 +15,13 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.List;
 
+import tv.piratemedia.lightcontroler.utils;
+
 /**
  * Created by mrwhale on 19/01/15.
  * This class will listen for changes in state of wifi, as to know whether we are connected to the correct SSID so then we can display a card on the watch
  */
-public class broadcastListener extends BroadcastReceiver {
+public class wifiConnectionListener extends BroadcastReceiver {
     //private Context mCtx;
     private GoogleApiClient mApiClient;
 
@@ -32,23 +35,13 @@ public class broadcastListener extends BroadcastReceiver {
     }
     @Override
     public void onReceive(Context context, Intent intent) {
-        //TODO: Have this in settings so user can set their SSID that has the wifi bridge, or automatically retrieve and save it when issuing successful commands
-        // Need help with setting up the ssid_name variable to be changeable by user. (unsure how it all works in the current setup, Need to talk to Eliot)
-
-
-
-        Log.d("BroadcastListener", "There was a change in state");
-
         utils cmd = new utils(context);
-        //Go\et SSID from prefs to do the check on
-        final String ssid = context.getString(R.string.ssid_name);
-        Log.d("broadcastlistener","ssid from prefs " + ssid);
-        // todo Send up zone names to watch so it can rename them all on the watch. send in array.
+        final SharedPreferences prefs = context.getSharedPreferences(WearSettings.NETWORKS_PREFS, Context.MODE_PRIVATE);
 
-
-        if(cmd.getWifiName().equalsIgnoreCase("ivegotinternet24"))
-        {
-            Log.d("broadcastListener", "you are connected to SSID");
+        Log.d("wear", "connecting to: "+cmd.getWifiName());
+        
+        if(prefs.getBoolean(cmd.getWifiName(), false)) {
+            Log.d("wear", "send notification to wear");
             connectToWatch(context);
             final com.google.android.gms.common.api.PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
             nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -59,7 +52,7 @@ public class broadcastListener extends BroadcastReceiver {
                         for (int i = 0; i < nodes.size(); i++) {
                             final Node node = nodes.get(i);
                             Log.d("utils","message sent");
-                            Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/Hi there", null);
+                            Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/wifi-connected", null);
                         }
                     }
                 }

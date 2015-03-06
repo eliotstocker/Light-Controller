@@ -36,21 +36,23 @@ public class MainActivity extends FragmentActivity {
 
         boolean updateZones = !getIntent().getBooleanExtra("updated", false);
 
-        if (mGoogleApiClient == null && updateZones)
+        if (mGoogleApiClient == null)
             return;
-        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult result) {
-                final List<Node> nodes = result.getNodes();
-                if (nodes != null) {
-                    for (int i = 0; i < nodes.size(); i++) {
-                        final Node node = nodes.get(i);
-                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
+        if(updateZones) {
+            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                @Override
+                public void onResult(NodeApi.GetConnectedNodesResult result) {
+                    final List<Node> nodes = result.getNodes();
+                    if (nodes != null) {
+                        for (int i = 0; i < nodes.size(); i++) {
+                            final Node node = nodes.get(i);
+                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.dismiss);
         mDismissOverlayView.setIntroText(R.string.intro_text);

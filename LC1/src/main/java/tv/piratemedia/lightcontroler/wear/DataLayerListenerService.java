@@ -1,4 +1,4 @@
-package tv.piratemedia.lightcontroler;
+package tv.piratemedia.lightcontroler.wear;
 
 
 import android.content.Context;
@@ -20,6 +20,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import tv.piratemedia.lightcontroler.R;
+import tv.piratemedia.lightcontroler.controlCommands;
+import tv.piratemedia.lightcontroler.controller;
 
 public class DataLayerListenerService extends WearableListenerService {
     private static final String TAG = "DataLayer";
@@ -60,13 +64,13 @@ public class DataLayerListenerService extends WearableListenerService {
                             List<String> zones = new ArrayList<String>(10);
                             zones.add("All Color");
                             zones.add(prefs.getString("pref_zone1", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone2", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone3", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone4", getApplicationContext().getString(R.string.Zone1)));
+                            zones.add(prefs.getString("pref_zone2", getApplicationContext().getString(R.string.Zone2)));
+                            zones.add(prefs.getString("pref_zone3", getApplicationContext().getString(R.string.Zone3)));
+                            zones.add(prefs.getString("pref_zone4", getApplicationContext().getString(R.string.Zone4)));
                             zones.add(prefs.getString("pref_zone5", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone6", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone7", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone8", getApplicationContext().getString(R.string.Zone1)));
+                            zones.add(prefs.getString("pref_zone6", getApplicationContext().getString(R.string.Zone2)));
+                            zones.add(prefs.getString("pref_zone7", getApplicationContext().getString(R.string.Zone3)));
+                            zones.add(prefs.getString("pref_zone8", getApplicationContext().getString(R.string.Zone4)));
                             zones.add("All White");
 
                             ByteArrayOutputStream bos = new ByteArrayOutputStream();
