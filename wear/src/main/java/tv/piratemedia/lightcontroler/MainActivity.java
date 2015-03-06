@@ -34,7 +34,9 @@ public class MainActivity extends FragmentActivity {
                 .build();
         mGoogleApiClient.connect();
 
-        if (mGoogleApiClient == null)
+        boolean updateZones = !getIntent().getBooleanExtra("updated", false);
+
+        if (mGoogleApiClient == null && updateZones)
             return;
         final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
         nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {

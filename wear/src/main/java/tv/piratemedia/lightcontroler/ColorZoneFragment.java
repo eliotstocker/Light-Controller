@@ -1,12 +1,15 @@
 package tv.piratemedia.lightcontroler;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -36,6 +39,10 @@ public class ColorZoneFragment extends Fragment {
             }
             indicators.addView(b);
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        TextView Name = (TextView) rootView.findViewById(R.id.title);
+        Name.setText(prefs.getString("pref_zone"+args.getInt(ARG_OBJECT), "Zone "+args.getInt(ARG_OBJECT)));
 
         Button on = (Button) rootView.findViewById(R.id.on);
         Button off = (Button) rootView.findViewById(R.id.off);
