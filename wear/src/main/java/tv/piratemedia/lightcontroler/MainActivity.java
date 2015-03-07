@@ -23,11 +23,30 @@ public class MainActivity extends FragmentActivity {
     private DismissOverlayView mDismissOverlayView;
     private GestureDetector mGestureDetector;
     public GoogleApiClient mGoogleApiClient;
+    public Boolean isRound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ShapeWear.initShapeWear(this);
+
+        ShapeWear.setOnShapeChangeListener(new ShapeWear.OnShapeChangeListener() {
+            @Override
+            public void shapeDetected(ShapeWear.ScreenShape screenShape) {
+                //Do your stuff here for example:
+                switch (screenShape){
+                    case MOTO_ROUND:
+                    case ROUND:
+                        isRound = true;
+                        break;
+                    case RECTANGLE:
+                        isRound = false;
+                        break;
+                }
+            }
+        });
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -57,35 +76,53 @@ public class MainActivity extends FragmentActivity {
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.dismiss);
         mDismissOverlayView.setIntroText(R.string.intro_text);
         mDismissOverlayView.showIntroIfNecessary();
-        
-        FragAdapter =
-                new ZonesPagerAdapter(
-                        getSupportFragmentManager());
-        ZonePager = (ViewPager) findViewById(R.id.pager);
-        ZonePager.setAdapter(FragAdapter);
-        ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i2) {
-
-            }
-
-            @Override
-            public void onPageSelected(int i) {
-                if(FragAdapter.isColor(i)) {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
-                } else {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
-
 
         mGestureDetector = new GestureDetector(this, new LongPressListener());
+
+        ShapeWear.setOnSizeChangeListener(new ShapeWear.OnSizeChangeListener() {
+            @Override
+            public void sizeDetected(int widthPx, int heightPx) {
+                if(isRound) {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                } else {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
+                }
+
+                FragAdapter =
+                        new ZonesPagerAdapter(
+                                getSupportFragmentManager());
+                ZonePager = (ViewPager) findViewById(R.id.pager);
+                ZonePager.setAdapter(FragAdapter);
+                ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int i, float v, int i2) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int i) {
+                        if(FragAdapter.isColor(i)) {
+                            if(isRound) {
+                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                            } else {
+                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
+                            }
+                        } else {
+                            if(isRound) {
+                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
+                            } else {
+                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border_square));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int i) {
+
+                    }
+                });
+            }
+        });
     }
 
     @Override

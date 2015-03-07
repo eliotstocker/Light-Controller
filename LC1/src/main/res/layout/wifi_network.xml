@@ -19,6 +19,7 @@
             android:layout_height="55dp"
             android:id="@+id/network_on"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp" />
+            android:layout_marginRight="16dp"
+            android:buttonTint="@color/colorAccent"/>
 
 </RelativeLayout>
