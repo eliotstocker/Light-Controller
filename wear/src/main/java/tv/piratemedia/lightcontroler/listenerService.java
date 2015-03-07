@@ -34,17 +34,19 @@ public class listenerService extends WearableListenerService {
                     ois = new ObjectInputStream(new ByteArrayInputStream(messageEvent.getData()));
                     List<String> list = (List<String>) ois.readObject();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                    Log.d("Wear", "Zone 0: "+list.get(0));
                     
-                    if(!prefs.getString("pref_zone0", null).equals(list.get(0)) ||
-                            !prefs.getString("pref_zone1", null).equals(list.get(1)) ||
-                            !prefs.getString("pref_zone2", null).equals(list.get(2)) ||
-                            !prefs.getString("pref_zone3", null).equals(list.get(3)) ||
-                            !prefs.getString("pref_zone4", null).equals(list.get(4)) ||
-                            !prefs.getString("pref_zone5", null).equals(list.get(5)) ||
-                            !prefs.getString("pref_zone6", null).equals(list.get(6)) ||
-                            !prefs.getString("pref_zone7", null).equals(list.get(7)) ||
-                            !prefs.getString("pref_zone8", null).equals(list.get(8)) ||
-                            !prefs.getString("pref_zone9", null).equals(list.get(9))) {
+                    if(!prefs.getString("pref_zone0", "").equals(list.get(0)) ||
+                            !prefs.getString("pref_zone1", "").equals(list.get(1)) ||
+                            !prefs.getString("pref_zone2", "").equals(list.get(2)) ||
+                            !prefs.getString("pref_zone3", "").equals(list.get(3)) ||
+                            !prefs.getString("pref_zone4", "").equals(list.get(4)) ||
+                            !prefs.getString("pref_zone5", "").equals(list.get(5)) ||
+                            !prefs.getString("pref_zone6", "").equals(list.get(6)) ||
+                            !prefs.getString("pref_zone7", "").equals(list.get(7)) ||
+                            !prefs.getString("pref_zone8", "").equals(list.get(8)) ||
+                            !prefs.getString("pref_zone9", "").equals(list.get(9))) {
                         changes = true;
                     }
                     

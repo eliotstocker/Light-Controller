@@ -44,7 +44,7 @@ public class DataLayerListenerService extends WearableListenerService {
         super.onMessageReceived(messageEvent);
         // if ("/MESSAGE".equals(messageEvent.getPath())) {
         // Create a new controller instance so we can send commands to the wifi controller
-        Log.d(TAG, "message received" + messageEvent.getPath());
+        Log.d(TAG, "message received " + messageEvent.getPath());
         controller mCont = new controller();
         controlCommands cmd;
         cmd = new controlCommands(this, mCont.mHandler);
