@@ -1,8 +1,11 @@
 package tv.piratemedia.lightcontroler;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -25,6 +28,9 @@ public class listenerService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         Log.d("wearlistener","Recevied message from handheld " + messageEvent.getPath());
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+        int notificationId = 11447;
         switch(messageEvent.getPath()) {
             case "/zones":
                 //recieved zone list, cache locally
@@ -74,28 +80,38 @@ public class listenerService extends WearableListenerService {
                 if(changes) {
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("updated", true);
                     startActivity(intent);
                 }
                 break;
             case "/wifi-connected":
-                int notificationId = 001;
                 Intent viewIntent = new Intent(this, MainActivity.class);
                 PendingIntent viewPendingIntent =
                         PendingIntent.getActivity(this, 0, viewIntent, 0);
 
+                Bitmap background = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.drawer_profile_background);
+
                 NotificationCompat.Builder notificationBuilder =
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("Turn me on")
-                                .setContentText("Swipe left to open app")
+                                .setContentTitle("Light Controller Connected")
+                                .setContentText("Slide left and tap open to open Light Controller")
+                                .setSubText("Slide left and tap open to open Light Controller")
+                                .setTicker("Slide left and tap open to open Light Controller")
+                                .setLargeIcon(background)
+                                .setFullScreenIntent(viewPendingIntent, true)
+                                .setOngoing(true)
                                 .setContentIntent(viewPendingIntent);
 
-                NotificationManagerCompat notificationManager =
-                        NotificationManagerCompat.from(this);
+                Notification notif = notificationBuilder.build();
+                notif.flags = NotificationCompat.FLAG_ONGOING_EVENT;
 
-                notificationManager.notify(notificationId, notificationBuilder.build());
+                notificationManager.notify(notificationId, notif);
                 break;
+            case "/wifi-disconnected":
+                notificationManager.cancel(notificationId);
         }
     }
 }

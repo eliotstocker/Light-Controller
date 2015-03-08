@@ -41,7 +41,6 @@ public class wifiConnectionListener extends BroadcastReceiver {
         Log.d("wear", "connecting to: "+cmd.getWifiName());
         
         if(prefs.getBoolean(cmd.getWifiName(), false)) {
-            Log.d("wear", "send notification to wear");
             connectToWatch(context);
             final com.google.android.gms.common.api.PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
             nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -51,14 +50,26 @@ public class wifiConnectionListener extends BroadcastReceiver {
                     if (nodes != null) {
                         for (int i = 0; i < nodes.size(); i++) {
                             final Node node = nodes.get(i);
-                            Log.d("utils","message sent");
                             Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/wifi-connected", null);
                         }
                     }
                 }
             });
-
-
+        } else {
+            connectToWatch(context);
+            final com.google.android.gms.common.api.PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
+            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                @Override
+                public void onResult(NodeApi.GetConnectedNodesResult result) {
+                    final List<Node> nodes = result.getNodes();
+                    if (nodes != null) {
+                        for (int i = 0; i < nodes.size(); i++) {
+                            final Node node = nodes.get(i);
+                            Wearable.MessageApi.sendMessage(mApiClient, node.getId(), "/wifi-disconnected", null);
+                        }
+                    }
+                }
+            });
         }
     }
 }

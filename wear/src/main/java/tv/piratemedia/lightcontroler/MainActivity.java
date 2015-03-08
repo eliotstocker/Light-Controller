@@ -24,6 +24,7 @@ public class MainActivity extends FragmentActivity {
     private GestureDetector mGestureDetector;
     public GoogleApiClient mGoogleApiClient;
     public Boolean isRound = false;
+    private Boolean disableTouch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,24 +61,6 @@ public class MainActivity extends FragmentActivity {
 
         boolean updateZones = !getIntent().getBooleanExtra("updated", false);
 
-        if (mGoogleApiClient == null)
-            return;
-        if(updateZones) {
-            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                @Override
-                public void onResult(NodeApi.GetConnectedNodesResult result) {
-                    final List<Node> nodes = result.getNodes();
-                    if (nodes != null) {
-                        for (int i = 0; i < nodes.size(); i++) {
-                            final Node node = nodes.get(i);
-                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
-                        }
-                    }
-                }
-            });
-        }
-
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.dismiss);
         mDismissOverlayView.setIntroText(R.string.intro_text);
         mDismissOverlayView.showIntroIfNecessary();
@@ -88,8 +71,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void sizeDetected(int widthPx, int heightPx) {
                 FragAdapter =
-                        new ZonesPagerAdapter(
-                                getSupportFragmentManager());
+                        new ZonesPagerAdapter(getSupportFragmentManager());
                 ZonePager = (ViewPager) findViewById(R.id.pager);
                 ZonePager.setAdapter(FragAdapter);
                 ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -122,6 +104,33 @@ public class MainActivity extends FragmentActivity {
                 });
             }
         });
+
+        if (mGoogleApiClient == null)
+            return;
+        if(updateZones) {
+            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                @Override
+                public void onResult(NodeApi.GetConnectedNodesResult result) {
+                    final List<Node> nodes = result.getNodes();
+                    if (nodes != null) {
+                        for (int i = 0; i < nodes.size(); i++) {
+                            final Node node = nodes.get(i);
+                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (disableTouch) {
+            disableTouch = false;
+            return false;
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -134,10 +143,9 @@ public class MainActivity extends FragmentActivity {
             GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(MotionEvent event) {
+            disableTouch = true;
             mDismissOverlayView.show();
-
         }
-
     }
 }
 
