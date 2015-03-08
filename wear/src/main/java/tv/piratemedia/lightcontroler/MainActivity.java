@@ -45,6 +45,11 @@ public class MainActivity extends FragmentActivity {
                         isRound = false;
                         break;
                 }
+                if(isRound) {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                } else {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
+                }
             }
         });
 
@@ -82,12 +87,6 @@ public class MainActivity extends FragmentActivity {
         ShapeWear.setOnSizeChangeListener(new ShapeWear.OnSizeChangeListener() {
             @Override
             public void sizeDetected(int widthPx, int heightPx) {
-                if(isRound) {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
-                } else {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
-                }
-
                 FragAdapter =
                         new ZonesPagerAdapter(
                                 getSupportFragmentManager());
