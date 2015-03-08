@@ -96,8 +96,7 @@ public class utils extends Activity implements GoogleApiClient.ConnectionCallbac
 
     public String getWifiName() {
         WifiManager wifi = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
-        String SSID = wifi.getConnectionInfo().getSSID();
-        return SSID.replace("\"","");
+        return wifi.getConnectionInfo().getSSID().substring(1, wifi.getConnectionInfo().getSSID().length() - 1);
     }
 
     public String GetWifiMac() {

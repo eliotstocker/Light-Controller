@@ -8,5 +8,6 @@
     <item name="button4" type="id">4</item>
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
+    <string name="intro_text">Long Press to Close</string>
 
 </resources>

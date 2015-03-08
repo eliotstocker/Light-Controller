@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:layout_marginTop="35dp"
+        android:alpha="0.5"
+        android:id="@+id/indicators">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bedroom"
+            android:id="@+id/title"
+            android:fontFamily="sans-serif-thin"
+            android:textSize="25dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="I"
+            android:id="@+id/on"
+            android:layout_weight="1"
+            android:background="@drawable/on_button_background"
+            android:fontFamily="sans-serif-thin"
+            android:textSize="40dp"
+            android:shadowColor="#00000000" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="o"
+            android:id="@+id/off"
+            android:layout_weight="1"
+            android:background="@drawable/off_button_background"
+            android:fontFamily="sans-serif-thin"
+            android:textSize="40dp"
+            android:shadowColor="#00000000" />
+    </LinearLayout>
+
+</FrameLayout>

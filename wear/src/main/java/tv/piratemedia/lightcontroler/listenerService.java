@@ -2,6 +2,8 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -9,38 +11,91 @@ import android.util.Log;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
-/**
- * Created by harry on 11/01/15.
- */
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.util.List;
+
 public class listenerService extends WearableListenerService {
 
     public void onMessageReceived(MessageEvent messageEvent) {
-        //Intent intent = new Intent( this, MainActivity.class );
-        //intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-        //startActivity( intent );
-
         super.onMessageReceived(messageEvent);
-        Log.d("wearlistener","Recevied message from handheld " + messageEvent.getPath() );
-        int notificationId = 001;
-// Build intent for notification content
-        Intent viewIntent = new Intent(this, MainActivity.class);
-        //viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+        Log.d("wearlistener","Recevied message from handheld " + messageEvent.getPath());
+        switch(messageEvent.getPath()) {
+            case "/zones":
+                //recieved zone list, cache locally
+                boolean changes = false;
+                ObjectInputStream ois = null;
+                try {
+                    ois = new ObjectInputStream(new ByteArrayInputStream(messageEvent.getData()));
+                    List<String> list = (List<String>) ois.readObject();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Turn me on")
-                        .setContentText("Swipe left to open app")
-                        .setContentIntent(viewPendingIntent);
+                    Log.d("Wear", "Zone 0: "+list.get(0));
+                    
+                    if(!prefs.getString("pref_zone0", "").equals(list.get(0)) ||
+                            !prefs.getString("pref_zone1", "").equals(list.get(1)) ||
+                            !prefs.getString("pref_zone2", "").equals(list.get(2)) ||
+                            !prefs.getString("pref_zone3", "").equals(list.get(3)) ||
+                            !prefs.getString("pref_zone4", "").equals(list.get(4)) ||
+                            !prefs.getString("pref_zone5", "").equals(list.get(5)) ||
+                            !prefs.getString("pref_zone6", "").equals(list.get(6)) ||
+                            !prefs.getString("pref_zone7", "").equals(list.get(7)) ||
+                            !prefs.getString("pref_zone8", "").equals(list.get(8)) ||
+                            !prefs.getString("pref_zone9", "").equals(list.get(9))) {
+                        changes = true;
+                    }
+                    
+                    if(changes) {
+                        prefs.edit().putString("pref_zone0", list.get(0))
+                                .putString("pref_zone1", list.get(1))
+                                .putString("pref_zone2", list.get(2))
+                                .putString("pref_zone3", list.get(3))
+                                .putString("pref_zone4", list.get(4))
+                                .putString("pref_zone5", list.get(5))
+                                .putString("pref_zone6", list.get(6))
+                                .putString("pref_zone7", list.get(7))
+                                .putString("pref_zone8", list.get(8))
+                                .putString("pref_zone9", list.get(9)).apply();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        ois.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(changes) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("updated", true);
+                    startActivity(intent);
+                }
+                break;
+            case "/wifi-connected":
+                int notificationId = 001;
+                Intent viewIntent = new Intent(this, MainActivity.class);
+                PendingIntent viewPendingIntent =
+                        PendingIntent.getActivity(this, 0, viewIntent, 0);
 
-// Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
+                NotificationCompat.Builder notificationBuilder =
+                        new NotificationCompat.Builder(this)
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle("Turn me on")
+                                .setContentText("Swipe left to open app")
+                                .setContentIntent(viewPendingIntent);
 
-// Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationId, notificationBuilder.build());
+                NotificationManagerCompat notificationManager =
+                        NotificationManagerCompat.from(this);
 
+                notificationManager.notify(notificationId, notificationBuilder.build());
+                break;
+        }
     }
 }

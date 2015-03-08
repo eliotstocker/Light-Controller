@@ -46,6 +46,11 @@
     <string name="cat_api">Light Controller API</string>
     <string name="pref_api_permissions">API Permissions</string>
     <string name="pref_api_permissions_desc">List and Remove Applications that are allowed to use the Light Controller API</string>
+    <string name="cat_wear">Android Wear</string>
+    <string name="pref_wear_settings">Wear Settings</string>
+    <string name="pref_wear_settings_desc">Change settings for Light Controller Android Wear app</string>
+    <string name="wear_summary">Enable a notification to be disabled on your android Wear Device when connected to a specific wifi network, simply select the network(s) below</string>
+    
 
     <string name="control_widget_config_explaination">What type of bulbs would you like this widget to control?</string>
     <string name="control_widget_rgbw">RGBW Bulbs</string>

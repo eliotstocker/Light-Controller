@@ -104,14 +104,22 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
+<<<<<<< HEAD
         <service android:name=".DataLayerListenerService" >
+=======
+        <service android:name=".wear.DataLayerListenerService" >
+>>>>>>> 9091b866c78bb69e1eaee78e61694027898e1304
             <intent-filter>
                 <action
                     android:name="com.google.android.gms.wearable.BIND_LISTENER"
                     />
             </intent-filter>
         </service>
+<<<<<<< HEAD
         <receiver android:name=".broadcastListener">
+=======
+        <receiver android:name=".wear.wifiConnectionListener">
+>>>>>>> 9091b866c78bb69e1eaee78e61694027898e1304
             <intent-filter>
                 <action
                 android:name="android.net.conn.CONNECTIVITY_CHANGE"
@@ -140,6 +148,15 @@
         <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
+            android:theme="@style/LightController">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".wear.WearSettings"
+            android:label="Wear Settings"
             android:theme="@style/LightController">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
