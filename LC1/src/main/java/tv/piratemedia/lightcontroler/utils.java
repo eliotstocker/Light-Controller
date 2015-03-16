@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
+import android.util.Patterns;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -116,6 +117,10 @@ public class utils extends Activity implements GoogleApiClient.ConnectionCallbac
         } catch (PatternSyntaxException ex) {
             return false;
         }
+    }
+
+    public static boolean validHost(String url) {
+        return Patterns.WEB_URL.matcher(url).matches();
     }
 
 

@@ -24,8 +24,8 @@
     <string name="full_label">Full</string>
 
     <string name="cat_head">Control Unit Preferences</string>
-    <string name="ip_head">Controller IP</string>
-    <string name="ip_summary">IP of the light control unit</string>
+    <string name="ip_head">Controller IP/Host</string>
+    <string name="ip_summary">IP or Host address of the light control unit</string>
     <string name="ip_invalid_error">IP: %1$s invalid, reverting to %2$s</string>
     <string name="port_head">Controller Port</string>
     <string name="port_summary">Port for the light control unit (Default 8899) only change if you need to</string>
