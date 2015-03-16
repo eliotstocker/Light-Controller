@@ -39,14 +39,23 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp" />
 
-                <ToggleButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:id="@+id/onoff"
-                    android:checked="false"
-                    style="@style/ToggleLightController"
-                    android:textOn=""
-                    android:textOff=""/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="I"
+                    android:id="@+id/on"
+                    android:background="#3dffffff"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="o"
+                    android:id="@+id/off"
+                    android:background="#10000000"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp" />
 
                 <Button
                     style="@style/ButtonLightController"
@@ -54,7 +63,7 @@
                     android:layout_height="55dp"
                     android:text="@string/white_label"
                     android:id="@+id/white"
-                    android:layout_marginTop="55dp"
+                    android:layout_marginTop="40dp"
                     android:textSize="13dp" />
             </LinearLayout>
 
@@ -90,8 +99,8 @@
                     android:layout_height="match_parent"
                     android:id="@+id/brightness"
                     android:layout_gravity="center_horizontal"
-                    android:max="20"
-                    android:progress="20"
+                    android:max="21"
+                    android:progress="21"
                     style="@style/SeekBarLightController" />
             </LinearLayout>
 

@@ -113,6 +113,12 @@ public class DataLayerListenerService extends WearableListenerService {
                         cmd.appState.setOnOff(zone, false);
                     }
                     break;
+                case "level":
+                    if(zone > 4) {
+
+                    } else {
+                        cmd.setBrightness(zone, Integer.parseInt(path.getPathSegments().get(2)));
+                    }
             }
         }
     }

@@ -1,9 +1,15 @@
 package tv.piratemedia.lightcontroler;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.wearable.view.DismissOverlayView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
@@ -25,6 +31,7 @@ public class MainActivity extends FragmentActivity {
     public GoogleApiClient mGoogleApiClient;
     public Boolean isRound = false;
     private Boolean disableTouch = false;
+    private BroadcastReceiver bc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +65,6 @@ public class MainActivity extends FragmentActivity {
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
-
-        boolean updateZones = !getIntent().getBooleanExtra("updated", false);
 
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.dismiss);
         mDismissOverlayView.setIntroText(R.string.intro_text);
@@ -105,36 +110,106 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        if (mGoogleApiClient == null)
-            return;
-        if(updateZones) {
-            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                @Override
-                public void onResult(NodeApi.GetConnectedNodesResult result) {
-                    final List<Node> nodes = result.getNodes();
-                    if (nodes != null) {
-                        for (int i = 0; i < nodes.size(); i++) {
-                            final Node node = nodes.get(i);
-                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
+        bc = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Received", intent.getAction());
+                if(intent.getAction().equals("tv.piratemedia.lightcontroler.wear.updated_zones")) {
+                    for(int i = 0; i < FragAdapter.getCount(); i++) {
+                        Log.d("Received", "update name in fragment");
+                        try {
+                            ColorZoneFragment f = (ColorZoneFragment) FragAdapter.getItem(i);
+                            f.updateName();
+                        } catch(ClassCastException e) {
+                            WhiteZoneFragment f = (WhiteZoneFragment) FragAdapter.getItem(i);
+                            f.updateName();
                         }
                     }
                 }
-            });
-        }
+            }
+        };
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (disableTouch) {
-            disableTouch = false;
-            return false;
-        }
-        return super.onTouchEvent(event);
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter(
+                "tv.piratemedia.lightcontroler.wear.updated_zones");
+        registerReceiver(bc, intentFilter);
+
+        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                final List<Node> nodes = result.getNodes();
+                if (nodes != null) {
+                    for (int i = 0; i < nodes.size(); i++) {
+                        final Node node = nodes.get(i);
+                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
+                    }
+                }
+            }
+        });
     }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(bc);
+        super.onPause();
+    }
+
+    private float startX = 0;
+    private float startY = 0;
+    private int currentStep = 0;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            startX = event.getX();
+            startY = event.getY();
+            currentStep = 0;
+        } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
+            float valX = event.getX();
+            float valY = event.getY();
+            float changeX = event.getX() - startX;
+            float changeY = event.getY() - startY;
+            float difX = changeX > 0 ? changeX : -changeX;
+            float difY = changeY > 0 ? changeY : -changeY;
+            if((difY > difX)) {
+                /*int cs = -(int)(changeY / 12.5f);
+                if(cs < 0) {
+                    cs = 20 + cs;
+                }
+                if(cs < 0) {
+                    cs = 0;
+                }
+                if(cs > 20) {
+                    cs = 20;
+                }*/
+                int cs = 20 - (int)(valY / 12.5f);
+                if(cs != currentStep) {
+                    currentStep = cs;
+                    if (mGoogleApiClient != null) {
+                        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                final List<Node> nodes = result.getNodes();
+                                if (nodes != null) {
+                                    for (int i = 0; i < nodes.size(); i++) {
+                                        final Node node = nodes.get(i);
+                                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ currentStep, null);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    Log.d("gesture", "Step: "+currentStep);
+                }
+            }
+        }
+
         return mGestureDetector.onTouchEvent(event)
                 || super.dispatchTouchEvent(event);
     }
@@ -143,7 +218,6 @@ public class MainActivity extends FragmentActivity {
             GestureDetector.SimpleOnGestureListener {
         @Override
         public void onLongPress(MotionEvent event) {
-            disableTouch = true;
             mDismissOverlayView.show();
         }
     }

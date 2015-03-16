@@ -21,21 +21,27 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class controlWidgetProvider extends AppWidgetProvider {
 
@@ -63,8 +69,11 @@ public class controlWidgetProvider extends AppWidgetProvider {
                      * {@inheritDoc}
                      */
                     public void onReceive(Context context, Intent intent) {
-                        setTime(context);
-                        //checkAlarm();
+                        Log.d("wear", "Update Clock");
+                        Intent updateIntent = new Intent();
+                        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                        updateIntent.putExtra("action", "update");
+                        context.sendBroadcast(updateIntent);
                     }
                 };
 
@@ -96,40 +105,12 @@ public class controlWidgetProvider extends AppWidgetProvider {
         public void onStart(Intent intent, int startId) {
             if (intent != null && intent.getAction() != null) {
                 if (intent.getAction().equals(ACTION_UPDATE)) {
-                    setTime(this);
+                    Intent updateIntent = new Intent();
+                    updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    this.sendBroadcast(updateIntent);
                 }
             }
         }
-
-        /*public void checkAlarm() {
-            String[] Keys = (String[]) prefs.getAll().keySet().toArray();
-            Map<String, ?> Prefs = prefs.getAll();
-            Calendar c = Calendar.getInstance();
-            long t = c.getTimeInMillis() / 1000;
-            for(int i = 0; i < Prefs.size(); i++) {
-                if(Keys[i].startsWith("light-alarm-days")) {
-                    boolean on = prefs.getBoolean(Keys[i].replace("days", "enabled"), false);
-                    String days = prefs.getString(Keys[i], null);
-                    String[] dayArray = days.split(",");
-                    int time = prefs.getInt(Keys[i].replace("days","time"), 0);
-                    for(int j = 0; j < dayArray.length; j++) {
-                        if(on && dayArray[j].equals(c.get(Calendar.DAY_OF_WEEK))) {
-                            int secondOfDay = (c.get(Calendar.HOUR_OF_DAY) * 60 * 60) + (c.get(Calendar.MINUTE) * 60);
-                            if(on && time >= secondOfDay && time < secondOfDay + 60) {
-                                Log.d("Eliot", "Day Alarm Active now");
-                            }
-                        }
-                    }
-                } else if(Keys[i].startsWith("light-alarm-date")) {
-                    boolean on = prefs.getBoolean(Keys[i].replace("date", "enabled"), false);
-                    long date = prefs.getLong(Keys[i],0);
-                    if(on && date >= t && date < (t + 60)) {
-                        Log.d("Eliot", "One Time Alarm Active now");
-                        prefs.edit().putBoolean(Keys[i].replace("date", "enabled"), false).commit();
-                    }
-                }
-            }
-        }*/
     }
 
     private static final int LIGHT_ON = 0;
@@ -138,6 +119,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
     private controlCommands Controller;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
+    private Map<Integer, Integer> HeightList = new HashMap<Integer, Integer>();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -146,14 +128,17 @@ public class controlWidgetProvider extends AppWidgetProvider {
         thisWidget = new ComponentName(context,
                 controlWidgetProvider.class);
 
-        aWM = appWidgetManager;
-
-        updateNames(context, appWidgetManager);
+        updateUI(context, appWidgetManager);
 
         Intent i = new Intent(context, ClockUpdateService.class);
         i.setAction(notificationService.START_SERVICE);
         context.startService(i);
-        setTime(context);
+    }
+
+    @Override
+    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+        updateUI(context, AppWidgetManager.getInstance(context));
+        super.onRestored(context, oldWidgetIds, newWidgetIds);
     }
 
     public void onDisabled(Context context) {
@@ -173,15 +158,34 @@ public class controlWidgetProvider extends AppWidgetProvider {
         context.startService(i);
     }
 
-    public void updateNames(Context context, AppWidgetManager appWidgetManager) {
+    public void updateUI(Context context, AppWidgetManager appWidgetManager) {
+        thisWidget = new ComponentName(context,
+                controlWidgetProvider.class);
+
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Calendar c = Calendar.getInstance();
+        int min = c.get(Calendar.MINUTE);
+        String minString = "00";
+        if(min < 10) {
+            minString = "0"+min;
+        } else {
+            minString = Integer.toString(min);
+        }
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        String hourString = "00";
+        if(hour < 10) {
+            hourString = "0"+hour;
+        } else {
+            hourString = Integer.toString(hour);
+        }
+
         for (int widgetId : allWidgetIds) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.control_widget_init);
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-            Log.d("appWidget", widgetId + " - type: " + prefs.getInt("widget_" + widgetId + "_type", 0));
             if(prefs.getInt("widget_" + widgetId + "_type", 0) == 0) {
                 remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone1", context.getString(R.string.Zone1)));
                 remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone2", context.getString(R.string.Zone2)));
@@ -227,6 +231,22 @@ public class controlWidgetProvider extends AppWidgetProvider {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
 
+            AppWidgetProviderInfo info = appWidgetManager.getAppWidgetInfo(widgetId);
+
+            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < 160) {
+                Log.d("widget", "Hide Date Time");
+                remoteViews.setViewVisibility(R.id.datetime, View.GONE);
+            } else {
+                remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
+            }
+
+            remoteViews.setTextViewText(R.id.timeHour, hourString);
+            remoteViews.setTextViewText(R.id.timeMinute, minString);
+            remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+            String month_name = month_date.format(c.getTime());
+            remoteViews.setTextViewText(R.id.dateMonth, month_name);
+
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
     }
@@ -246,67 +266,44 @@ public class controlWidgetProvider extends AppWidgetProvider {
         return pi;
     }
 
-    public static void setTime(Context ctx) {
-        Calendar c = Calendar.getInstance();
-        int min = c.get(Calendar.MINUTE);
-        String minString = "00";
-        if(min < 10) {
-            minString = "0"+min;
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager aWM, int appWidgetId, Bundle newOptions) {
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                R.layout.control_widget_init);
+        HeightList.put(appWidgetId, newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
+        if(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) < 160) {
+            remoteViews.setViewVisibility(R.id.datetime, View.GONE);
         } else {
-            minString = Integer.toString(min);
+            remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
         }
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        String hourString = "00";
-        if(hour < 10) {
-            hourString = "0"+hour;
-        } else {
-            hourString = Integer.toString(hour);
-        }
-        try {
-            int[] allWidgetIds = aWM.getAppWidgetIds(thisWidget);
-            for (int widgetId : allWidgetIds) {
-                try {
-                    RemoteViews remoteViews = new RemoteViews(ctx.getPackageName(),
-                            R.layout.control_widget_init);
-                    remoteViews.setTextViewText(R.id.timeHour, hourString);
-                    remoteViews.setTextViewText(R.id.timeMinute, minString);
-                    remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-                    SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-                    String month_name = month_date.format(c.getTime());
-                    remoteViews.setTextViewText(R.id.dateMonth, month_name);
-
-                    aWM.updateAppWidget(widgetId, remoteViews);
-                } catch(NullPointerException e) {
-                    //dont need to do anything really
-                }
-            }
-        } catch(NullPointerException e) {
-            //dont need to do anything really
-        }
+        aWM.updateAppWidget(appWidgetId, remoteViews);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        Controller = new controlCommands(context, null);
-
-        String action = intent.getAction();
-        if (intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)) {
-            Uri data = intent.getData();
-            int buttonId = Integer.parseInt(data.getSchemeSpecificPart());
-            int zone = Integer.parseInt(data.getScheme());
-            if (buttonId == LIGHT_ON) {
-                Controller.LightsOn(zone);
-            } else if (buttonId == LIGHT_OFF) {
-                Controller.LightsOff(zone);
-            }
+        if(intent.hasExtra("action") && intent.getStringExtra("action").equals("update")) {
+            Log.d("widget", "update widget");
+            this.updateUI(context, AppWidgetManager.getInstance(context));
         } else {
-            //do nothing
-            return;
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+            Controller = new controlCommands(context, null);
+
+            String action = intent.getAction();
+            if (intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)) {
+                Uri data = intent.getData();
+                int buttonId = Integer.parseInt(data.getSchemeSpecificPart());
+                int zone = Integer.parseInt(data.getScheme());
+                if (buttonId == LIGHT_ON) {
+                    Controller.LightsOn(zone);
+                } else if (buttonId == LIGHT_OFF) {
+                    Controller.LightsOff(zone);
+                }
+            } else {
+                //do nothing
+                return;
+            }
         }
     }
 }

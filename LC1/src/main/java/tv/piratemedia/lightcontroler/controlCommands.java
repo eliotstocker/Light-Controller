@@ -368,14 +368,17 @@ public class controlCommands {
         }
     }
 
-    private int[] values = { 2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
+    private int[] values = {2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
     private int LastBrightness = 20;
     private int LastZone = 0;
     private boolean finalSend = false;
     public boolean touching = false;
     public void setBrightness(int zoneid, int brightness) {
-        if(brightness > values.length - 1) {
+        if(brightness >= values.length) {
             brightness = values.length - 1;
+        }
+        if(brightness < 0) {
+            brightness = 0;
         }
         if(!sleeping) {
             LightsOn(zoneid);

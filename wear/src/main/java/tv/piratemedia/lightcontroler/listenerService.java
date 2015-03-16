@@ -27,7 +27,6 @@ public class listenerService extends WearableListenerService {
 
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        Log.d("wearlistener","Recevied message from handheld " + messageEvent.getPath());
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
         int notificationId = 11447;
@@ -41,8 +40,6 @@ public class listenerService extends WearableListenerService {
                     List<String> list = (List<String>) ois.readObject();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                    Log.d("Wear", "Zone 0: "+list.get(0));
-                    
                     if(!prefs.getString("pref_zone0", "").equals(list.get(0)) ||
                             !prefs.getString("pref_zone1", "").equals(list.get(1)) ||
                             !prefs.getString("pref_zone2", "").equals(list.get(2)) ||
@@ -78,11 +75,9 @@ public class listenerService extends WearableListenerService {
                     }
                 }
                 if(changes) {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra("updated", true);
-                    startActivity(intent);
+                    Intent intent = new Intent();
+                    intent.setAction("tv.piratemedia.lightcontroler.wear.updated_zones");
+                    sendBroadcast(intent);
                 }
                 break;
             case "/wifi-connected":

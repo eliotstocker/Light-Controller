@@ -20,6 +20,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="tv.piratemedia.lightcontroler.wear.updated_zones"/>
             </intent-filter>
         </activity>
 
