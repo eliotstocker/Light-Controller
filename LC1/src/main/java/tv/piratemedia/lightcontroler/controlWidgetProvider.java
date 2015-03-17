@@ -231,7 +231,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
 
-            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < 160) {
+            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < 120) {
                 Log.d("widget", "Hide Date Time");
                 remoteViews.setViewVisibility(R.id.datetime, View.GONE);
             } else {
@@ -264,16 +264,15 @@ public class controlWidgetProvider extends AppWidgetProvider {
         return pi;
     }
 
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager aWM, int appWidgetId, Bundle newOptions) {
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                 R.layout.control_widget_init);
+        Log.d("widget", "Get Widget Size");
         HeightList.put(appWidgetId, newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
-        if(newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) < 160) {
-            remoteViews.setViewVisibility(R.id.datetime, View.GONE);
-        } else {
-            remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
-        }
-        aWM.updateAppWidget(appWidgetId, remoteViews);
+        updateUI(context, appWidgetManager);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
     @Override
