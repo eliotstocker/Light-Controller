@@ -70,6 +70,7 @@
         <receiver android:name=".controlWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
             </intent-filter>
 
             <meta-data
@@ -101,7 +102,20 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
-
+        <service android:name=".wear.DataLayerListenerService" >
+            <intent-filter>
+                <action
+                    android:name="com.google.android.gms.wearable.BIND_LISTENER"
+                    />
+            </intent-filter>
+        </service>
+        <receiver android:name=".wear.wifiConnectionListener">
+            <intent-filter>
+                <action
+                android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".switchWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -124,6 +138,15 @@
         <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
+            android:theme="@style/LightController">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".wear.WearSettings"
+            android:label="Wear Settings"
             android:theme="@style/LightController">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

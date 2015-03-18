@@ -33,7 +33,6 @@ public class switchWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
-        Log.d("widget", "onUpdate Called");
         updateNames(context, appWidgetManager);
     }
 

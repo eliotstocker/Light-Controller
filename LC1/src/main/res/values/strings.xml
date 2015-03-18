@@ -24,8 +24,8 @@
     <string name="full_label">Full</string>
 
     <string name="cat_head">Control Unit Preferences</string>
-    <string name="ip_head">Controller IP</string>
-    <string name="ip_summary">IP of the light control unit</string>
+    <string name="ip_head">Controller IP/Host</string>
+    <string name="ip_summary">IP or Host address of the light control unit</string>
     <string name="ip_invalid_error">IP: %1$s invalid, reverting to %2$s</string>
     <string name="port_head">Controller Port</string>
     <string name="port_summary">Port for the light control unit (Default 8899) only change if you need to</string>
@@ -38,6 +38,7 @@
     <string name="pref_zone_2">Zone 2 Name</string>
     <string name="pref_zone_3">Zone 3 Name</string>
     <string name="pref_zone_4">Zone 4 Name</string>
+    <string name="ssid_name">ivegotinternet24</string>
     <string name="notifications">Notifications</string>
     <string name="lockscreen_notification_head">Notification When Locked</string>
     <string name="lockscreen_notification_summary">Enable light switch toggle Notification when screen off (Shows on Android 5.0 Lockscreen)</string>
@@ -45,6 +46,11 @@
     <string name="cat_api">Light Controller API</string>
     <string name="pref_api_permissions">API Permissions</string>
     <string name="pref_api_permissions_desc">List and Remove Applications that are allowed to use the Light Controller API</string>
+    <string name="cat_wear">Android Wear</string>
+    <string name="pref_wear_settings">Wear Settings</string>
+    <string name="pref_wear_settings_desc">Change settings for Light Controller Android Wear app</string>
+    <string name="wear_summary">Enable a notification to be disabled on your android Wear Device when connected to a specific wifi network, simply select the network(s) below</string>
+    
 
     <string name="control_widget_config_explaination">What type of bulbs would you like this widget to control?</string>
     <string name="control_widget_rgbw">RGBW Bulbs</string>

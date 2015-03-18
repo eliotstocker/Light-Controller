@@ -207,6 +207,9 @@ public class controlPreferences extends ActionBarActivity {
                         if (PARTIAl_IP_ADDRESS.matcher(nv).matches()) {
                             return true;
                         } else {
+                            if(utils.validHost(nv)) {
+                                return true;
+                            }
                             Toast toast = Toast.makeText(app.getApplicationContext(), String.format(getResources().getString(R.string.ip_invalid_error),nv,oldValue), Toast.LENGTH_SHORT);
                             toast.show();
                             return false;

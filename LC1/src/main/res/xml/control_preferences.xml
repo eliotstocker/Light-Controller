@@ -85,6 +85,16 @@
                 android:defaultValue="@string/Zone4"/>
         </PreferenceScreen>
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cat_wear">
+        <Preference
+            android:title="@string/pref_wear_settings"
+            android:summary="@string/pref_wear_settings_desc">
+            <intent
+                android:action="android.intent.action.main"
+                android:targetClass="tv.piratemedia.lightcontroler.wear.WearSettings"
+                android:targetPackage="tv.piratemedia.lightcontroler"/>
+        </Preference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_api">
         <Preference
             android:title="@string/pref_api_permissions"
