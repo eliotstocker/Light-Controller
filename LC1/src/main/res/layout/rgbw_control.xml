@@ -26,7 +26,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="65dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal|top">
 
                 <TextView
@@ -60,7 +60,7 @@
                 <Button
                     style="@style/ButtonLightController"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="45dp"
                     android:text="@string/white_label"
                     android:id="@+id/white"
                     android:layout_marginTop="45dp"
@@ -69,7 +69,7 @@
                 <Button
                     style="@style/ButtonLightController"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="45dp"
                     android:text="@string/night_label"
                     android:id="@+id/night"
                     android:textSize="13dp" />
@@ -83,7 +83,8 @@
                 android:layout_weight="4"
                 android:layout_marginLeft="-15dp"
                 android:layout_marginRight="-15dp"
-                android:layout_marginTop="-10dp" />
+                android:layout_marginTop="-10dp"
+                android:layout_gravity="center" />
 
             <LinearLayout
                 android:orientation="vertical"

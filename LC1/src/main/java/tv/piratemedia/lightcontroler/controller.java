@@ -885,9 +885,7 @@ public class controller extends ActionBarActivity {
                 night.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        Controller.setColorToNight(getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
 

@@ -36,4 +36,5 @@ Initial Release
 * Widget Improvements
 * Full API to implement light control into 3rd part apps
 * Allow Host for Control Box instead of IP
+* Night mode for (Supported) RGBW Bulbs
 

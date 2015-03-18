@@ -333,6 +333,40 @@ public class controlCommands {
         }
     }
 
+    public void setColorToNight(int zone) {
+        LightsOff(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 0:
+                    messageBA[0] = (byte)193;
+                    break;
+            case 1:
+                    messageBA[0] = (byte)198;
+                    break;
+            case 2:
+                    messageBA[0] = (byte)200;
+                    break;
+            case 3:
+                    messageBA[0] = (byte)202;
+                    break;
+            case 4:
+                    messageBA[0] = (byte)204;
+                    break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
     public void setToNight(int zone) {
         LightsOn(zone);
         try {
