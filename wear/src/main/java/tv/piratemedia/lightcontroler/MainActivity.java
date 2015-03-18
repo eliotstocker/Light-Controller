@@ -12,6 +12,9 @@ import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -177,17 +180,21 @@ public class MainActivity extends FragmentActivity {
             float difX = changeX > 0 ? changeX : -changeX;
             float difY = changeY > 0 ? changeY : -changeY;
             if((difY > difX)) {
-                /*int cs = -(int)(changeY / 12.5f);
-                if(cs < 0) {
-                    cs = 20 + cs;
+                int cs;
+                if(ZonePager.getCurrentItem() <= 4) {
+                    cs = 20 - (int)(valY / 12.5f);
+                } else {
+                    cs = -(int)(changeY / 12.5f);
+                    if(cs < 0) {
+                        cs = 20 + cs;
+                    }
                 }
                 if(cs < 0) {
                     cs = 0;
                 }
                 if(cs > 20) {
                     cs = 20;
-                }*/
-                int cs = 20 - (int)(valY / 12.5f);
+                }
                 if(cs != currentStep) {
                     currentStep = cs;
                     if (mGoogleApiClient != null) {
@@ -205,9 +212,15 @@ public class MainActivity extends FragmentActivity {
                             }
                         });
                     }
-                    Log.d("gesture", "Step: "+currentStep);
+                    LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+                    TextView text = (TextView) findViewById(R.id.brightnesstext);
+                    text.setText((currentStep * 5) + "%");
+                    container.setVisibility(View.VISIBLE);
                 }
             }
+        } else if(event.getAction() == MotionEvent.ACTION_UP) {
+            LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+            container.setVisibility(View.GONE);
         }
 
         return mGestureDetector.onTouchEvent(event)
