@@ -733,6 +733,7 @@ public class controller extends ActionBarActivity {
                 Button dplus = (Button) rootView.findViewById(R.id.dplus);
                 Button dminus = (Button) rootView.findViewById(R.id.dminus);
                 Button white = (Button) rootView.findViewById(R.id.white);
+                Button night = (Button) rootView.findViewById(R.id.night);
                 final ColorPicker color = (ColorPicker) rootView.findViewById(R.id.color);
                 SeekBar tolerance = (SeekBar) rootView.findViewById(R.id.mictolerance);
                 final Button toggleMic = (Button) rootView.findViewById(R.id.mic);
@@ -864,6 +865,15 @@ public class controller extends ActionBarActivity {
                         ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);
                         ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                    }
+                });
+
+                night.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);
                     }
                 });
 

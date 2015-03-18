@@ -51,10 +51,18 @@
                 <Button
                     style="@style/ButtonLightController"
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="50dp"
                     android:text="@string/white_label"
                     android:id="@+id/white"
-                    android:layout_marginTop="55dp"
+                    android:layout_marginTop="45dp"
+                    android:textSize="13dp" />
+
+                <Button
+                    style="@style/ButtonLightController"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="@string/night_label"
+                    android:id="@+id/night"
                     android:textSize="13dp" />
             </LinearLayout>
 
