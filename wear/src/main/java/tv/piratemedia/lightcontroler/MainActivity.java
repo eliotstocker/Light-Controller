@@ -179,42 +179,86 @@ public class MainActivity extends FragmentActivity {
             float changeY = event.getY() - startY;
             float difX = changeX > 0 ? changeX : -changeX;
             float difY = changeY > 0 ? changeY : -changeY;
+            int cs;
             if((difY > difX)) {
-                int cs;
                 if(ZonePager.getCurrentItem() <= 4) {
                     cs = 20 - (int)(valY / 12.5f);
-                } else {
-                    cs = -(int)(changeY / 12.5f);
-                    if(cs < 0) {
-                        cs = 20 + cs;
+                    if(cs > 20) {
+                        cs = 20;
+                    } else if(cs < 0) {
+                        cs = 0;
                     }
-                }
-                if(cs < 0) {
-                    cs = 0;
-                }
-                if(cs > 20) {
-                    cs = 20;
-                }
-                if(cs != currentStep) {
-                    currentStep = cs;
-                    if (mGoogleApiClient != null) {
+                    if(cs != currentStep) {
+                        currentStep = cs;
+                        if (mGoogleApiClient != null) {
+                            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                                @Override
+                                public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                    final List<Node> nodes = result.getNodes();
+                                    if (nodes != null) {
+                                        for (int i = 0; i < nodes.size(); i++) {
+                                            final Node node = nodes.get(i);
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ currentStep, null);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+                        TextView text = (TextView) findViewById(R.id.brightnesstext);
+                        text.setText((currentStep * 5) + "%");
+                        container.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    cs = -(int) (changeY / 12.5f);
+                    if(cs > 10) {
+                        cs = 10;
+                    } else if(cs < -10) {
+                        cs = -10;
+                    }
+                    if(cs > currentStep) {
+                        final int c = cs;
                         final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
                         nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
                             @Override
                             public void onResult(NodeApi.GetConnectedNodesResult result) {
                                 final List<Node> nodes = result.getNodes();
                                 if (nodes != null) {
-                                    for (int i = 0; i < nodes.size(); i++) {
-                                        final Node node = nodes.get(i);
-                                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ currentStep, null);
+                                    for(int i = currentStep; i < c; i++) {
+                                        for (int j = 0; j < nodes.size(); j++) {
+                                            final Node node = nodes.get(i);
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/1", null);
+                                        }
                                     }
+
+                                }
+                            }
+                        });
+                    } else if(cs < currentStep) {
+                        final int c = cs;
+                        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                final List<Node> nodes = result.getNodes();
+                                if (nodes != null) {
+                                    for(int i = currentStep; i > c; i--) {
+                                        for (int j = 0; j < nodes.size(); j++) {
+                                            final Node node = nodes.get(i);
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/-1", null);
+                                        }
+                                    }
+
                                 }
                             }
                         });
                     }
+                    currentStep = cs;
                     LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
                     TextView text = (TextView) findViewById(R.id.brightnesstext);
-                    text.setText((currentStep * 5) + "%");
+                    String txt = currentStep > 0 ? ("+" + currentStep) : (currentStep + "");
+                    text.setText(txt);
                     container.setVisibility(View.VISIBLE);
                 }
             }

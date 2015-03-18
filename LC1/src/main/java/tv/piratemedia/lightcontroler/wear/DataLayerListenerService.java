@@ -114,8 +114,17 @@ public class DataLayerListenerService extends WearableListenerService {
                     }
                     break;
                 case "level":
+                    cmd.appState.setOnOff(zone, true);
                     if(zone > 4) {
-
+                        Log.d("wear", path.getPathSegments().get(2));
+                        cmd.LightsOn(zone);
+                        if(Integer.parseInt(path.getPathSegments().get(2)) == 1) {
+                            cmd.setBrightnessUpOne();
+                            Log.d("wear", "up one");
+                        } else if(Integer.parseInt(path.getPathSegments().get(2)) == -1) {
+                            cmd.setBrightnessUpOne();
+                            Log.d("wear", "down one");
+                        }
                     } else {
                         cmd.setBrightness(zone, Integer.parseInt(path.getPathSegments().get(2)));
                     }
