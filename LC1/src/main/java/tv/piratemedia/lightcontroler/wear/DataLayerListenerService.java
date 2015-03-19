@@ -90,6 +90,7 @@ public class DataLayerListenerService extends WearableListenerService {
         } else {
             Uri path = Uri.parse(messageEvent.getPath());
             int zone = Integer.parseInt(path.getPathSegments().get(0));
+            Log.d("data", messageEvent.getPath());
             switch(path.getPathSegments().get(1)) {
                 case "on":
                     if(zone > 4) {

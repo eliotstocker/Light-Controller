@@ -6,7 +6,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ZonesPagerAdapter extends FragmentPagerAdapter {
+    private Map<Integer, Fragment> fragList = new HashMap<Integer, Fragment>();
     public ZonesPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -14,11 +20,17 @@ public class ZonesPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int i) {
         Fragment fragment;
-        if(i > 4) {
-            fragment = new WhiteZoneFragment();
+        if(!fragList.containsKey(i)) {
+            if(i > 4) {
+                fragment = new WhiteZoneFragment();
+            } else {
+                fragment = new ColorZoneFragment();
+            }
+            fragList.put(i, fragment);
         } else {
-            fragment = new ColorZoneFragment();
+            fragment = fragList.get(i);
         }
+
         Bundle args = new Bundle();
 
         args.putInt(ColorZoneFragment.ARG_OBJECT, i);
