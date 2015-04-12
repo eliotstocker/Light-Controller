@@ -33,6 +33,7 @@ public class wifiConnectionListener extends BroadcastReceiver {
         mApiClient.connect();
 
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         utils cmd = new utils(context);
