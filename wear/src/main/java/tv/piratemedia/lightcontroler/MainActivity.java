@@ -220,10 +220,11 @@ public class MainActivity extends FragmentActivity {
                             public void onResult(NodeApi.GetConnectedNodesResult result) {
                                 final List<Node> nodes = result.getNodes();
                                 if (nodes != null) {
-                                    for(int i = currentStep; i < c; i++) {
+                                    for(int i = currentStep; i > c; i--) {
                                         for (int j = 0; j < nodes.size(); j++) {
-                                            final Node node = nodes.get(i);
+                                            final Node node = nodes.get(j);
                                             Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/1", null);
+                                            Log.d("Wear", "Level + 1");
                                         }
                                     }
 
@@ -238,10 +239,11 @@ public class MainActivity extends FragmentActivity {
                             public void onResult(NodeApi.GetConnectedNodesResult result) {
                                 final List<Node> nodes = result.getNodes();
                                 if (nodes != null) {
-                                    for(int i = currentStep; i > c; i--) {
+                                    for(int i = currentStep; i < c; i++) {
                                         for (int j = 0; j < nodes.size(); j++) {
-                                            final Node node = nodes.get(i);
+                                            final Node node = nodes.get(j);
                                             Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/-1", null);
+                                            Log.d("Wear", "Level - 1");
                                         }
                                     }
 
