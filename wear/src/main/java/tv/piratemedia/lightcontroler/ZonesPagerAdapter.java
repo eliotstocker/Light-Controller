@@ -27,15 +27,15 @@ public class ZonesPagerAdapter extends FragmentPagerAdapter {
                 fragment = new ColorZoneFragment();
             }
             fragList.put(i, fragment);
+            Bundle args = new Bundle();
+
+            args.putInt(ColorZoneFragment.ARG_OBJECT, i);
+            args.putInt(ColorZoneFragment.ARG_COUNT, getCount());
+            fragment.setArguments(args);
         } else {
             fragment = fragList.get(i);
         }
 
-        Bundle args = new Bundle();
-
-        args.putInt(ColorZoneFragment.ARG_OBJECT, i);
-        args.putInt(ColorZoneFragment.ARG_COUNT, getCount());
-        fragment.setArguments(args);
         return fragment;
     }
 
