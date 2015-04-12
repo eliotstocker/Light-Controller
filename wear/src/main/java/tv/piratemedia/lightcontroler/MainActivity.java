@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
     private BroadcastReceiver bc;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -75,41 +75,36 @@ public class MainActivity extends FragmentActivity {
 
         mGestureDetector = new GestureDetector(this, new LongPressListener());
 
-        ShapeWear.setOnSizeChangeListener(new ShapeWear.OnSizeChangeListener() {
+        FragAdapter =
+                new ZonesPagerAdapter(getSupportFragmentManager());
+        ZonePager = (ViewPager) findViewById(R.id.pager);
+        ZonePager.setAdapter(FragAdapter);
+        ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void sizeDetected(int widthPx, int heightPx) {
-                FragAdapter =
-                        new ZonesPagerAdapter(getSupportFragmentManager());
-                ZonePager = (ViewPager) findViewById(R.id.pager);
-                ZonePager.setAdapter(FragAdapter);
-                ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int i, float v, int i2) {
+            public void onPageScrolled(int i, float v, int i2) {
 
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                if (FragAdapter.isColor(i)) {
+                    if (isRound) {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                    } else {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
                     }
-
-                    @Override
-                    public void onPageSelected(int i) {
-                        if(FragAdapter.isColor(i)) {
-                            if(isRound) {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
-                            } else {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
-                            }
-                        } else {
-                            if(isRound) {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
-                            } else {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border_square));
-                            }
-                        }
+                } else {
+                    if (isRound) {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
+                    } else {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border_square));
                     }
+                }
+            }
 
-                    @Override
-                    public void onPageScrollStateChanged(int i) {
+            @Override
+            public void onPageScrollStateChanged(int i) {
 
-                    }
-                });
             }
         });
 
