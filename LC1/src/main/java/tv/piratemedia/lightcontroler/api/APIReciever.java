@@ -12,13 +12,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import tv.piratemedia.lightcontroler.R;
@@ -29,7 +32,11 @@ public class APIReciever extends BroadcastReceiver {
     public static final String LIGHT_ON_INTENT = "tv.piratemedia.lightcontroler.LightOn";
     public static final String LIGHT_OFF_INTENT = "tv.piratemedia.lightcontroler.LightOff";
     public static final String LIGHT_COLOR_INTENT = "tv.piratemedia.lightcontroler.LightColor";
-    public static final String LIGHT_SET_DEFAULT = "tv.piratemedia.lightcontroler.LightDefault";
+    public static final String LIGHT_SET_DEFAULT_INTENT = "tv.piratemedia.lightcontroler.LightDefault";
+    public static final String LIGHT_FADE_IN_INTENT = "tv.piratemedia.lightcontroler.LightFadeIn";
+    public static final String LIGHT_FADE_OUT_INTENT = "tv.piratemedia.lightcontroler.LightFadeOut";
+    public static final String LIGHT_FADE_CANCEL_INTENT = "tv.piratemedia.lightcontroller.LightFadeCancel";
+
 
     private static final String ACCEPT_APP_INTENT = "tv.piratemedia.lightcontroler.internal.AcceptApp";
     private static final String DENY_APP_INTENT = "tv.piratemedia.lightcontroler.internal.DenyApp";
@@ -38,6 +45,8 @@ public class APIReciever extends BroadcastReceiver {
     public static final String TYPE_COLOR = "color";
 
     private int mId = 0;
+
+    private ArrayList<AsyncTask<String,String,String>> tasks = new ArrayList<AsyncTask<String,String,String>>();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -91,6 +100,7 @@ public class APIReciever extends BroadcastReceiver {
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     Log.d("Lights on ", "Zone: "+intent.getIntExtra("zone", -1));
                     switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
                         case 0:
                             c.LightsOn(0);
                             break;
@@ -109,6 +119,7 @@ public class APIReciever extends BroadcastReceiver {
                     }
                 } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
                     switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
                         case 0:
                             c.LightsOn(9);
                             break;
@@ -130,6 +141,7 @@ public class APIReciever extends BroadcastReceiver {
             case LIGHT_OFF_INTENT:
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
                         case 0:
                             c.LightsOff(0);
                             break;
@@ -148,6 +160,7 @@ public class APIReciever extends BroadcastReceiver {
                     }
                 } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
                     switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
                         case 0:
                             c.LightsOff(9);
                             break;
@@ -172,16 +185,18 @@ public class APIReciever extends BroadcastReceiver {
                     if (color != -1) {
                         int zone = intent.getIntExtra("zone", -1);
                         if (zone > -1 && zone < 5) {
+                            cancelCurrentTasks();
                             c.setColor(zone, color);
                         }
                     }
                 }
                 break;
-            case LIGHT_SET_DEFAULT:
+            case LIGHT_SET_DEFAULT_INTENT:
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     int zone = intent.getIntExtra("zone", -1);
                     if (zone > -1 && zone < 5) {
-                        switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
+                        switch (zone) {
                             case 0:
                                 c.LightsOn(0);
                                 break;
@@ -203,7 +218,8 @@ public class APIReciever extends BroadcastReceiver {
                 } else {
                     int zone = intent.getIntExtra("zone", -1);
                     if (zone > -1 && zone < 5) {
-                        switch (intent.getIntExtra("zone", -1)) {
+                        cancelCurrentTasks();
+                        switch (zone) {
                             case 0:
                                 c.LightsOn(9);
                                 break;
@@ -224,6 +240,162 @@ public class APIReciever extends BroadcastReceiver {
                     }
                 }
                 break;
+            case LIGHT_FADE_IN_INTENT:
+                if(intent.getIntExtra("zone", -1) < 0 || intent.getIntExtra("zone", -1) > 9) {
+                    break;
+                }
+                if(intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    int zone = intent.getIntExtra("zone", -1);
+                    int duration = intent.getIntExtra("duration", -1);
+                    if(duration <= 900 && duration > -1) {
+                        c.setToWhite(zone);
+                        c.setBrightness(zone, 0);
+                    }
+                    FadeLights(zone, TYPE_COLOR, true, duration, context);
+                } else {
+                    int zone = intent.getIntExtra("zone", -1);
+                    int duration = intent.getIntExtra("duration", -1);
+                    if(duration <= 900 && duration > 30) {
+                        switch (zone) {
+                            case 0:
+                                c.LightsOn(9);
+                                break;
+                            case 1:
+                                c.LightsOn(5);
+                                break;
+                            case 2:
+                                c.LightsOn(6);
+                                break;
+                            case 3:
+                                c.LightsOn(7);
+                                break;
+                            case 4:
+                                c.LightsOn(8);
+                                break;
+                        }
+                        for(int i = 0; i < 10; i++) {
+                            c.setBrightnessDownOne();
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        FadeLights(zone, TYPE_WHITE, true, duration, context);
+                    }
+                }
+                break;
+            case LIGHT_FADE_OUT_INTENT:
+                if(intent.getIntExtra("zone", -1) < 0 || intent.getIntExtra("zone", -1) > 9) {
+                    break;
+                }
+                if(intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    int zone = intent.getIntExtra("zone", -1);
+                    int duration = intent.getIntExtra("duration", -1);
+                    if(duration <= 900 && duration > -1) {
+                        c.setToWhite(zone);
+                        c.setBrightness(zone, 19);
+                    }
+                    FadeLights(zone, TYPE_COLOR, true, duration, context);
+                } else {
+                    int zone = intent.getIntExtra("zone", -1);
+                    int duration = intent.getIntExtra("duration", -1);
+                    if(duration <= 900 && duration > 30) {
+                        switch (zone) {
+                            case 0:
+                                c.LightsOn(9);
+                                break;
+                            case 1:
+                                c.LightsOn(5);
+                                break;
+                            case 2:
+                                c.LightsOn(6);
+                                break;
+                            case 3:
+                                c.LightsOn(7);
+                                break;
+                            case 4:
+                                c.LightsOn(8);
+                                break;
+                        }
+                        c.setToFull(zone);
+                        FadeLights(zone, TYPE_WHITE, true, duration, context);
+                    }
+                }
+                break;
+            case LIGHT_FADE_CANCEL_INTENT:
+                cancelCurrentTasks();
+                break;
+        }
+    }
+
+    private void FadeLights(final int Zone, final String Type, final Boolean in, int duration, Context context) {
+        final controlCommands c = new controlCommands(context, null);
+        final int interval;
+        final int Max;
+        if(Type.equals(TYPE_COLOR)) {
+            interval = Math.round(duration / 20);
+            Max = 20;
+        } else {
+            interval = Math.round(duration / 10);
+            Max = 10;
+        }
+        final AsyncTask<String, String, String> ast = new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... strings) {
+                int step = 0;
+                while(Max > step) {
+                    try {
+                        Thread.sleep(interval * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (Type.equals(TYPE_COLOR)) {
+                        if(in) {
+                            c.setBrightness(Zone, step);
+                        } else {
+                            int i = 19 - step;
+                            c.setBrightness(Zone, i);
+                        }
+                    } else {
+                        switch (Zone) {
+                            case 0:
+                                c.LightsOn(9);
+                                break;
+                            case 1:
+                                c.LightsOn(5);
+                                break;
+                            case 2:
+                                c.LightsOn(6);
+                                break;
+                            case 3:
+                                c.LightsOn(7);
+                                break;
+                            case 4:
+                                c.LightsOn(8);
+                                break;
+                        }
+                        if(in) {
+                            c.setBrightnessUpOne();
+                        } else {
+                            c.setBrightnessDownOne();
+                        }
+                    }
+                    step++;
+                }
+                tasks.remove(ast);
+                return null;
+            }
+        };
+        ast.execute();
+        tasks.add(ast);
+    }
+
+    private void cancelCurrentTasks() {
+        for(int i = 0; i < tasks.size(); i++) {
+            AsyncTask<String, String, String> ast = tasks.get(i);
+            ast.cancel(true);
+            tasks.remove(i);
         }
     }
 
