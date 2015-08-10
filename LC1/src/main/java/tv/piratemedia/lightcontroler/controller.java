@@ -270,7 +270,10 @@ public class controller extends ActionBarActivity {
     }
 
     private void attemptDiscovery() {
-        Controller.discover();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(!prefs.getBoolean("pref_disable_auto_find", false)) {
+            Controller.discover();
+        }
         //start timer here for no discovery (try 3 times)
     }
 

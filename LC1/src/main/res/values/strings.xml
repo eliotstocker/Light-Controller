@@ -25,6 +25,8 @@
 
     <string name="cat_head">Control Unit Preferences</string>
     <string name="ip_head">Controller IP/Host</string>
+    <string name="disable_discovery_title">Disable Auto Discovery</string>
+    <string name="disable_discovery_summary">Dont allow app to automatically look for LED Light control bridges on the network</string>
     <string name="ip_summary">IP or Host address of the light control unit</string>
     <string name="ip_invalid_error">IP: %1$s invalid, reverting to %2$s</string>
     <string name="port_head">Controller Port</string>
