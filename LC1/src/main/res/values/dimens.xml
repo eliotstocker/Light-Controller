@@ -18,4 +18,6 @@
     <dimen name="bar_length">240dp</dimen>
     <dimen name="bar_pointer_radius">6dp</dimen>
     <dimen name="bar_pointer_halo_radius">14dp</dimen>
+
+    <dimen name="widget_no_clock">35dp</dimen>
 </resources>

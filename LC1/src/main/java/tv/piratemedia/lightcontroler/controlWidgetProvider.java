@@ -231,7 +231,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
 
-            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < 120) {
+            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
                 Log.d("widget", "Hide Date Time");
                 remoteViews.setViewVisibility(R.id.datetime, View.GONE);
             } else {
