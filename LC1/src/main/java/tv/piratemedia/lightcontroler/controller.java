@@ -948,7 +948,11 @@ public class controller extends ActionBarActivity {
                 return rootView;
             } else {
                 disabled = true;
-                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                try {
+                    ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                } catch(Exception e) {
+
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable(){
                     @Override
@@ -1158,7 +1162,11 @@ public class controller extends ActionBarActivity {
                 return rootView;
             } else {
                 disabled = true;
-                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                try {
+                    ((ViewGroup) cacheView.getParent()).removeView(cacheView);
+                } catch(Exception e) {
+
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable(){
                     @Override

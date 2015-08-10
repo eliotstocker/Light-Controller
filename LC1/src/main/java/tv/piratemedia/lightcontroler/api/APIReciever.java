@@ -99,8 +99,8 @@ public class APIReciever extends BroadcastReceiver {
             case LIGHT_ON_INTENT:
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
                     Log.d("Lights on ", "Zone: "+intent.getIntExtra("zone", -1));
+                    cancelCurrentTasks();
                     switch (intent.getIntExtra("zone", -1)) {
-                        cancelCurrentTasks();
                         case 0:
                             c.LightsOn(0);
                             break;
@@ -118,8 +118,8 @@ public class APIReciever extends BroadcastReceiver {
                             break;
                     }
                 } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
+                    cancelCurrentTasks();
                     switch (intent.getIntExtra("zone", -1)) {
-                        cancelCurrentTasks();
                         case 0:
                             c.LightsOn(9);
                             break;
@@ -140,8 +140,8 @@ public class APIReciever extends BroadcastReceiver {
                 break;
             case LIGHT_OFF_INTENT:
                 if (intent.getStringExtra("type").equals(TYPE_COLOR)) {
+                    cancelCurrentTasks();
                     switch (intent.getIntExtra("zone", -1)) {
-                        cancelCurrentTasks();
                         case 0:
                             c.LightsOff(0);
                             break;
@@ -159,8 +159,8 @@ public class APIReciever extends BroadcastReceiver {
                             break;
                     }
                 } else if (intent.getStringExtra("type").equals(TYPE_WHITE)) {
+                    cancelCurrentTasks();
                     switch (intent.getIntExtra("zone", -1)) {
-                        cancelCurrentTasks();
                         case 0:
                             c.LightsOff(9);
                             break;
@@ -329,6 +329,7 @@ public class APIReciever extends BroadcastReceiver {
         }
     }
 
+    @SuppressWarnings("InstanceVariableMayNotBeInitialized")
     private void FadeLights(final int Zone, final String Type, final Boolean in, int duration, Context context) {
         final controlCommands c = new controlCommands(context, null);
         final int interval;
@@ -340,7 +341,7 @@ public class APIReciever extends BroadcastReceiver {
             interval = Math.round(duration / 10);
             Max = 10;
         }
-        final AsyncTask<String, String, String> ast = new AsyncTask<String, String, String>() {
+        final AsyncTask<String, String, String> runFade = new AsyncTask<String, String, String>() {
             @Override
             protected String doInBackground(String... strings) {
                 int step = 0;
@@ -383,12 +384,16 @@ public class APIReciever extends BroadcastReceiver {
                     }
                     step++;
                 }
-                tasks.remove(ast);
                 return null;
             }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
         };
-        ast.execute();
-        tasks.add(ast);
+        runFade.execute();
+        tasks.add(runFade);
     }
 
     private void cancelCurrentTasks() {
