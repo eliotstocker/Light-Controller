@@ -34,7 +34,9 @@ Initial Release
 ---
 * Android Wear Application
 * Widget Improvements
-* Full API to implement light control into 3rd part apps
+* Full API to implement light control into 3rd part apps (Check out: https://github.com/eliotstocker/Light-ControllerAPI)
 * Allow Host for Control Box instead of IP
 * Night mode for (Supported) RGBW Bulbs
+* Ability to disable Auto Discover
+* Changed On/Off to Buttons (From Toggle Switch)
 
