@@ -19,14 +19,11 @@ package tv.piratemedia.lightcontroler;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;

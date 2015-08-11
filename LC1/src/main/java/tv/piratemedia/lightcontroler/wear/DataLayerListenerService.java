@@ -127,6 +127,7 @@ public class DataLayerListenerService extends WearableListenerService {
                         }
                     } else {
                         cmd.setBrightness(zone, Integer.parseInt(path.getPathSegments().get(2)));
+                        Log.d("wear", "set brightness for color");
                     }
             }
         }
