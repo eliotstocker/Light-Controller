@@ -42,24 +42,18 @@
 
                 <Button
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:text="I"
-                    android:id="@+id/on"
-                    android:background="#3dffffff"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp" />
+                    android:id="@+id/on"/>
 
                 <Button
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="50dp"
                     android:text="o"
                     android:id="@+id/off"
-                    android:background="#10000000"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp" />
+                    android:backgroundTint="#333333"/>
 
                 <Button
-                    style="@style/ButtonLightController"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
                     android:text="@string/full_label"
@@ -68,7 +62,6 @@
                     android:textSize="13dp" />
 
                 <Button
-                    style="@style/ButtonLightController"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
                     android:text="@string/night_label"

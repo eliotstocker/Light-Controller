@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:navigationBarColor">#ff383838</item>
