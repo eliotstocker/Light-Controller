@@ -179,6 +179,6 @@
         android:name="tv.piratemedia.lightcontroler.api"
         android:description="@string/api_description"
         android:label="@string/api_name"
-        android:protectionLevel="signature"
+        android:protectionLevel="normal"
     />
 </manifest>

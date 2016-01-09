@@ -431,8 +431,8 @@ public class APIReciever extends BroadcastReceiver {
                             .setColor(context.getResources().getColor(R.color.colorAccent))
                             .setContentTitle("Light Control Permission")
                             .setContentText("'"+applicationName+"' is requesting permission to control your lights")
-                            .addAction(android.R.drawable.ic_menu_view, "Accept", AcceptControlRequest(context, in))
-                            .addAction(android.R.drawable.ic_delete, "Decline", DeclineControlRequest(context))
+                            .addAction(R.drawable.ic_done_24dp, "Accept", AcceptControlRequest(context, in))
+                            .addAction(R.drawable.ic_clear_24dp, "Decline", DeclineControlRequest(context))
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setVibrate(pattern)
                             .setStyle(notiStyle);
