@@ -19,12 +19,17 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +47,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -63,6 +69,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.support.v7.app.ActionBarActivity;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
@@ -77,6 +84,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 
@@ -169,9 +177,9 @@ public class controller extends ActionBarActivity {
                 .title("Controller Wifi Networks")
                 .theme(Theme.DARK)
                 .items(ShowNetworks)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         final String[] NetworkInfo = Networks[which + 2].split(",");
                         if (NetworkInfo[3].equals("NONE")) {
                             Controller.setWifiNetwork(NetworkInfo[1]);
@@ -179,24 +187,20 @@ public class controller extends ActionBarActivity {
                             new MaterialDialog.Builder(_this)
                                     .title("Password For: " + NetworkInfo[1])
                                     .theme(Theme.DARK)
-                                    .customView(input)
+                                    .customView(input, false)
                                     .content("Please type the network password")
                                     .positiveText("OK")
                                     .negativeText("Cancel")
-                                    .callback(new MaterialDialog.Callback() {
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
-                                        public void onPositive(MaterialDialog dialog) {
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                             Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
-                                        }
-
-                                        @Override
-                                        public void onNegative(MaterialDialog materialDialog) {
-
                                         }
                                     })
                                     .build()
                                     .show();
                         }
+                        return false;
                     }
                 })
                 .positiveText("Select")
@@ -354,11 +358,33 @@ public class controller extends ActionBarActivity {
                                 drawer.closeDrawer();
                             }
                         }));
+
+                drawer.addDivider();
+
+                final PackageManager pm = getPackageManager();
+                Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+                mainIntent.addCategory("tv.piratemedia.lightcontroller.plugin");
+                List<ResolveInfo> resolveInfos = pm.queryIntentActivities(mainIntent, 0);
+                for(final ResolveInfo info : resolveInfos) {
+                    drawer.addItem(new DrawerItem()
+                            .setTextMode(DrawerItem.SINGLE_LINE)
+                            .setTextPrimary(info.loadLabel(pm).toString())
+                            .setImage(info.loadIcon(pm))
+                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                @Override
+                                public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    Log.d("package", "pkg:"+info.resolvePackageName);
+                                    intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+                                    startActivity(intent);
+                                    drawer.closeDrawer();
+                                }
+                            }));
+                }
+
             } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
-
-
         }
     }
 
@@ -375,9 +401,9 @@ public class controller extends ActionBarActivity {
                 .theme(Theme.LIGHT)
                 .items(Options)
                 .cancelable(false)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         switch (which) {
                             case 0:
                                 prefs.edit().putBoolean("white_enabled", true).apply();
@@ -391,6 +417,7 @@ public class controller extends ActionBarActivity {
                                 break;
                         }
                         setupApp();
+                        return false;
                     }
                 })
                 .build()

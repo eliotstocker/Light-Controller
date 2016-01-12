@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="Zone Selection"
                 android:id="@+id/textView3"
-                android:textColor="@color/md_title_dark"
+                android:textColor="#FFFFFF"
                 android:textSize="@dimen/abc_text_size_title_material_toolbar" />
         </LinearLayout>
 
