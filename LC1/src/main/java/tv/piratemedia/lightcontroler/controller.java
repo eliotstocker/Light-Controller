@@ -359,29 +359,29 @@ public class controller extends ActionBarActivity {
                             }
                         }));
 
-                drawer.addDivider();
-
                 final PackageManager pm = getPackageManager();
                 Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
                 mainIntent.addCategory("tv.piratemedia.lightcontroller.plugin");
                 List<ResolveInfo> resolveInfos = pm.queryIntentActivities(mainIntent, 0);
-                for(final ResolveInfo info : resolveInfos) {
-                    drawer.addItem(new DrawerItem()
-                            .setTextMode(DrawerItem.SINGLE_LINE)
-                            .setTextPrimary(info.loadLabel(pm).toString())
-                            .setImage(info.loadIcon(pm))
-                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-                                @Override
-                                public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                                    Log.d("package", "pkg:"+info.resolvePackageName);
-                                    intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-                                    startActivity(intent);
-                                    drawer.closeDrawer();
-                                }
-                            }));
+                if(resolveInfos.size() > 0) {
+                    drawer.addDivider();
+                    for (final ResolveInfo info : resolveInfos) {
+                        drawer.addItem(new DrawerItem()
+                                .setTextMode(DrawerItem.SINGLE_LINE)
+                                .setTextPrimary(info.loadLabel(pm).toString())
+                                .setImage(info.loadIcon(pm))
+                                .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                    @Override
+                                    public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                                        Log.d("package", "pkg:" + info.resolvePackageName);
+                                        intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+                                        startActivity(intent);
+                                        drawer.closeDrawer();
+                                    }
+                                }));
+                    }
                 }
-
             } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
