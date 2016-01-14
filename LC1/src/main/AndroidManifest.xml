@@ -157,11 +157,14 @@
             android:name=".api.APIReciever"
             android:permission="tv.piratemedia.lightcontroler.api">
             <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightOn"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightOff"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightColor"/>
                 <action android:name="tv.piratemedia.lightcontroler.LightDefault"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 

@@ -137,9 +137,8 @@ public class APIPermissionManager extends ActionBarActivity {
                 if(ai != null) {
                     item.Icon = pm.getApplicationIcon(ai);
                     item.Name = (String) pm.getApplicationLabel(ai);
-                    return item;
                 }
-                return null;
+                return item;
             }
 
             @Override
@@ -165,9 +164,15 @@ public class APIPermissionManager extends ActionBarActivity {
                     holder.pkg = (TextView) convertView.findViewById(R.id.pkg_id);
                     holder.icon = (ImageView) convertView.findViewById(R.id.app_icon);
 
-                    holder.name.setText(item.Name);
+                    if(item.Name != null) {
+                        holder.name.setText(item.Name);
+                    } else {
+                        holder.name.setText("App Not Installed");
+                    }
                     holder.pkg.setText(item.pkg);
-                    holder.icon.setImageDrawable(item.Icon);
+                    if(item.Icon != null) {
+                        holder.icon.setImageDrawable(item.Icon);
+                    }
 
                     convertView.setTag(holder);
                 } else {

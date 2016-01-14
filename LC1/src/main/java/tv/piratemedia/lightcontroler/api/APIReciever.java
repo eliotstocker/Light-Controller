@@ -54,6 +54,18 @@ public class APIReciever extends BroadcastReceiver {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
+
+        if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
+            String packageName = intent.getData().getEncodedSchemeSpecificPart();
+            Log.d("package", "Package Removed:"+packageName);
+            if(enabled.contains(packageName)) {
+                enabled.remove(packageName);
+                prefs.edit().putStringSet("enabled_api_apps", enabled).apply();
+                Log.d("package", "API Permission removed");
+            }
+            return;
+        }
+
         if(intent.getAction().equals(ACCEPT_APP_INTENT) || intent.getAction().equals(DENY_APP_INTENT)) {
             Iterator<String> it = intent.getExtras().keySet().iterator();
             while(it.hasNext()) {
