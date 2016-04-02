@@ -10,20 +10,6 @@
         android:layout_height="wrap_content"
         android:background="@color/background_floating_material_light">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/close_menu_item"
-            android:layout_gravity="center_vertical|right"
-            android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
-            android:tint="#000000"
-            android:adjustViewBounds="false"
-            android:scaleType="fitEnd"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

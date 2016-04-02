@@ -58,7 +58,7 @@ public class controlPreferences extends ActionBarActivity {
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
-        mActionBarToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_ab_back_material);
         mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

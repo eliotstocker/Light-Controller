@@ -13,4 +13,5 @@
     <color name="widgetButtonPressed">#ffffffff</color>
     <color name="widgetButtonOn">#48ffffff</color>
     <color name="widgetButtonOff">#8effffff</color>
+    <color name="white">#ffffffff</color>
 </resources>
