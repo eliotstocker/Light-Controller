@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +37,7 @@ public class MainActivity extends FragmentActivity {
     public Boolean isRound = false;
     private Boolean disableTouch = false;
     private BroadcastReceiver bc;
+    private int screenHeight = 0;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -63,6 +66,11 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
+
+        Point point = new Point();
+        WindowManager wm = (WindowManager) getBaseContext().getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getSize(point);
+        screenHeight = point.y;
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -159,7 +167,7 @@ public class MainActivity extends FragmentActivity {
 
     private float startX = 0;
     private float startY = 0;
-    private int currentStep = 0;
+    private float currentStep = 0;
     private int newStep = 0;
 
     @Override
@@ -167,7 +175,7 @@ public class MainActivity extends FragmentActivity {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             startX = event.getX();
             startY = event.getY();
-            currentStep = 0;
+//            currentStep = 0;
         } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
             float valX = event.getX();
             float valY = event.getY();
@@ -183,8 +191,17 @@ public class MainActivity extends FragmentActivity {
                     } else if(newStep < 0) {
                         newStep = 0;
                     }
+
+                    System.out.println("changeY%: " + changeY / screenHeight + " screenHeight: " + screenHeight);
+                    currentStep -= changeY / 10;
+                    if (currentStep < 0) {
+                        currentStep = 0;
+                    } else if (currentStep > screenHeight) {
+                        currentStep = screenHeight;
+                    }
+                    System.out.println("currentStep: " + currentStep);
+
                     if(newStep != currentStep) {
-                        currentStep = newStep;
                         if (mGoogleApiClient != null) {
                             final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
                             nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
@@ -202,7 +219,7 @@ public class MainActivity extends FragmentActivity {
                         }
                         LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
                         TextView text = (TextView) findViewById(R.id.brightnesstext);
-                        text.setText((currentStep * 5) + "%");
+                        text.setText((int) ((currentStep / screenHeight) * 100) + "%");
                         container.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -221,7 +238,7 @@ public class MainActivity extends FragmentActivity {
                                 if (nodes != null) {
                                     for (int j = 0; j < nodes.size(); j++) {
                                         final Node node = nodes.get(j);
-                                        int steps = newStep - currentStep;
+                                        int steps = (int) (currentStep - newStep);
                                         for(int i = 0; i < steps; i++) {
                                             Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/1", null);
                                             currentStep++;
@@ -239,7 +256,7 @@ public class MainActivity extends FragmentActivity {
                                 if (nodes != null) {
                                     for (int j = 0; j < nodes.size(); j++) {
                                         final Node node = nodes.get(j);
-                                        int steps = currentStep - newStep;
+                                        int steps = (int) (currentStep - newStep);
                                         for(int i = 0; i < steps; i++) {
                                             Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/-1", null);
                                             currentStep--;
