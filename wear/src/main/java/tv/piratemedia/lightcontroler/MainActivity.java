@@ -231,9 +231,10 @@ public class MainActivity extends FragmentActivity {
                             }
                         });
                     }
-                    container.setVisibility(View.INVISIBLE);
                 }
             }
+
+            container.setVisibility(View.INVISIBLE);
         } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
             deltaX = event.getX() - startX;
             deltaY = event.getY() - startY;
