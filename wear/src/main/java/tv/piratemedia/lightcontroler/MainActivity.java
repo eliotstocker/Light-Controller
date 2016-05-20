@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.wearable.view.DismissOverlayView;
@@ -71,6 +71,11 @@ public class MainActivity extends FragmentActivity {
         WindowManager wm = (WindowManager) getBaseContext().getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getSize(point);
         screenHeight = point.y;
+        brightnessValPixels = screenHeight;
+        pixelsPerBrightnessStep = screenHeight / (float) BRIGHTNESS_STEPS;
+        resources = getResources();
+        container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+        txtBrightness = (TextView) findViewById(R.id.brightnesstext);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -167,119 +172,89 @@ public class MainActivity extends FragmentActivity {
 
     private float startX = 0;
     private float startY = 0;
-    private float currentStep = 0;
-    private int newStep = 0;
+    float deltaX = 0;
+    float deltaY = 0;
+
+    private float brightnessValPixels = 0;
+    private float brightnessValPixelsTemp = 0;
+    private int brightnessVal = 0;
+    private int oldBrightnessVal = -1;
+
+    private final int BRIGHTNESS_STEPS = 20;
+    private float pixelsPerBrightnessStep = 1;
+
+    Resources resources;
+    LinearLayout container;
+    TextView txtBrightness;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            startX = event.getX();
-            startY = event.getY();
-//            currentStep = 0;
-        } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
-            float valX = event.getX();
-            float valY = event.getY();
-            float changeX = event.getX() - startX;
-            float changeY = event.getY() - startY;
-            float difX = changeX > 0 ? changeX : -changeX;
-            float difY = changeY > 0 ? changeY : -changeY;
-            if((difY > difX)) {
-                if(ZonePager.getCurrentItem() <= 4) {
-                    newStep = 20 - (int)(valY / 12.5f);
-                    if(newStep > 20) {
-                        newStep = 20;
-                    } else if(newStep < 0) {
-                        newStep = 0;
-                    }
+            deltaX = event.getX() - startX;
+            deltaY = event.getY() - startY;
 
-                    System.out.println("changeY%: " + changeY / screenHeight + " screenHeight: " + screenHeight);
-                    currentStep -= changeY / 10;
-                    if (currentStep < 0) {
-                        currentStep = 0;
-                    } else if (currentStep > screenHeight) {
-                        currentStep = screenHeight;
-                    }
-                    System.out.println("currentStep: " + currentStep);
+            if((Math.abs(deltaY) > Math.abs(deltaX))) {
+                // Save start position for future reference
+                startX = event.getX();
+                startY = event.getY();
+            }
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            deltaX = event.getX() - startX;
+            deltaY = event.getY() - startY;
 
-                    if(newStep != currentStep) {
-                        if (mGoogleApiClient != null) {
-                            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-                            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                                @Override
-                                public void onResult(NodeApi.GetConnectedNodesResult result) {
-                                    final List<Node> nodes = result.getNodes();
-                                    if (nodes != null) {
-                                        for (int i = 0; i < nodes.size(); i++) {
-                                            final Node node = nodes.get(i);
-                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ currentStep, null);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                        LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
-                        TextView text = (TextView) findViewById(R.id.brightnesstext);
-                        text.setText((int) ((currentStep / screenHeight) * 100) + "%");
-                        container.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    newStep = -(int) (changeY / 12.5f);
-                    if(newStep > 10) {
-                        newStep = 10;
-                    } else if(newStep < -10) {
-                        newStep = -10;
-                    }
-                    if(newStep > currentStep) {
+            if((Math.abs(deltaY) > Math.abs(deltaX))) {
+                // Apply new brightness setting
+                deltaY = event.getY() - startY;
+                brightnessValPixels -= deltaY;
+                brightnessValPixels = Math.max(brightnessValPixels, 0);
+                brightnessValPixels = Math.min(brightnessValPixels, screenHeight);
+                brightnessVal = Math.round(brightnessValPixels / pixelsPerBrightnessStep);
+                System.out.println(pixelsPerBrightnessStep);
+
+                // Protecting the controller from being sent more commands than it needs to be
+                if (brightnessVal != oldBrightnessVal) {
+                    oldBrightnessVal = brightnessVal;
+
+                    // Send new brightness val to phone to send to hub
+                    if (mGoogleApiClient != null) {
                         final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
                         nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
                             @Override
                             public void onResult(NodeApi.GetConnectedNodesResult result) {
                                 final List<Node> nodes = result.getNodes();
                                 if (nodes != null) {
-                                    for (int j = 0; j < nodes.size(); j++) {
-                                        final Node node = nodes.get(j);
-                                        int steps = (int) (currentStep - newStep);
-                                        for(int i = 0; i < steps; i++) {
-                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/1", null);
-                                            currentStep++;
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    } else if(newStep < currentStep) {
-                        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-                        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                            @Override
-                            public void onResult(NodeApi.GetConnectedNodesResult result) {
-                                final List<Node> nodes = result.getNodes();
-                                if (nodes != null) {
-                                    for (int j = 0; j < nodes.size(); j++) {
-                                        final Node node = nodes.get(j);
-                                        int steps = (int) (currentStep - newStep);
-                                        for(int i = 0; i < steps; i++) {
-                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/-1", null);
-                                            currentStep--;
-                                        }
+                                    for (int i = 0; i < nodes.size(); i++) {
+                                        final Node node = nodes.get(i);
+                                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ brightnessVal, null);
                                     }
                                 }
                             }
                         });
                     }
-                    LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
-                    TextView text = (TextView) findViewById(R.id.brightnesstext);
-                    String txt = newStep > 0 ? ("+" + newStep) : (newStep + "");
-                    text.setText(txt);
-                    container.setVisibility(View.VISIBLE);
+                    container.setVisibility(View.INVISIBLE);
                 }
             }
-        } else if(event.getAction() == MotionEvent.ACTION_UP) {
-            LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
-            container.setVisibility(View.GONE);
+        } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
+            deltaX = event.getX() - startX;
+            deltaY = event.getY() - startY;
+
+            if((Math.abs(deltaY) > Math.abs(deltaX))) {
+                // Calculate new brightness step, but only display the current value on the screen
+                System.out.println(deltaY);
+
+                brightnessValPixelsTemp = brightnessValPixels;
+
+                brightnessValPixelsTemp -= deltaY;
+                brightnessValPixelsTemp = Math.max(brightnessValPixelsTemp, 0);
+                brightnessValPixelsTemp = Math.min(brightnessValPixelsTemp, screenHeight);
+
+                int brightnessPercentage = Math.round((brightnessValPixelsTemp / screenHeight) * 100);
+                txtBrightness.setText(resources.getString(R.string.brightness_percentage, brightnessPercentage));
+                container.setVisibility(View.VISIBLE);
+            }
         }
 
-        return mGestureDetector.onTouchEvent(event)
-                || super.dispatchTouchEvent(event);
+        return mGestureDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
     }
 
     private class LongPressListener extends
