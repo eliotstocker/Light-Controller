@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity {
         brightnessValPixels = screenHeight;
         pixelsPerBrightnessStep = screenHeight / (float) BRIGHTNESS_STEPS;
         resources = getResources();
-        container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+        brightnessTextContainer = (LinearLayout) findViewById(R.id.brightnesscontainer);
         txtBrightness = (TextView) findViewById(R.id.brightnesstext);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -172,8 +172,9 @@ public class MainActivity extends FragmentActivity {
 
     private float startX = 0;
     private float startY = 0;
-    float deltaX = 0;
-    float deltaY = 0;
+    private float deltaX = 0;
+    private float deltaY = 0;
+    private boolean swipingVertical = false;
 
     private float brightnessValPixels = 0;
     private float brightnessValPixelsTemp = 0;
@@ -184,7 +185,7 @@ public class MainActivity extends FragmentActivity {
     private float pixelsPerBrightnessStep = 1;
 
     Resources resources;
-    LinearLayout container;
+    LinearLayout brightnessTextContainer;
     TextView txtBrightness;
 
     @Override
@@ -199,6 +200,8 @@ public class MainActivity extends FragmentActivity {
                 startY = event.getY();
             }
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            ZonePager.setEnabled(true);
+
             deltaX = event.getX() - startX;
             deltaY = event.getY() - startY;
 
@@ -234,12 +237,18 @@ public class MainActivity extends FragmentActivity {
                 }
             }
 
-            container.setVisibility(View.INVISIBLE);
+            brightnessTextContainer.setVisibility(View.INVISIBLE);
         } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
             deltaX = event.getX() - startX;
             deltaY = event.getY() - startY;
 
             if((Math.abs(deltaY) > Math.abs(deltaX))) {
+                // Decide if brightness swipe
+                if (Math.abs(deltaY) > 20) {
+                    // If it is, disable the background fragment to prevent it from being inadvertently pressed
+                    ZonePager.setEnabled(false);
+                }
+
                 // Calculate new brightness step, but only display the current value on the screen
                 System.out.println(deltaY);
 
@@ -251,7 +260,7 @@ public class MainActivity extends FragmentActivity {
 
                 int brightnessPercentage = Math.round((brightnessValPixelsTemp / screenHeight) * 100);
                 txtBrightness.setText(resources.getString(R.string.brightness_percentage, brightnessPercentage));
-                container.setVisibility(View.VISIBLE);
+                brightnessTextContainer.setVisibility(View.VISIBLE);
             }
         }
 
