@@ -46,7 +46,7 @@ public class controlWidgetConfig extends ActionBarActivity {
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
 
-        mActionBarToolbar.setNavigationIcon(R.drawable.abc_ic_clear_mtrl_alpha);
+        mActionBarToolbar.setNavigationIcon(R.drawable.ic_clear_material);
         mActionBarToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

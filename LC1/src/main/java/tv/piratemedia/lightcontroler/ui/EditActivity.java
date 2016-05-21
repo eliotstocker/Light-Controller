@@ -79,7 +79,8 @@ public final class EditActivity extends AbstractPluginActivity
             final View rootView = getLayoutInflater().inflate(R.layout.rgbw_control, (ViewGroup) findViewById(R.id.main), false);
 
             SeekBar brightness = (SeekBar) findViewById(R.id.brightness);
-            ToggleButton io = (ToggleButton) findViewById(R.id.onoff);
+            Button on = (Button) findViewById(R.id.on);
+            Button off = (Button) findViewById(R.id.off);
             Button white = (Button) findViewById(R.id.white);
             final ColorPicker color = (ColorPicker) findViewById(R.id.color);
 
@@ -88,8 +89,6 @@ public final class EditActivity extends AbstractPluginActivity
                 @Override
                 public void onColorChanged(int i) {
                     commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.COLOR, i));
-                    ToggleButton io = (ToggleButton) findViewById(R.id.onoff);
-                    io.setChecked(true);
                 }
             });
 
@@ -97,8 +96,6 @@ public final class EditActivity extends AbstractPluginActivity
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.BRIGHTNESS, progress));
-                    ToggleButton io = (ToggleButton) findViewById(R.id.onoff);
-                    io.setChecked(true);
                 }
 
                 @Override
@@ -112,14 +109,17 @@ public final class EditActivity extends AbstractPluginActivity
                 }
             });
 
-            io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            on.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.ON));
-                    } else {
-                        commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.OFF));
-                    }
+                public void onClick(View view) {
+                    commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.ON));
+                }
+            });
+
+            off.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.OFF));
                 }
             });
 
@@ -127,8 +127,6 @@ public final class EditActivity extends AbstractPluginActivity
                 @Override
                 public void onClick(View v) {
                     commands.add(new TaskerCommand(0, TaskerCommand.TASKTYPE.WHITE));
-                    ToggleButton io = (ToggleButton) findViewById(R.id.onoff);
-                    io.setChecked(true);
                 }
             });
 
