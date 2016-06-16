@@ -22,12 +22,13 @@ import java.util.List;
 public class WhiteZoneFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
     public static final String ARG_COUNT = "count";
+    private View rootView = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(
+        rootView = inflater.inflate(
                 R.layout.color_zone, container, false);
         final Bundle args = getArguments();
 
@@ -89,5 +90,20 @@ public class WhiteZoneFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public void updateName() {
+        if(rootView == null) {
+            return;
+        }
+        final Bundle args = getArguments();
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            TextView Name = (TextView) rootView.findViewById(R.id.title);
+            Name.setText(prefs.getString("pref_zone" + args.getInt(ARG_OBJECT), "Zone " + args.getInt(ARG_OBJECT)));
+        } catch(Exception e) {
+
+        }
     }
 }

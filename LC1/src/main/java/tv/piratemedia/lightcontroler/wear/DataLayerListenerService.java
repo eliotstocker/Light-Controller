@@ -44,7 +44,6 @@ public class DataLayerListenerService extends WearableListenerService {
         super.onMessageReceived(messageEvent);
         // if ("/MESSAGE".equals(messageEvent.getPath())) {
         // Create a new controller instance so we can send commands to the wifi controller
-        Log.d(TAG, "message received " + messageEvent.getPath());
         controller mCont = new controller();
         controlCommands cmd;
         cmd = new controlCommands(this, mCont.mHandler);
@@ -113,6 +112,23 @@ public class DataLayerListenerService extends WearableListenerService {
                         cmd.appState.setOnOff(zone, false);
                     }
                     break;
+                case "level":
+                    cmd.appState.setOnOff(zone, true);
+                    if(zone > 4) {
+                        cmd.LightsOn(zone);
+                        if(Integer.parseInt(path.getPathSegments().get(2)) == 1) {
+                            cmd.setBrightnessUpOne();
+                            Log.d("wear", "up one");
+                        } else if(Integer.parseInt(path.getPathSegments().get(2)) == -1) {
+                            cmd.setBrightnessDownOne();
+                            Log.d("wear", "down one");
+                        } else {
+                            Log.d("wear", "unknown level: "+path.getPathSegments().get(2));
+                        }
+                    } else {
+                        cmd.setBrightness(zone, Integer.parseInt(path.getPathSegments().get(2)));
+                        Log.d("wear", "set brightness for color");
+                    }
             }
         }
     }

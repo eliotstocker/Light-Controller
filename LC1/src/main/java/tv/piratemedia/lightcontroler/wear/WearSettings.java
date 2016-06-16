@@ -1,7 +1,6 @@
 package tv.piratemedia.lightcontroler.wear;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.net.wifi.WifiConfiguration;

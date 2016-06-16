@@ -8,9 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
     <uses-permission android:name="tv.piratemedia.lightcontroler.api" />
 
     <application
@@ -73,6 +70,7 @@
         <receiver android:name=".controlWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
             </intent-filter>
 
             <meta-data
@@ -104,22 +102,14 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
-<<<<<<< HEAD
-        <service android:name=".DataLayerListenerService" >
-=======
         <service android:name=".wear.DataLayerListenerService" >
->>>>>>> 9091b866c78bb69e1eaee78e61694027898e1304
             <intent-filter>
                 <action
                     android:name="com.google.android.gms.wearable.BIND_LISTENER"
                     />
             </intent-filter>
         </service>
-<<<<<<< HEAD
-        <receiver android:name=".broadcastListener">
-=======
         <receiver android:name=".wear.wifiConnectionListener">
->>>>>>> 9091b866c78bb69e1eaee78e61694027898e1304
             <intent-filter>
                 <action
                 android:name="android.net.conn.CONNECTIVITY_CHANGE"
@@ -175,6 +165,16 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".api.AppReciever"
+            android:permission="tv.piratemedia.lightcontroler.api">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:authorities="tv.piratemedia.lightcontroler.api"
             android:name=".api.APIProvider"
@@ -189,6 +189,6 @@
         android:name="tv.piratemedia.lightcontroler.api"
         android:description="@string/api_description"
         android:label="@string/api_name"
-        android:protectionLevel="signature"
+        android:protectionLevel="normal"
     />
 </manifest>

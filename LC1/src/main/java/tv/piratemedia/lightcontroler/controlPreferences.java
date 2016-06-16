@@ -28,7 +28,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -207,6 +206,9 @@ public class controlPreferences extends ActionBarActivity {
                         if (PARTIAl_IP_ADDRESS.matcher(nv).matches()) {
                             return true;
                         } else {
+                            if(utils.validHost(nv)) {
+                                return true;
+                            }
                             Toast toast = Toast.makeText(app.getApplicationContext(), String.format(getResources().getString(R.string.ip_invalid_error),nv,oldValue), Toast.LENGTH_SHORT);
                             toast.show();
                             return false;

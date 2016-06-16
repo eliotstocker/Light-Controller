@@ -40,31 +40,32 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp" />
 
-                <ToggleButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:id="@+id/onoff"
-                    android:checked="false"
-                    style="@style/ToggleLightController"
-                    android:textOn=""
-                    android:textOff=""/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="I"
+                    android:id="@+id/on"/>
 
                 <Button
-                    style="@style/ButtonLightController"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="o"
+                    android:id="@+id/off"
+                    android:backgroundTint="#333333"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
                     android:text="@string/full_label"
                     android:id="@+id/full"
-                    android:layout_marginTop="55dp"
+                    android:layout_marginTop="45dp"
                     android:textSize="13dp" />
 
                 <Button
-                    style="@style/ButtonLightController"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:text="@string/night_label"
                     android:id="@+id/night"
-                    android:layout_marginTop="10dp"
                     android:textSize="13dp" />
             </LinearLayout>
 

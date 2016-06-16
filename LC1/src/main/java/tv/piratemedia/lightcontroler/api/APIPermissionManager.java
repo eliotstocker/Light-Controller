@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.HashSet;
@@ -75,9 +77,9 @@ public class APIPermissionManager extends ActionBarActivity {
                         .title("Remove Permission")
                         .content("Remove API Permission for '"+a.Name+"'?")
                         .cancelable(true)
-                        .callback(new MaterialDialog.SimpleCallback() {
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onPositive(MaterialDialog materialDialog) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 enabled.remove(a.pkg);
                                 setUpAdapter();
                                 prefs.getStringSet("enabled_api_apps", enabled);
@@ -135,9 +137,8 @@ public class APIPermissionManager extends ActionBarActivity {
                 if(ai != null) {
                     item.Icon = pm.getApplicationIcon(ai);
                     item.Name = (String) pm.getApplicationLabel(ai);
-                    return item;
                 }
-                return null;
+                return item;
             }
 
             @Override
@@ -163,9 +164,15 @@ public class APIPermissionManager extends ActionBarActivity {
                     holder.pkg = (TextView) convertView.findViewById(R.id.pkg_id);
                     holder.icon = (ImageView) convertView.findViewById(R.id.app_icon);
 
-                    holder.name.setText(item.Name);
+                    if(item.Name != null) {
+                        holder.name.setText(item.Name);
+                    } else {
+                        holder.name.setText("App Not Installed");
+                    }
                     holder.pkg.setText(item.pkg);
-                    holder.icon.setImageDrawable(item.Icon);
+                    if(item.Icon != null) {
+                        holder.icon.setImageDrawable(item.Icon);
+                    }
 
                     convertView.setTag(holder);
                 } else {

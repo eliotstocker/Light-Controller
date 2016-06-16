@@ -1,326 +1,73 @@
-
-//http://www.technotalkative.com/android-wear-part-5-wearablelistview/
 package tv.piratemedia.lightcontroler;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.wearable.view.WatchViewStub;
-import android.support.wearable.view.WearableListView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.wearable.view.DismissOverlayView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
-import com.google.android.gms.wearable.Wearable;
-
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-/**
-        * Created by mrwhale
-        * This class is the main activity class for the wear device, and will, onclick, send message to handheld to turn lights on/off
-        * This had to be in its own class as it needs to have the same package name as the mainactivity on the handheld to work properly
-        */
-public class MainActivity extends Activity implements WearableListView.ClickListener, WearableListView.OnCenterProximityListener{
-
-    private WearableListView mListView;
-    private GoogleApiClient mGoogleApiClient;
-    private ImageView mCircle;
-    private TextView mName;
-
-    //private final float mFadedTextAlpha =
-    private final float mFadedTextAlpha = R.integer.action_text_faded_alpha / 100f;
-    private final int mFadedCircleColor = R.color.wl_gray;
-    private final int mChosenCircleColor = R.color.wl_blue;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listview);
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                mListView = (WearableListView) stub.findViewById(R.id.listView1);
-                mListView.setAdapter(new MyAdapter(MainActivity.this));
-                mListView.setClickListener(MainActivity.this);
-            }
-        });
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
-    private static ArrayList<String> listItems;
-    static {
-        listItems = new ArrayList<String>();
-        listItems.add("White Zone 1");
-        listItems.add("White Zone 2");
-        listItems.add("White Zone 3");
-        listItems.add("White Zone 4");
-        listItems.add("RGBW Zone 1");
-        listItems.add("RGBW Zone 2");
-        listItems.add("RGBW Zone 3");
-        listItems.add("RGBW Zone 4");
-    }
-
-    @Override
-    public void onClick(final WearableListView.ViewHolder viewHolder) {
-        Log.d("wear","I pressed " + viewHolder.getPosition());
-
-        if (mGoogleApiClient == null)
-            return;
-
-        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult result) {
-                final List<Node> nodes = result.getNodes();
-                if (nodes != null) {
-                    for (int i=0; i<nodes.size(); i++) {
-                        final Node node = nodes.get(i);
-
-                        // You can just send a message
-                        //Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/MESSAGE", null);
-                        switch(viewHolder.getPosition()) {
-                            case 0:
-                                Log.d("wear","pos 0 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/0", null);
-                                break;
-                            case 1:
-                                Log.d("wear","pos 1 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/1", null);
-                                break;
-                            case 2:
-                                Log.d("wear", "pos 2 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/2", null);
-                                break;
-                            case 3:
-                                Log.d("wear", "pos 3 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/3", null);
-                                break;
-                            case 4:
-                                Log.d("wear", "pos 4 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/4", null);
-                                break;
-                            case 5:
-                                Log.d("wear", "pos 5 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/5", null);
-                                break;
-                            case 6:
-                                Log.d("wear", "pos 6 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/6", null);
-                                break;
-                            case 7:
-                                Log.d("wear", "pos 7 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/7", null);
-                                break;
-                        }
-                    }
-                }
-            }
-        });
-
-    }
-
-    @Override
-    public void onTopEmptyRegionClick() {
-
-    }
-
-    /*@Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mCircle = (ImageView) findViewById(R.id.circle);
-        mName = (TextView) findViewById(R.id.textView);
-    }
-*/
-    @Override
-    public void onCenterPosition(boolean animate) {
-        mName.setAlpha(1f);
-        ((GradientDrawable) mCircle.getDrawable()).setColor(mChosenCircleColor);
-    }
-
-    @Override
-    public void onNonCenterPosition(boolean animate) {
-        ((GradientDrawable) mCircle.getDrawable()).setColor(mFadedCircleColor);
-        mName.setAlpha(mFadedTextAlpha);
-    }
-
-    private class MyAdapter extends WearableListView.Adapter {
-        private final LayoutInflater mInflater;
-
-        private MyAdapter(Context context) {
-            mInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public WearableListView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new WearableListView.ViewHolder(
-                    mInflater.inflate(R.layout.row_simple_item_layout, null));
-        }
-
-        @Override
-        public void onBindViewHolder(WearableListView.ViewHolder holder, int position) {
-            TextView view = (TextView) holder.itemView.findViewById(R.id.textView);
-            view.setText(listItems.get(position).toString());
-            holder.itemView.setTag(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return listItems.size();
-        }
-    }
-}
-                           /* package tv.piratemedia.lightcontroler;
-
-
-import android.app.Activity;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableStatusCodes;
 
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
-    private GoogleApiClient mGoogleApiClient;
+    private ZonesPagerAdapter FragAdapter;
+    private ViewPager ZonePager;
+    private DismissOverlayView mDismissOverlayView;
+    private GestureDetector mGestureDetector;
+    public GoogleApiClient mGoogleApiClient;
+    public Boolean isRound = false;
+    private Boolean disableTouch = false;
+    private BroadcastReceiver bc;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ShapeWear.initShapeWear(this);
+
+        ShapeWear.setOnShapeChangeListener(new ShapeWear.OnShapeChangeListener() {
+            @Override
+            public void shapeDetected(ShapeWear.ScreenShape screenShape) {
+                //Do your stuff here for example:
+                switch (screenShape){
+                    case MOTO_ROUND:
+                    case ROUND:
+                        isRound = true;
+                        break;
+                    case RECTANGLE:
+                        isRound = false;
+                        break;
+                }
+                if(isRound) {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                } else {
+                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
+                }
+            }
+        });
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
         mGoogleApiClient.connect();
-    }
-
-    public void onConnected(Bundle connectionHint) {
-        Log.d("wearablemain", "onConnected(): Successfully connected to Google API client");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (null != mGoogleApiClient && !mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        if (null != mGoogleApiClient && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
-    }
-
-    public void onButtonClicked(final View target) {
-        if (mGoogleApiClient == null)
-            return;
-
-        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult result) {
-                final List<Node> nodes = result.getNodes();
-                if (nodes != null) {
-                    for (int i=0; i<nodes.size(); i++) {
-                        final Node node = nodes.get(i);
-
-                        // You can just send a message
-                        //Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/MESSAGE", null);
-                        switch(target.getId()) {
-                            case R.id.button1:
-                                Log.d("wear","button 1 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/1", null);
-                                break;
-                            case R.id.button2:
-                                Log.d("wear","button 2 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/2", null);
-                                break;
-                            case R.id.button3:
-                                Log.d("wear", "button 3 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/3", null);
-                                break;
-                            case R.id.button4:
-                                Log.d("wear", "button4 pressed");
-                                Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/4", null);
-                                break;
-                        }
-                        // or you may want to also check check for a result:
-                        final PendingResult<MessageApi.SendMessageResult> pendingSendMessageResult = Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/MESSAGE", null);
-                        pendingSendMessageResult.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
-                              public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                                  if (sendMessageResult.getStatus().getStatusCode()== WearableStatusCodes.SUCCESS) {
-                                      Log.d("wear", "SUCCESFULLY SENT");
-
-
-                                  }
-                                  else{
-                                       Log.d("wear", "Not succesfully sent");
-                                  }
-                              }
-                         });
-                            }
-                                    }
-                                    }
-                                    });
-                                    }
-                                    } */
-
-
-        boolean updateZones = !getIntent().getBooleanExtra("updated", false);
-
-        if (mGoogleApiClient == null)
-            return;
-        if(updateZones) {
-            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
-            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
-                @Override
-                public void onResult(NodeApi.GetConnectedNodesResult result) {
-                    final List<Node> nodes = result.getNodes();
-                    if (nodes != null) {
-                        for (int i = 0; i < nodes.size(); i++) {
-                            final Node node = nodes.get(i);
-                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
-                        }
-                    }
-                }
-            });
-        }
 
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.dismiss);
         mDismissOverlayView.setIntroText(R.string.intro_text);
@@ -328,54 +75,192 @@ public class MainActivity extends Activity {
 
         mGestureDetector = new GestureDetector(this, new LongPressListener());
 
-        ShapeWear.setOnSizeChangeListener(new ShapeWear.OnSizeChangeListener() {
+        FragAdapter =
+                new ZonesPagerAdapter(getSupportFragmentManager());
+        ZonePager = (ViewPager) findViewById(R.id.pager);
+        ZonePager.setAdapter(FragAdapter);
+        ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void sizeDetected(int widthPx, int heightPx) {
-                if(isRound) {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
-                } else {
-                    findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
-                }
+            public void onPageScrolled(int i, float v, int i2) {
 
-                FragAdapter =
-                        new ZonesPagerAdapter(
-                                getSupportFragmentManager());
-                ZonePager = (ViewPager) findViewById(R.id.pager);
-                ZonePager.setAdapter(FragAdapter);
-                ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int i, float v, int i2) {
+            }
 
+            @Override
+            public void onPageSelected(int i) {
+                if (FragAdapter.isColor(i)) {
+                    if (isRound) {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
+                    } else {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
                     }
+                } else {
+                    if (isRound) {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
+                    } else {
+                        findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border_square));
+                    }
+                }
+            }
 
-                    @Override
-                    public void onPageSelected(int i) {
-                        if(FragAdapter.isColor(i)) {
-                            if(isRound) {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border));
-                            } else {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.color_border_square));
-                            }
-                        } else {
-                            if(isRound) {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border));
-                            } else {
-                                findViewById(R.id.rim).setBackground(getResources().getDrawable(R.drawable.white_border_square));
-                            }
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+        bc = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Received", intent.getAction());
+                if(intent.getAction().equals("tv.piratemedia.lightcontroler.wear.updated_zones")) {
+                    for(int i = 0; i < FragAdapter.getCount(); i++) {
+                        Log.d("Received", "update name in fragment");
+                        try {
+                            ColorZoneFragment f = (ColorZoneFragment) FragAdapter.getItem(i);
+                            f.updateName();
+                        } catch(ClassCastException e) {
+                            WhiteZoneFragment f = (WhiteZoneFragment) FragAdapter.getItem(i);
+                            f.updateName();
                         }
                     }
+                }
+            }
+        };
+    }
 
-                    @Override
-                    public void onPageScrollStateChanged(int i) {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        IntentFilter intentFilter = new IntentFilter(
+                "tv.piratemedia.lightcontroler.wear.updated_zones");
+        registerReceiver(bc, intentFilter);
+
+        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                final List<Node> nodes = result.getNodes();
+                if (nodes != null) {
+                    for (int i = 0; i < nodes.size(); i++) {
+                        final Node node = nodes.get(i);
+                        Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/zones", null);
                     }
-                });
+                }
             }
         });
     }
 
     @Override
+    protected void onPause() {
+        unregisterReceiver(bc);
+        super.onPause();
+    }
+
+    private float startX = 0;
+    private float startY = 0;
+    private int currentStep = 0;
+    private int newStep = 0;
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            startX = event.getX();
+            startY = event.getY();
+            currentStep = 0;
+        } else if(event.getAction() == MotionEvent.ACTION_MOVE) {
+            float valX = event.getX();
+            float valY = event.getY();
+            float changeX = event.getX() - startX;
+            float changeY = event.getY() - startY;
+            float difX = changeX > 0 ? changeX : -changeX;
+            float difY = changeY > 0 ? changeY : -changeY;
+            if((difY > difX)) {
+                if(ZonePager.getCurrentItem() <= 4) {
+                    newStep = 20 - (int)(valY / 12.5f);
+                    if(newStep > 20) {
+                        newStep = 20;
+                    } else if(newStep < 0) {
+                        newStep = 0;
+                    }
+                    if(newStep != currentStep) {
+                        currentStep = newStep;
+                        if (mGoogleApiClient != null) {
+                            final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                            nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                                @Override
+                                public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                    final List<Node> nodes = result.getNodes();
+                                    if (nodes != null) {
+                                        for (int i = 0; i < nodes.size(); i++) {
+                                            final Node node = nodes.get(i);
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/"+ currentStep, null);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                        LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+                        TextView text = (TextView) findViewById(R.id.brightnesstext);
+                        text.setText((currentStep * 5) + "%");
+                        container.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    newStep = -(int) (changeY / 12.5f);
+                    if(newStep > 10) {
+                        newStep = 10;
+                    } else if(newStep < -10) {
+                        newStep = -10;
+                    }
+                    if(newStep > currentStep) {
+                        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                final List<Node> nodes = result.getNodes();
+                                if (nodes != null) {
+                                    for (int j = 0; j < nodes.size(); j++) {
+                                        final Node node = nodes.get(j);
+                                        int steps = newStep - currentStep;
+                                        for(int i = 0; i < steps; i++) {
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/1", null);
+                                            currentStep++;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    } else if(newStep < currentStep) {
+                        final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
+                        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult result) {
+                                final List<Node> nodes = result.getNodes();
+                                if (nodes != null) {
+                                    for (int j = 0; j < nodes.size(); j++) {
+                                        final Node node = nodes.get(j);
+                                        int steps = currentStep - newStep;
+                                        for(int i = 0; i < steps; i++) {
+                                            Wearable.MessageApi.sendMessage(mGoogleApiClient, node.getId(), "/" + ZonePager.getCurrentItem() + "/level/-1", null);
+                                            currentStep--;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+                    TextView text = (TextView) findViewById(R.id.brightnesstext);
+                    String txt = newStep > 0 ? ("+" + newStep) : (newStep + "");
+                    text.setText(txt);
+                    container.setVisibility(View.VISIBLE);
+                }
+            }
+        } else if(event.getAction() == MotionEvent.ACTION_UP) {
+            LinearLayout container = (LinearLayout) findViewById(R.id.brightnesscontainer);
+            container.setVisibility(View.GONE);
+        }
+
         return mGestureDetector.onTouchEvent(event)
                 || super.dispatchTouchEvent(event);
     }
@@ -385,9 +270,7 @@ public class MainActivity extends Activity {
         @Override
         public void onLongPress(MotionEvent event) {
             mDismissOverlayView.show();
-
         }
-
     }
 }
 

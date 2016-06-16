@@ -26,7 +26,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="65dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center_horizontal|top">
 
                 <TextView
@@ -39,22 +39,32 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp" />
 
-                <ToggleButton
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:id="@+id/onoff"
-                    android:checked="false"
-                    style="@style/ToggleLightController"
-                    android:textOn=""
-                    android:textOff=""/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="I"
+                    android:id="@+id/on"/>
 
                 <Button
-                    style="@style/ButtonLightController"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="o"
+                    android:id="@+id/off"
+                    android:backgroundTint="#333333"/>
+
+                <Button
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="45dp"
                     android:text="@string/white_label"
                     android:id="@+id/white"
-                    android:layout_marginTop="55dp"
+                    android:layout_marginTop="45dp"
+                    android:textSize="13dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text="@string/night_label"
+                    android:id="@+id/night"
                     android:textSize="13dp" />
             </LinearLayout>
 
@@ -66,7 +76,8 @@
                 android:layout_weight="4"
                 android:layout_marginLeft="-15dp"
                 android:layout_marginRight="-15dp"
-                android:layout_marginTop="-10dp" />
+                android:layout_marginTop="-10dp"
+                android:layout_gravity="center" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -107,8 +118,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/movement_modes"
-                style="@style/SpinnerLightController"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -125,21 +137,18 @@
                     android:visibility="visible">
 
                     <Button
-                        style="@style/ButtonLightController"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="-"
                         android:id="@+id/dminus" />
 
                     <Button
-                        style="@style/ButtonLightController"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Disco"
                         android:id="@+id/disco" />
 
                     <Button
-                        style="@style/ButtonLightController"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+"
@@ -157,8 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/mic"
-                        android:text="Start Listening"
-                        style="@style/ButtonLightController" />
+                        android:text="Start Listening" />
 
                     <SeekBar
                         android:layout_width="match_parent"
@@ -167,7 +175,6 @@
                         android:layout_gravity="center_horizontal"
                         android:max="32767"
                         android:progress="25000"
-                        style="@style/SeekBarLightController"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp" />
 
@@ -182,7 +189,6 @@
                     android:id="@+id/linearLayout2">
 
                     <Button
-                        style="@style/ButtonLightController"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/candle_mode"

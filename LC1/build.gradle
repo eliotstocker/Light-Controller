@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 170
-        versionName "1.7.0"
+        targetSdkVersion 23
+        versionCode 1710
+        versionName "1.7.1"
     }
     buildTypes {
         release {
@@ -21,15 +21,22 @@ android {
 repositories {
     mavenCentral()
     jcenter()
+    maven { url "https://jitpack.io" }
 }
+
+def playServices = true
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:appcompat-v7:23.1.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
-    compile 'com.afollestad:material-dialogs:0.4.6'
-    compile 'com.google.android.gms:play-services:+'
-    wearApp project(':wear');
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
+        transitive = true
+    }
+    if(playServices) {
+        compile 'com.google.android.gms:play-services:+'
+        wearApp project(':wear');
+    }
     //compile 'com.instabug.library:instabugsupport:1.1.+'
     compile project(':circularseekbar')
     compile 'com.heinrichreimersoftware.materialdrawer:library:1.4.1'

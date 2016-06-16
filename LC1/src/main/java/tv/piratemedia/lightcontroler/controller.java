@@ -19,12 +19,17 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +59,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,9 +66,9 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import android.support.v7.app.ActionBarActivity;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
@@ -79,6 +83,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
+
+import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 
@@ -175,9 +182,9 @@ public class controller extends ActionBarActivity {
                 .title("Controller Wifi Networks")
                 .theme(Theme.DARK)
                 .items(ShowNetworks)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         final String[] NetworkInfo = Networks[which + 2].split(",");
                         if (NetworkInfo[3].equals("NONE")) {
                             Controller.setWifiNetwork(NetworkInfo[1]);
@@ -185,24 +192,20 @@ public class controller extends ActionBarActivity {
                             new MaterialDialog.Builder(_this)
                                     .title("Password For: " + NetworkInfo[1])
                                     .theme(Theme.DARK)
-                                    .customView(input)
+                                    .customView(input, false)
                                     .content("Please type the network password")
                                     .positiveText("OK")
                                     .negativeText("Cancel")
-                                    .callback(new MaterialDialog.Callback() {
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
-                                        public void onPositive(MaterialDialog dialog) {
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                             Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
-                                        }
-
-                                        @Override
-                                        public void onNegative(MaterialDialog materialDialog) {
-
                                         }
                                     })
                                     .build()
                                     .show();
                         }
+                        return false;
                     }
                 })
                 .positiveText("Select")
@@ -274,7 +277,10 @@ public class controller extends ActionBarActivity {
     }
 
     private void attemptDiscovery() {
-        Controller.discover();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(!prefs.getBoolean("pref_disable_auto_find", false)) {
+            Controller.discover();
+        }
         //start timer here for no discovery (try 3 times)
     }
 
@@ -357,11 +363,33 @@ public class controller extends ActionBarActivity {
                                 drawer.closeDrawer();
                             }
                         }));
+
+                final PackageManager pm = getPackageManager();
+                Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+                mainIntent.addCategory("tv.piratemedia.lightcontroller.plugin");
+                List<ResolveInfo> resolveInfos = pm.queryIntentActivities(mainIntent, 0);
+                if(resolveInfos.size() > 0) {
+                    drawer.addDivider();
+                    for (final ResolveInfo info : resolveInfos) {
+                        drawer.addItem(new DrawerItem()
+                                .setTextMode(DrawerItem.SINGLE_LINE)
+                                .setTextPrimary(info.loadLabel(pm).toString())
+                                .setImage(info.loadIcon(pm))
+                                .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                                    @Override
+                                    public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                                        Log.d("package", "pkg:" + info.resolvePackageName);
+                                        intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+                                        startActivity(intent);
+                                        drawer.closeDrawer();
+                                    }
+                                }));
+                    }
+                }
             } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
-
-
         }
     }
 
@@ -378,9 +406,9 @@ public class controller extends ActionBarActivity {
                 .theme(Theme.LIGHT)
                 .items(Options)
                 .cancelable(false)
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallback() {
+                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         switch (which) {
                             case 0:
                                 prefs.edit().putBoolean("white_enabled", true).apply();
@@ -394,6 +422,7 @@ public class controller extends ActionBarActivity {
                                 break;
                         }
                         setupApp();
+                        return false;
                     }
                 })
                 .build()
@@ -733,11 +762,13 @@ public class controller extends ActionBarActivity {
                 final View rootView = inflater.inflate(R.layout.rgbw_control, container, false);
 
                 SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
-                ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                Button on = (Button) rootView.findViewById(R.id.on);
+                Button off = (Button) rootView.findViewById(R.id.off);
                 Button disco = (Button) rootView.findViewById(R.id.disco);
                 Button dplus = (Button) rootView.findViewById(R.id.dplus);
                 Button dminus = (Button) rootView.findViewById(R.id.dminus);
                 Button white = (Button) rootView.findViewById(R.id.white);
+                Button night = (Button) rootView.findViewById(R.id.night);
                 final ColorPicker color = (ColorPicker) rootView.findViewById(R.id.color);
                 SeekBar tolerance = (SeekBar) rootView.findViewById(R.id.mictolerance);
                 final Button toggleMic = (Button) rootView.findViewById(R.id.mic);
@@ -753,7 +784,7 @@ public class controller extends ActionBarActivity {
                 modeSpinner.setAdapter(modeAdapter);
 
                 //Return State
-                io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
+                //io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
                 brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
@@ -799,8 +830,8 @@ public class controller extends ActionBarActivity {
                         if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
                             ((controller) getActivity()).setActionbarColor(i);
-                            ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                            io.setChecked(true);
+                            /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                            io.setChecked(true);*/
                         }
                     }
                 });
@@ -809,8 +840,8 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
 
                     @Override
@@ -824,7 +855,19 @@ public class controller extends ActionBarActivity {
                     }
                 });
 
-                io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                on.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                    }
+                });
+                off.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                    }
+                });
+                /*io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (isChecked) {
@@ -833,14 +876,14 @@ public class controller extends ActionBarActivity {
                             Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
                         }
                     }
-                });
+                });*/
 
                 disco.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Controller.toggleDiscoMode(getArguments().getInt(ARG_SECTION_NUMBER));
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
                 });
 
@@ -848,8 +891,8 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
                         Controller.discoModeFaster();
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
                 });
 
@@ -857,8 +900,8 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
                         Controller.discoModeSlower();
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
                 });
 
@@ -866,9 +909,16 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
                         Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                         ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                    }
+                });
+
+                night.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.setColorToNight(getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
 
@@ -931,7 +981,11 @@ public class controller extends ActionBarActivity {
                 return rootView;
             } else {
                 disabled = true;
-                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                try {
+                    ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                } catch(Exception e) {
+
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable(){
                     @Override
@@ -984,12 +1038,13 @@ public class controller extends ActionBarActivity {
                 CircularSeekBar warmth = (CircularSeekBar) rootView.findViewById(R.id.warmth);
                 final TextView brightnessvalue = (TextView) rootView.findViewById(R.id.brightnessvalue);
                 final TextView warmthvalue = (TextView) rootView.findViewById(R.id.warmthvalue);
-                ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                Button on = (Button) rootView.findViewById(R.id.on);
+                Button off = (Button) rootView.findViewById(R.id.off);
                 Button full = (Button) rootView.findViewById(R.id.full);
                 Button night = (Button) rootView.findViewById(R.id.night);
 
                 //Return State
-                io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
+                //io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
                 brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
@@ -1087,7 +1142,19 @@ public class controller extends ActionBarActivity {
                     }
                 });
 
-                io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                on.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                    }
+                });
+                off.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                    }
+                });
+                /*io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (isChecked) {
@@ -1096,14 +1163,14 @@ public class controller extends ActionBarActivity {
                             Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
                         }
                     }
-                });
+                });*/
 
                 full.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Controller.setToFull(getArguments().getInt(ARG_SECTION_NUMBER));
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
                 });
 
@@ -1111,8 +1178,8 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onClick(View v) {
                         Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
-                        ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
-                        io.setChecked(true);
+                        /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
+                        io.setChecked(true);*/
                     }
                 });
 
@@ -1128,7 +1195,11 @@ public class controller extends ActionBarActivity {
                 return rootView;
             } else {
                 disabled = true;
-                ((ViewGroup)cacheView.getParent()).removeView(cacheView);
+                try {
+                    ((ViewGroup) cacheView.getParent()).removeView(cacheView);
+                } catch(Exception e) {
+
+                }
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable(){
                     @Override

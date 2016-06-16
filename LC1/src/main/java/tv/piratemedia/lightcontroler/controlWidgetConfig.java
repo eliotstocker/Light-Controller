@@ -14,11 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RemoteViews;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by eliotstocker on 26/10/14.
@@ -129,6 +129,31 @@ public class controlWidgetConfig extends ActionBarActivity {
                 intent = new Intent(getBaseContext(), controller.class);
                 pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, 0);
                 views.setOnClickPendingIntent(R.id.app, pendingIntent);
+
+                views.setViewVisibility(R.id.datetime, View.GONE);
+
+                Calendar c = Calendar.getInstance();
+                int min = c.get(Calendar.MINUTE);
+                String minString = "00";
+                if(min < 10) {
+                    minString = "0"+min;
+                } else {
+                    minString = Integer.toString(min);
+                }
+                int hour = c.get(Calendar.HOUR_OF_DAY);
+                String hourString = "00";
+                if(hour < 10) {
+                    hourString = "0"+hour;
+                } else {
+                    hourString = Integer.toString(hour);
+                }
+
+                views.setTextViewText(R.id.timeHour, hourString);
+                views.setTextViewText(R.id.timeMinute, minString);
+                views.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
+                SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                String month_name = month_date.format(c.getTime());
+                views.setTextViewText(R.id.dateMonth, month_name);
 
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
 

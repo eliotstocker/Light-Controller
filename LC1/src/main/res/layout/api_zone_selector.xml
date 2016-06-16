@@ -17,14 +17,14 @@
             android:layout_height="@dimen/abc_action_bar_default_height_material"
             android:background="@color/colorPrimary"
             android:gravity="center_vertical"
-            android:padding="@dimen/abc_action_bar_default_padding_material">
+            android:padding="14dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Zone Selection"
                 android:id="@+id/textView3"
-                android:textColor="@color/md_title_dark"
+                android:textColor="#FFFFFF"
                 android:textSize="@dimen/abc_text_size_title_material_toolbar" />
         </LinearLayout>
 

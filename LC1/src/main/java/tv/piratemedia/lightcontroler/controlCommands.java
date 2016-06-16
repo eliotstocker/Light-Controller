@@ -19,14 +19,11 @@ package tv.piratemedia.lightcontroler;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -333,6 +330,40 @@ public class controlCommands {
         }
     }
 
+    public void setColorToNight(int zone) {
+        LightsOff(zone);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        byte[] messageBA = new byte[3];
+        switch(zone) {
+            case 0:
+                    messageBA[0] = (byte)193;
+                    break;
+            case 1:
+                    messageBA[0] = (byte)198;
+                    break;
+            case 2:
+                    messageBA[0] = (byte)200;
+                    break;
+            case 3:
+                    messageBA[0] = (byte)202;
+                    break;
+            case 4:
+                    messageBA[0] = (byte)204;
+                    break;
+        }
+        messageBA[1] = 0;
+        messageBA[2] = 85;
+        try {
+            UDPC.sendMessage(messageBA);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //add alert to tell user we cant send command
+        }
+    }
     public void setToNight(int zone) {
         LightsOn(zone);
         try {
@@ -368,14 +399,17 @@ public class controlCommands {
         }
     }
 
-    private int[] values = { 2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
+    private int[] values = {2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
     private int LastBrightness = 20;
     private int LastZone = 0;
     private boolean finalSend = false;
     public boolean touching = false;
     public void setBrightness(int zoneid, int brightness) {
-        if(brightness > values.length - 1) {
+        if(brightness >= values.length) {
             brightness = values.length - 1;
+        }
+        if(brightness < 0) {
+            brightness = 0;
         }
         if(!sleeping) {
             LightsOn(zoneid);
