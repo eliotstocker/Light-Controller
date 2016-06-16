@@ -1,4 +1,23 @@
-.idea
-LC1/build
+
+# Built application files
+*/build
 build
+
+# Local configuration files (sdk path, etc)
+.idea
 local.properties
+
+# Gradle generated files
+.gradle/
+
+# Signing files
+.signing/
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
