@@ -10,4 +10,6 @@
     <string name="hello_square">Hello Square World!</string>
     <string name="intro_text">Long Press to Close</string>
 
+    <string name="brightness_percentage">%1$d%%</string>
+
 </resources>

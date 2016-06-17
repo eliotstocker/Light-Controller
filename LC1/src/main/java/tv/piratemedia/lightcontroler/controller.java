@@ -479,7 +479,6 @@ public class controller extends ActionBarActivity {
 
     public void popupMenu() {
         MenuView = View.inflate(this, R.layout.menu, null);
-        ImageView close = (ImageView) MenuView.findViewById(R.id.close_menu_item);
         TextView settings = (TextView) MenuView.findViewById(R.id.settings_menu_item);
         TextView DeviceSetup = (TextView) MenuView.findViewById(R.id.setup_menu_item);
 
@@ -489,12 +488,6 @@ public class controller extends ActionBarActivity {
             DeviceSetup.setVisibility(View.GONE);
         }
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMenu();
-            }
-        });
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -559,9 +552,9 @@ public class controller extends ActionBarActivity {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
             return true;
-        } else if(id == R.id.action_menu) {
-            popupMenu();
-            return true;
+//        } else if(id == R.id.action_menu) {
+//            popupMenu();
+//            return true;
         } else if(id == android.R.id.home) {
             drawer.openDrawer();
         }
