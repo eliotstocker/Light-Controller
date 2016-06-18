@@ -47,6 +47,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -73,6 +74,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.devadvance.circularseekbar.CircularSeekBar;
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -84,10 +87,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.UUID;
 
+import tv.piratemedia.lightcontroler.pebble.pebble;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 
-import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 
 public class controller extends ActionBarActivity {
 
@@ -96,6 +100,7 @@ public class controller extends ActionBarActivity {
      * current dropdown position.
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+    final UUID appUuid = UUID.fromString("1d6c7f01-d948-42a6-aa4e-b2084210ebbc");
 
     private static controlCommands Controller;
     private static boolean micStarted = false;
@@ -112,6 +117,9 @@ public class controller extends ActionBarActivity {
     public MyHandler mHandler = null;
     private utils Utils;
 
+    PebbleDictionary dict = new PebbleDictionary();
+    private PebbleKit.PebbleDataReceiver dataReceiver;
+    private static final int CMD_KEY = 2;
     private boolean gotDevice = false;
 
     private String DeviceMac = "";
@@ -263,6 +271,25 @@ public class controller extends ActionBarActivity {
 
         }
         attemptDiscovery();
+        /* Pebble related activities, added by mrwhale 18-06-2016
+
+         */
+        Log.d("pebbleapp", "starting onResume in contoller");
+        boolean isConnected = PebbleKit.isWatchConnected(this);
+        Log.d("Pebble app", "Pebble " + (isConnected ? "is" : "is not") + " connected!");
+
+        // Create a new receiver to get AppMessages from the C app
+        dataReceiver = new PebbleKit.PebbleDataReceiver(appUuid) {
+
+            @Override
+            public void receiveData(Context context, int transaction_id, PebbleDictionary dict) {
+                Log.d("pebble app", dict + " was received by the android app");
+                // A new AppMessage was received, tell Pebble
+                PebbleKit.sendAckToPebble(context, transaction_id);
+            }
+
+        };
+        PebbleKit.registerReceivedDataHandler(getApplicationContext(), dataReceiver);
     }
 
     @Override
@@ -285,6 +312,7 @@ public class controller extends ActionBarActivity {
     }
 
     private void setupApp() {
+
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
 

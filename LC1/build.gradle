@@ -9,6 +9,8 @@ android {
         targetSdkVersion 23
         versionCode 1710
         versionName "1.7.1"
+        multiDexEnabled true
+        applicationId "tv.piratemedia.lightcontroler"
     }
     buildTypes {
         release {
@@ -22,6 +24,7 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url "https://jitpack.io" }
+    maven { url "https://oss.sonatype.org/content/groups/public/" }
 }
 
 def playServices = true
@@ -30,6 +33,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.2.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
+    compile 'com.getpebble:pebblekit:3.0.0'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
         transitive = true
     }
