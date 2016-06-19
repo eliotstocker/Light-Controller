@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -61,7 +60,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -74,8 +72,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.devadvance.circularseekbar.CircularSeekBar;
-import com.getpebble.android.kit.PebbleKit;
-import com.getpebble.android.kit.util.PebbleDictionary;
 import com.heinrichreimersoftware.materialdrawer.DrawerFrameLayout;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerItem;
 import com.heinrichreimersoftware.materialdrawer.structure.DrawerProfile;
@@ -91,6 +87,7 @@ import java.util.UUID;
 
 import tv.piratemedia.lightcontroler.pebble.pebble;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
+import com.getpebble.android.kit.PebbleKit.PebbleDataReceiver;
 
 
 public class controller extends ActionBarActivity {
@@ -116,16 +113,13 @@ public class controller extends ActionBarActivity {
 
     public MyHandler mHandler = null;
     private utils Utils;
-
-    PebbleDictionary dict = new PebbleDictionary();
-    private PebbleKit.PebbleDataReceiver dataReceiver;
-    private static final int CMD_KEY = 2;
     private boolean gotDevice = false;
 
     private String DeviceMac = "";
 
     private DrawerFrameLayout drawer;
 
+    public static PebbleDataReceiver dataReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +148,8 @@ public class controller extends ActionBarActivity {
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
+        //Create a new pebble (not sure if this is needed)
+        new pebble();
     }
 
     class MyHandler extends Handler {
@@ -272,24 +268,9 @@ public class controller extends ActionBarActivity {
         }
         attemptDiscovery();
         /* Pebble related activities, added by mrwhale 18-06-2016
-
-         */
-        Log.d("pebbleapp", "starting onResume in contoller");
-        boolean isConnected = PebbleKit.isWatchConnected(this);
-        Log.d("Pebble app", "Pebble " + (isConnected ? "is" : "is not") + " connected!");
-
-        // Create a new receiver to get AppMessages from the C app
-        dataReceiver = new PebbleKit.PebbleDataReceiver(appUuid) {
-
-            @Override
-            public void receiveData(Context context, int transaction_id, PebbleDictionary dict) {
-                Log.d("pebble app", dict + " was received by the android app");
-                // A new AppMessage was received, tell Pebble
-                PebbleKit.sendAckToPebble(context, transaction_id);
-            }
-
-        };
-        PebbleKit.registerReceivedDataHandler(getApplicationContext(), dataReceiver);
+        call pebble class to do pebble activities
+      */
+        pebble.pebble2(ctx, dataReceiver);
     }
 
     @Override
