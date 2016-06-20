@@ -179,7 +179,6 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-
         <provider
             android:name=".api.APIProvider"
             android:authorities="tv.piratemedia.lightcontroler.api"
