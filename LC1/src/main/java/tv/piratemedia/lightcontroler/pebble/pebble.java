@@ -1,22 +1,11 @@
 package tv.piratemedia.lightcontroler.pebble;
 
-import android.accessibilityservice.AccessibilityService;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.accessibility.AccessibilityNodeInfo;
-
-import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.PebbleKit.PebbleDataReceiver;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
-import android.view.accessibility.AccessibilityEvent;
 import java.util.UUID;
 
 import tv.piratemedia.lightcontroler.controlCommands;
@@ -32,9 +21,12 @@ public class pebble {
 
     // Create a new dictionary
     PebbleDictionary dict = new PebbleDictionary();
-/*Pebble related activities. Pass through context, and data receiver, so we can then pause it from Controller
+/*
+Pebble related activities. Pass through context, and data receiver, so we can then pause it from Controller
 
  */
+// todo add the ability to semd data to the watch.Need to send Zone data to the watch so it can display it
+
     public static void pebbleaction(Context ctx, PebbleDataReceiver dataReceiver){
         Log.d("pebble app", "starting onResume in pebble java");
         boolean isConnected = PebbleKit.isWatchConnected(ctx);
@@ -54,21 +46,17 @@ public class pebble {
                 // A new AppMessage was received, tell Pebble
                 Long cmdValue = dict.getUnsignedIntegerAsLong(2);
                 if(cmdValue != null){
+                    //TODO put some more logic around getting cmd value to verify its an int 0-9
                     int cmd = cmdValue.intValue();
                     Log.d("Pebble app","from pebble " + cmd);
-                    /* if(cmd == 1){
-                        Log.d("pebble app","toggling zone " + cmd);
-                        contcmd.LightsOn(1);
-                        contcmd.appState.setOnOff(1, true);
-                    }else{
-                        Log.d("pebble app","Not toggling");
-                    } */
+                    //TODO compact this switch statement into one if(state) then toggle
                     //Switch to see what command was from, and action this
                     switch (cmd){
                         case 0:
                             Log.d("pebble app","toggling zone " + cmd);
                             Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
                             if(contcmd.appState.getOnOff(cmd) == false){
+                                //TODO add some feedback to the pebble if something has gone wrong?
                                 Log.d("pebble app", "Zone " + cmd + " was off, turning on");
                                 contcmd.appState.setOnOff(cmd,true);
                             }else{
