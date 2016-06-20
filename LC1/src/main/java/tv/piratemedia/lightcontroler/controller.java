@@ -270,7 +270,10 @@ public class controller extends ActionBarActivity {
         /* Pebble related activities, added by mrwhale 18-06-2016
         call pebble class to do pebble activities
       */
-        pebble.pebble2(ctx, dataReceiver);
+        pebble.pebbleaction(ctx, dataReceiver);
+
+        //TODO add onPause method to pause the pebble stuff when app is paused. probably should have this for the wear component too?
+        // or is that all handled within the wear methdods?
     }
 
     @Override
