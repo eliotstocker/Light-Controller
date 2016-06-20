@@ -70,38 +70,102 @@ public class pebble {
                             Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
                             if(contcmd.appState.getOnOff(cmd) == false){
                                 Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
                             }else{
                                 Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
                             }
                             break;
                         case 1:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 2:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 3:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 4:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 5:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 6:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 7:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 8:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
                         case 9:
-                            Log.d("pebble app","toggling zone " + cmd);
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
+                            if(contcmd.appState.getOnOff(cmd) == false){
+                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
+                                contcmd.appState.setOnOff(cmd,true);
+                            }else{
+                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
+                                contcmd.appState.setOnOff(cmd,false);
+                            }
                             break;
-
                     }
                 }
                 PebbleKit.sendAckToPebble(context, transaction_id);
