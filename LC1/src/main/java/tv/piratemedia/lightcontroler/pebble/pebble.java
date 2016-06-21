@@ -15,9 +15,9 @@ This is the class that connects to and listens to a pebble watch. Receives comma
 Commands come in the form of a pebble dictionary, which is a tuple (key/value pairs) of data sent by the watch (because
 the watch app is written in c) Once received, we extract the data by asking the tuple for the key value (in this case KEY_CMD,
 same as the variable in the watch app) and it gives us back the value, which is the zone number (0-9) Once we have the Zone,
- we send that to a control commands object which handles switching the lights
+ we send that to a control commands instance which handles switching the lights
 
- We also have to ask the controlcommands object for the current state of the light, because there is no
+ We also have to ask the controlcommands instance for the current state of the light, because there is no
  "toggle" function, we ask what it is, then toggle to the opposite. This way for now because the pebble
  can only do so much in its UI and only has 1 action button. I guess we could change it so long press turns off, and short press turns on? maybe
  //todo have a look at implemeting longpress for off and short press for on
