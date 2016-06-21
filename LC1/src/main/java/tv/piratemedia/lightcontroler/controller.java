@@ -150,7 +150,7 @@ public class controller extends ActionBarActivity {
         Utils = new utils(this);
         new DataLayerListenerService();
         //Create a new pebble (not sure if this is needed)
-        new pebble();
+        //new pebble();
         /* Pebble related activities, added by mrwhale 18-06-2016
         call pebble class to do pebble activities */
         // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
