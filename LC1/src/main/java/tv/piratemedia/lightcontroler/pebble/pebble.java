@@ -13,7 +13,7 @@ import tv.piratemedia.lightcontroler.controller;
 created by mrwhale 18/06/2016
 This is the class that connects to and listens to a pebble watch. Receives commands and then actions them
 Commands come in the form of a pebble dictionary, which is a tuple (key/value pairs) of data sent by the watch (because
-the watch app is written in c) Once received, we extract the data by asking the tuple for the key value (in this case KEY_CMD,
+the watch app is written in c) Once received, we extract the data by asking the tuple for the key value (in this case KEY_ZONE,
 same as the variable in the watch app) and it gives us back the value, which is the zone number (0-9) Once we have the Zone,
  we send that to a control commands instance which handles switching the lights
 
@@ -24,7 +24,8 @@ same as the variable in the watch app) and it gives us back the value, which is 
  */
 public class pebble {
     static final UUID appUuid = UUID.fromString("1d6c7f01-d948-42a6-aa4e-b2084210ebbc");
-    private static final int KEY_CMD = 2;
+    private static final int KEY_CMD = 3;
+    private static final int KEY_ZONE = 2;
 
     // Create a new dictionary
     PebbleDictionary dict = new PebbleDictionary();
@@ -52,7 +53,7 @@ Pebble related activities. Pass through context, and data receiver, so we can th
             public void receiveData(Context context, int transaction_id, PebbleDictionary dict) {
                 Log.d("pebble app", "pebble java" + dict + " was received by the android app");
                 // A new AppMessage was received, tell Pebble
-                Long cmdValue = dict.getUnsignedIntegerAsLong(KEY_CMD);
+                Long cmdValue = dict.getUnsignedIntegerAsLong(KEY_ZONE);
                 if (cmdValue != null) {
                     //TODO put some more logic around getting cmd value to verify its an int 0-9
                     int cmd = cmdValue.intValue();
