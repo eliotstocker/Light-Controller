@@ -44,39 +44,55 @@ Pebble related activities. Pass through context, and data receiver, so we can th
         // Create a new receiver to get AppMessages from the C app
         // Create a new controller instance so we can send commands to the wifi controller
         final controller mCont = new controller();
-        final controlCommands contcmd;
-        contcmd = new controlCommands(ctx, mCont.mHandler);
+        final controlCommands contCmd;
+        contCmd = new controlCommands(ctx, mCont.mHandler);
 
         PebbleDataReceiver dataReceiver = new PebbleDataReceiver(appUuid) {
 
             @Override
             public void receiveData(Context context, int transaction_id, PebbleDictionary dict) {
                 Log.d("pebble app", "pebble java" + dict + " was received by the android app");
-                // A new AppMessage was received, tell Pebble
-                Long cmdValue = dict.getUnsignedIntegerAsLong(KEY_ZONE);
-                if (cmdValue != null) {
-                    //TODO put some more logic around getting cmd value to verify its an int 0-9
+                //declaring variables that are the same as the ones that come from pebble app
+                Long zoneValue = dict.getUnsignedIntegerAsLong(KEY_ZONE);
+                Long cmdValue = dict.getUnsignedIntegerAsLong(KEY_CMD);
+                if (zoneValue != null && cmdValue != null) {
+                    //TODO throw error if teither of these dont exist and tell pebble?
+
+                    //TODO put some more logic around getting zone value to verify its an int 0-9
+                    int zone = zoneValue.intValue();
                     int cmd = cmdValue.intValue();
-                    Log.d("Pebble app", "from pebble " + cmd);
-                    //TODO compact this switch statement into one if(state) then toggle
-                    //Switch to see what command was from, and action this
-                    switch (cmd) {
+                    Log.d("pebble app", "going to turn zone " + zone + " cmd " + cmd);
+                    //Switch statement to see cmd (on/off) 0 = off, 1= on, then send the command to the controler with zone
+                    switch(cmd){
                         case 0:
-                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
-                            if (contcmd.appState.getOnOff(cmd) == false) {
+                            //Turning off
+                            contCmd.LightsOff(zone);
+                            contCmd.appState.setOnOff(zone, false);
+                            break;
+                        case 1:
+                            //Turning on
+                            contCmd.LightsOn(zone);
+                            contCmd.appState.setOnOff(zone,true);
+                            break;
+                    }
+                    /* old switch statement
+                    switch (zone) {
+                        case 0:
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(zone));
+                            if (contcmd.appState.getOnOff(zone) == false) {
                                 //TODO add some feedback to the pebble if something has gone wrong?
-                                Log.d("pebble app", "Zone " + cmd + " was off, turning on");
-                                contcmd.LightsOn(cmd);
-                                contcmd.appState.setOnOff(cmd, true);
+                                Log.d("pebble app", "Zone " + zone + " was off, turning on");
+                                contcmd.LightsOn(zone);
+                                contcmd.appState.setOnOff(zone, true);
                             } else {
-                                Log.d("pebble app", "Zone " + cmd + " was on, turning off");
-                                contcmd.LightsOff(cmd);
-                                contcmd.appState.setOnOff(cmd, false);
+                                Log.d("pebble app", "Zone " + zone + " was on, turning off");
+                                contcmd.LightsOff(zone);
+                                contcmd.appState.setOnOff(zone, false);
                             }
                             break;
                         case 1:
-                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(cmd));
-                            if (contcmd.appState.getOnOff(cmd) == false) {
+                            Log.d("pebble app", "Zone state is " + contcmd.appState.getOnOff(zone));
+                            if (contcmd.appState.getOnOff(zone) == false) {
                                 //TODO add some feedback to the pebble if something has gone wrong?
                                 Log.d("pebble app", "Zone " + cmd + " was off, turning on");
                                 contcmd.LightsOn(cmd);
@@ -194,7 +210,7 @@ Pebble related activities. Pass through context, and data receiver, so we can th
                         default:
                             Log.d("pebble app", "something has gone wrong. default switch");
                             break;
-                    }
+                    } */
                 }
                 //Todo add exception handle if cant send the message
                 PebbleKit.sendAckToPebble(context, transaction_id);
