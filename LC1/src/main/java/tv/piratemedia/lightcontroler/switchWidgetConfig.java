@@ -31,7 +31,7 @@ public class switchWidgetConfig extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.switch_widget_config);
 
-        if(Build.VERSION.SDK_INT == 21) {
+        if(Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
@@ -57,6 +57,7 @@ public class switchWidgetConfig extends ActionBarActivity {
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        RadioButton sg = (RadioButton)findViewById(R.id.sg);
         RadioButton z1 = (RadioButton)findViewById(R.id.z1);
         RadioButton z2 = (RadioButton)findViewById(R.id.z2);
         RadioButton z3 = (RadioButton)findViewById(R.id.z3);
@@ -104,6 +105,8 @@ public class switchWidgetConfig extends ActionBarActivity {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 8).commit();
                 } else if(checkedId == R.id.g2) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 9).commit();
+                } else if(checkedId == R.id.sg) {
+                    prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", -1).commit();
                 }
             }
         });
@@ -132,7 +135,9 @@ public class switchWidgetConfig extends ActionBarActivity {
                 if(ShowTitle) {
                     String label = "";
                     switch(ControlZone) {
+                        case -1:
                         case 0:
+                        case 9:
                             label = getBaseContext().getString(R.string.gloabl);
                             break;
                         case 1:
@@ -159,9 +164,6 @@ public class switchWidgetConfig extends ActionBarActivity {
                         case 8:
                             label = prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4));
                             break;
-                        case 9:
-                            label = getBaseContext().getString(R.string.gloabl);
-                            break;
                     }
                     views.setTextViewText(R.id.zone_label, label);
                     views.setViewVisibility(R.id.zone_label, View.VISIBLE);
@@ -169,8 +171,13 @@ public class switchWidgetConfig extends ActionBarActivity {
                     views.setViewVisibility(R.id.zone_label, View.GONE);
                 }
 
-                views.setOnClickPendingIntent(R.id.ig,createPendingIntent(ControlZone,getBaseContext(),true));
-                views.setOnClickPendingIntent(R.id.og,createPendingIntent(ControlZone,getBaseContext(),false));
+                if(ControlZone > -1) {
+                    views.setOnClickPendingIntent(R.id.ig, createPendingIntent(ControlZone, getBaseContext(), true));
+                    views.setOnClickPendingIntent(R.id.og, createPendingIntent(ControlZone, getBaseContext(), false));
+                } else {
+                    views.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(getBaseContext(), true));
+                    views.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(getBaseContext(), false));
+                }
 
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
 
@@ -190,6 +197,20 @@ public class switchWidgetConfig extends ActionBarActivity {
                     launchIntent.setData(Uri.parse(i + ":" + LIGHT_OFF));
                 }
                 launchIntent.putExtra("light_zone",i);
+                PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                        launchIntent, 0 /* no flags */);
+                return pi;
+            }
+
+            public PendingIntent createSuperPendingIntent(Context cont, boolean on) {
+                Intent launchIntent = new Intent();
+                launchIntent.setClass(cont, controlWidgetProvider.class);
+                launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+                if(on) {
+                    launchIntent.setData(Uri.parse("super:" + LIGHT_ON));
+                } else {
+                    launchIntent.setData(Uri.parse("super:" + LIGHT_OFF));
+                }
                 PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                         launchIntent, 0 /* no flags */);
                 return pi;

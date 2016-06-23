@@ -93,6 +93,13 @@ public class switchWidget extends AppWidgetProvider {
 
             remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(ControlZone,context,true));
             remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(ControlZone,context,false));
+            if(ControlZone > -1) {
+                remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(ControlZone, context, true));
+                remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(ControlZone, context, false));
+            } else {
+                remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
+                remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
+            }
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }
@@ -108,6 +115,20 @@ public class switchWidget extends AppWidgetProvider {
             launchIntent.setData(Uri.parse(i + ":" + LIGHT_OFF));
         }
         launchIntent.putExtra("light_zone",i);
+        PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                launchIntent, 0 /* no flags */);
+        return pi;
+    }
+
+    public PendingIntent createSuperPendingIntent(Context cont, boolean on) {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(cont, controlWidgetProvider.class);
+        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        if(on) {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_ON));
+        } else {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_OFF));
+        }
         PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                 launchIntent, 0 /* no flags */);
         return pi;

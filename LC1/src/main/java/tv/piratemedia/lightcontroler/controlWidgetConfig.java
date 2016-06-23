@@ -33,7 +33,7 @@ public class controlWidgetConfig extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.control_widget_config);
 
-        if(Build.VERSION.SDK_INT == 21) {
+        if(Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 

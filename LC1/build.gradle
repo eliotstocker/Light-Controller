@@ -8,8 +8,8 @@ android {
         applicationId "tv.piratemedia.lightcontroler"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1710
-        versionName "1.7.1"
+        versionCode 1711
+        versionName "1.8.0 Beta 0"
     }
     buildTypes {
         release {
