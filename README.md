@@ -3,6 +3,10 @@ Light Controller
 
 ![Promo Image](promo.png)
 
+Build Status
+------------
+[![Build Status](https://travis-ci.org/eliotstocker/Light-Controller.svg?branch=master)](https://travis-ci.org/eliotstocker/Light-Controller)
+
 Description
 -----------
 The best way to control your LED Bulbs, Including Home and Lockscreen widgets
