@@ -190,14 +190,21 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
                 remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
 
-                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(0, context, true));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
 
-                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(0, context, false));
+                }                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
@@ -207,13 +214,21 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
                 remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
 
-                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,context,true));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(9, context, true));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
 
-                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(9,context,false));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(9, context, false));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
@@ -262,6 +277,20 @@ public class controlWidgetProvider extends AppWidgetProvider {
         return pi;
     }
 
+    public PendingIntent createSuperPendingIntent(Context cont, boolean on) {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(cont, controlWidgetProvider.class);
+        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        if(on) {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_ON));
+        } else {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_OFF));
+        }
+        PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                launchIntent, 0 /* no flags */);
+        return pi;
+    }
+
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
@@ -289,11 +318,19 @@ public class controlWidgetProvider extends AppWidgetProvider {
             if (intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)) {
                 Uri data = intent.getData();
                 int buttonId = Integer.parseInt(data.getSchemeSpecificPart());
-                int zone = Integer.parseInt(data.getScheme());
-                if (buttonId == LIGHT_ON) {
-                    Controller.LightsOn(zone);
-                } else if (buttonId == LIGHT_OFF) {
-                    Controller.LightsOff(zone);
+                if(data.getScheme().equals("super")) {
+                    if (buttonId == LIGHT_ON) {
+                        Controller.globalOn();
+                    } else if (buttonId == LIGHT_OFF) {
+                        Controller.globalOff();
+                    }
+                } else {
+                    int zone = Integer.parseInt(data.getScheme());
+                    if (buttonId == LIGHT_ON) {
+                        Controller.LightsOn(zone);
+                    } else if (buttonId == LIGHT_OFF) {
+                        Controller.LightsOff(zone);
+                    }
                 }
             } else {
                 //do nothing
