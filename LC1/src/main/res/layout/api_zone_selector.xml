@@ -28,6 +28,16 @@
                 android:textSize="@dimen/abc_text_size_title_material_toolbar" />
         </LinearLayout>
 
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Super Global"
+            android:id="@+id/radioButton"
+            android:checked="false"
+            android:layout_gravity="left"
+            android:layout_margin="10dp"
+            android:textColor="@color/abc_primary_text_material_light" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -89,7 +99,7 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/group2"
+                android:id="@+id/sg"
                 android:layout_weight="1">
 
                 <TextView

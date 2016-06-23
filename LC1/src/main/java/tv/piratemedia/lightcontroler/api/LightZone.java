@@ -15,4 +15,9 @@ public class LightZone implements Serializable {
     public boolean isWhite() {
         return Type.equals("white");
     }
+
+    public boolean isSuperGlobal() {
+        return Type.equals("super");
+    }
+
 }
