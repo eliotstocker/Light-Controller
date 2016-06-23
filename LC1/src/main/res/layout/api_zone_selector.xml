@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Super Global"
-            android:id="@+id/radioButton"
+            android:id="@+id/sg"
             android:checked="false"
             android:layout_gravity="left"
             android:layout_margin="10dp"
@@ -99,7 +99,7 @@
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/sg"
+                android:id="@+id/group2"
                 android:layout_weight="1">
 
                 <TextView

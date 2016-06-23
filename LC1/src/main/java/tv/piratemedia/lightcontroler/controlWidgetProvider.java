@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
@@ -38,8 +39,6 @@ import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class controlWidgetProvider extends AppWidgetProvider {
 
@@ -117,7 +116,6 @@ public class controlWidgetProvider extends AppWidgetProvider {
     private controlCommands Controller;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
-    private Map<Integer, Integer> HeightList = new HashMap<Integer, Integer>();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -244,11 +242,15 @@ public class controlWidgetProvider extends AppWidgetProvider {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
 
-            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
-                Log.d("widget", "Hide Date Time");
-                remoteViews.setViewVisibility(R.id.datetime, View.GONE);
-            } else {
-                remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
+            if(Build.VERSION.SDK_INT >= 16) {
+                int height = appWidgetManager.getAppWidgetOptions(widgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+
+                if (height < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
+                    Log.d("widget", "Hide Date Time");
+                    remoteViews.setViewVisibility(R.id.datetime, View.GONE);
+                } else {
+                    remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
+                }
             }
 
             remoteViews.setTextViewText(R.id.timeHour, hourString);
@@ -296,7 +298,6 @@ public class controlWidgetProvider extends AppWidgetProvider {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                 R.layout.control_widget_init);
         Log.d("widget", "Get Widget Size");
-        HeightList.put(appWidgetId, newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
         updateUI(context, appWidgetManager);
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
