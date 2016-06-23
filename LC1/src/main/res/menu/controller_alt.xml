@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="tv.piratemedia.lightcontroler.controller"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_global_on"
+        android:title="Global On"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_global_on"/>
+    <item android:id="@+id/action_global_off"
+        android:title="Global Off"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_global_off"/>
+
+    <!--<item android:id="@+id/action_menu"-->
+        <!--android:title="menu"-->
+        <!--android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"-->
+        <!--android:orderInCategory="100"-->
+        <!--app:showAsAction="always"/>
+    <item android:id="@+id/action_send_feedback"
+        android:title="@string/action_send_feedback"
+        android:orderInCategory="100"
+        android:showAsAction="never"/>
+    <item android:id="@+id/action_report_bug"
+        android:title="@string/action_report_bug"
+        android:orderInCategory="100"
+        android:showAsAction="never"/-->
+</menu>

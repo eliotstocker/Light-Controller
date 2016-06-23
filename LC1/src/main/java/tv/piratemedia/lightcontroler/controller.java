@@ -468,6 +468,11 @@ public class controller extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
+        } else if(prefs.getBoolean("rgbw_enabled", false) && prefs.getBoolean("white_enabled", false)) {
+            getMenuInflater().inflate(R.menu.controller_alt, menu);
+            Log.d("menus", "alt menu");
+        } else {
+            Log.d("menus", "no menu");
         }
         return true;
     }
@@ -550,6 +555,10 @@ public class controller extends ActionBarActivity {
 //        } else if(id == R.id.action_menu) {
 //            popupMenu();
 //            return true;
+        } else if(id == R.id.action_global_on) {
+            Controller.globalOn();
+        } else if(id == R.id.action_global_off) {
+            Controller.globalOff();
         } else if(id == android.R.id.home) {
             drawer.openDrawer();
         }
