@@ -9,6 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1711
+        multiDexEnabled true
         versionName "1.8.0 Beta 0"
     }
     buildTypes {
@@ -31,6 +32,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.2.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
+    compile 'com.getpebble:pebblekit:3.0.0'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
         transitive = true
     }
