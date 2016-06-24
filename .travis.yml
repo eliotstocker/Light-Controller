@@ -38,11 +38,15 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+before_install
+  openssl aes-256-cbc -K $encrypted_3f126342b36d_key -iv $encrypted_3f126342b36d_iv -in signing.jks.enc -out signing.jks -d
+  openssl aes-256-cbc -K $encrypted_3f126342b36d_key -iv $encrypted_3f126342b36d_iv -in signing.properties.enc -out signing.properties -d
+
 deploy:
   provider: releases
   api_key:
     secure: "yYRPew+sN9gEqv27bUeD7IN/Xd1dtarL/JyETlC2Nw21fCUIKkvchklHflUqtMYbtOU/EIBqA1iQFk5NK+m5T6FiCj4WKi7c+mCs6KacC+Q0smr+9xDKrmRHYufjrY8O4F7NJaoZv+d6kg3+5Bdsa84UvvwfzGmIyVd6YX3CfDrr8vZRbVOiMBodl9sMlIIoMybULpIiQp7ZT2/TE+ytCWylToBAPQdD7HB1Cgqa63Ohyb6nrUjDA2dDz5bWe3crAUUOFETJNSbXWYSxzlx1sYrc1k2pvyyBOvRzP1AXSqY0/HNZ6TCyyYXUuos55upy8kBGhWqCKSl1jjcC5dl5U5fFQbrF+0ke0jzgOi2jgrnBZm/JUwp7fTkpjn0F51KCkHtkryGl1pCdV2h9kcTyByLIKAOH641rC+YE97r9yQbKKMompLyAVZOCJJupU6sM6tTgA6B0WecsBAVxg1pTKP174ZIezC6vuDYwfcZTtSNVE+ZH/9hDkHdJwoCsN+2XplWX3e/QtBj+oxbVIlUEPFMz/4vb+cyLZiQN+i023ZJvcbDD1f69t1luVcdNVj6re6ljZmsZgft0+qFONvN6ji8z2nfjxGYbnmWgXpiLkP4d3VDuHi8zGQTRL586IO//K6+Lkpku32fVo9aKCggjXRv4gdtN9206vJ2MZlf3AJE="
-  file: LC1/build/outputs/apk/app-release-unsiqned.apk
+  file: LC1/build/outputs/apk/LC1-release.apk
   skip_cleanup: true
   on:
     repo: eliotstocker/Light-Controller

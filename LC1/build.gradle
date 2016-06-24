@@ -12,10 +12,28 @@ android {
         multiDexEnabled true
         versionName "1.8.0 Beta 0"
     }
+
+    if ( project.rootProject.file('signing.properties').isFile() ) {
+        Properties signing = new Properties()
+        signing.load(project.rootProject.file('signing.properties').newDataInputStream())
+
+        signingConfigs {
+            release {
+                storeFile project.rootProject.file("signing.jks")
+                storePassword signing.getProperty("release.storePass")
+                keyAlias signing.getProperty("release.keyUser")
+                keyPassword signing.getProperty("release.keyPass")
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            if ( project.rootProject.file('signing.properties').isFile() ) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }
