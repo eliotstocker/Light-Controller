@@ -1,7 +1,7 @@
 Light Controller
 ================
 
-![Promo Image](promo.png)
+![Promo Image](assets/promo.png)
 
 Build Status
 ------------
