@@ -181,12 +181,5 @@
             android:grantUriPermissions="true"
             android:label="@string/app_name"
             android:readPermission="tv.piratemedia.lightcontroler.api" />
-
     </application>
-    <permission
-        android:name="tv.piratemedia.lightcontroler.api"
-        android:description="@string/api_description"
-        android:label="@string/api_name"
-        android:protectionLevel="normal"
-    />
 </manifest>
