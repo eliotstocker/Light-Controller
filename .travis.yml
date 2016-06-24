@@ -25,6 +25,11 @@ before_script:
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
 
+  - echo no | android create avd --force -n test -t android-23 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 
@@ -32,3 +37,13 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "yYRPew+sN9gEqv27bUeD7IN/Xd1dtarL/JyETlC2Nw21fCUIKkvchklHflUqtMYbtOU/EIBqA1iQFk5NK+m5T6FiCj4WKi7c+mCs6KacC+Q0smr+9xDKrmRHYufjrY8O4F7NJaoZv+d6kg3+5Bdsa84UvvwfzGmIyVd6YX3CfDrr8vZRbVOiMBodl9sMlIIoMybULpIiQp7ZT2/TE+ytCWylToBAPQdD7HB1Cgqa63Ohyb6nrUjDA2dDz5bWe3crAUUOFETJNSbXWYSxzlx1sYrc1k2pvyyBOvRzP1AXSqY0/HNZ6TCyyYXUuos55upy8kBGhWqCKSl1jjcC5dl5U5fFQbrF+0ke0jzgOi2jgrnBZm/JUwp7fTkpjn0F51KCkHtkryGl1pCdV2h9kcTyByLIKAOH641rC+YE97r9yQbKKMompLyAVZOCJJupU6sM6tTgA6B0WecsBAVxg1pTKP174ZIezC6vuDYwfcZTtSNVE+ZH/9hDkHdJwoCsN+2XplWX3e/QtBj+oxbVIlUEPFMz/4vb+cyLZiQN+i023ZJvcbDD1f69t1luVcdNVj6re6ljZmsZgft0+qFONvN6ji8z2nfjxGYbnmWgXpiLkP4d3VDuHi8zGQTRL586IO//K6+Lkpku32fVo9aKCggjXRv4gdtN9206vJ2MZlf3AJE="
+  file: app/build/outputs/apk/app-release.apk
+  skip_cleanup: true
+  on:
+    repo: eliotstocker/Light-Controller
+    tags: true
