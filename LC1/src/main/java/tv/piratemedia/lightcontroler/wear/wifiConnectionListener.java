@@ -38,9 +38,9 @@ public class wifiConnectionListener extends BroadcastReceiver {
         utils cmd = new utils(context);
         final SharedPreferences prefs = context.getSharedPreferences(WearSettings.NETWORKS_PREFS, Context.MODE_PRIVATE);
 
-        Log.d("wear", "connecting to: "+cmd.getWifiName());
-        
-        if(prefs.getBoolean(cmd.getWifiName(), false)) {
+        //Log.d("wear", "connecting to: "+cmd.getWifiName());
+
+        if(cmd.getWifiName() != null && prefs.getBoolean(cmd.getWifiName(), false)) {
             connectToWatch(context);
             final com.google.android.gms.common.api.PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
             nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
