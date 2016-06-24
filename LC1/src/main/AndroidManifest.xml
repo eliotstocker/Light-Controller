@@ -10,13 +10,22 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="tv.piratemedia.lightcontroler.api" />
 
+    <permission
+        android:name="tv.piratemedia.lightcontroler.api"
+        android:description="@string/api_description"
+        android:label="@string/api_name"
+        android:protectionLevel="normal" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:theme="@style/LightController"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/LightController">
+
         <!-- android:backupAgent="LCBackupAgent" -->
-        <meta-data android:name="com.google.android.backup.api_key" android:value="AEdPqrEAAAAIb0-S1PPn7w6c-GnAr1gF5Pjnwru29t2s8hc5xQ" />
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIb0-S1PPn7w6c-GnAr1gF5Pjnwru29t2s8hc5xQ" />
 
         <activity
             android:name=".controller"
@@ -31,46 +40,44 @@
             android:name=".controlPreferences"
             android:icon="@drawable/icon"
             android:label="@string/app_settings"
-            android:parentActivityName=".controller">
-        </activity>
-
+            android:parentActivityName=".controller" />
         <activity
             android:name=".switchWidgetConfig"
             android:icon="@drawable/icon"
             android:label="@string/app_widget_settings"
             android:parentActivityName=".controller">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".controlWidgetConfig"
             android:icon="@drawable/icon"
             android:label="@string/app_widget_settings"
             android:parentActivityName=".controller">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name="tv.piratemedia.lightcontroler.ui.EditActivity"
+            android:name=".ui.EditActivity"
             android:exported="true"
             android:icon="@drawable/icon"
             android:label="@string/plugin_name"
             android:theme="@android:style/Theme.Holo"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize">
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
-        <receiver android:name=".controlWidgetProvider" >
+
+        <receiver android:name=".controlWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED"/>
+                <action android:name="android.appwidget.action.APPWIDGET_OPTIONS_CHANGED" />
             </intent-filter>
 
             <meta-data
@@ -78,9 +85,9 @@
                 android:resource="@xml/control_appwidget_info" />
         </receiver>
         <receiver
-            android:name="tv.piratemedia.lightcontroler.receiver.FireReceiver"
+            android:name=".receiver.FireReceiver"
             android:exported="true"
-            android:process=":background" >
+            android:process=":background">
 
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
             <intent-filter>
@@ -94,15 +101,14 @@
                 <action android:name="tv.piratemedia.lightcontroler.clock.action.UPDATE" />
             </intent-filter>
         </service>
-
-        <service android:name=".notificationService" >
+        <service android:name=".notificationService">
             <intent-filter>
-                <action android:name="tv.piratemedia.lightcontroller.service.start"/>
+                <action android:name="tv.piratemedia.lightcontroller.service.start" />
                 <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </service>
-        <service android:name=".wear.DataLayerListenerService" >
+        <service android:name=".wear.DataLayerListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
@@ -110,12 +116,10 @@
         </service>
         <receiver android:name=".wear.wifiConnectionListener">
             <intent-filter>
-                <action
-                android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".switchWidget" >
+        <receiver android:name=".switchWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -127,13 +131,12 @@
         <activity
             android:name=".api.APIZoneSelector"
             android:label="Zone Select"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:permission="tv.piratemedia.lightcontroler.api">
+            android:permission="tv.piratemedia.lightcontroler.api"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
@@ -142,7 +145,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".wear.WearSettings"
             android:label="Wear Settings"
@@ -156,14 +158,13 @@
             android:name=".api.APIReciever"
             android:permission="tv.piratemedia.lightcontroler.api">
             <intent-filter>
-                <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission"/>
-                <action android:name="tv.piratemedia.lightcontroler.LightOn"/>
-                <action android:name="tv.piratemedia.lightcontroler.LightOff"/>
-                <action android:name="tv.piratemedia.lightcontroler.LightColor"/>
-                <action android:name="tv.piratemedia.lightcontroler.LightDefault"/>
+                <action android:name="tv.piratemedia.lightcontroler.requestAPIPermission" />
+                <action android:name="tv.piratemedia.lightcontroler.LightOn" />
+                <action android:name="tv.piratemedia.lightcontroler.LightOff" />
+                <action android:name="tv.piratemedia.lightcontroler.LightColor" />
+                <action android:name="tv.piratemedia.lightcontroler.LightDefault" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".api.AppReciever"
             android:permission="tv.piratemedia.lightcontroler.api">
@@ -173,15 +174,13 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-
         <provider
-            android:authorities="tv.piratemedia.lightcontroler.api"
             android:name=".api.APIProvider"
+            android:authorities="tv.piratemedia.lightcontroler.api"
+            android:exported="true"
             android:grantUriPermissions="true"
             android:label="@string/app_name"
-            android:exported="true"
-            android:readPermission="tv.piratemedia.lightcontroler.api"
-        />
+            android:readPermission="tv.piratemedia.lightcontroler.api" />
 
     </application>
     <permission

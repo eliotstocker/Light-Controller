@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -61,7 +60,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -85,8 +83,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.UUID;
 
+import tv.piratemedia.lightcontroler.pebble.pebble;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
+import com.getpebble.android.kit.PebbleKit.PebbleDataReceiver;
+
 
 public class controller extends ActionBarActivity {
 
@@ -95,6 +97,7 @@ public class controller extends ActionBarActivity {
      * current dropdown position.
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+    final UUID appUuid = UUID.fromString("1d6c7f01-d948-42a6-aa4e-b2084210ebbc");
 
     private static controlCommands Controller;
     private static boolean micStarted = false;
@@ -110,12 +113,13 @@ public class controller extends ActionBarActivity {
 
     public MyHandler mHandler = null;
     private utils Utils;
-
     private boolean gotDevice = false;
 
     private String DeviceMac = "";
 
     private DrawerFrameLayout drawer;
+
+    //public static PebbleDataReceiver dataReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,12 +139,23 @@ public class controller extends ActionBarActivity {
         Intent i = new Intent(this, notificationService.class);
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
+        if(Build.VERSION.SDK_INT == 22) {
+            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
 
         drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
+        //Create a new pebble (not sure if this is needed)
+        //new pebble();
+        /* Pebble related activities, added by mrwhale 18-06-2016
+        call pebble class to do pebble activities */
+        // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
+        // TODO modify wear wifi option to be "wearable" to include pebble too
+        pebble.pebbleaction(ctx);
     }
 
     class MyHandler extends Handler {
@@ -258,7 +273,22 @@ public class controller extends ActionBarActivity {
 
         }
         attemptDiscovery();
+        // not doing pebble stuff here anymore. was causing many instances of pebble to be created,
+        // so it would turn the lights on/off as many times as there were instances, moved up to onCreate() seems to be more stable now
     }
+
+    /* Dont need this anymore to pause pebble as it didnt seem to be working properly
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //Pause the pebble data reciever so we dont cause issues
+        Log.d("controller","pausing pebble");
+        if (dataReceiver != null) {
+            unregisterReceiver(dataReceiver);
+            dataReceiver = null;
+        }
+
+    } */
 
     @Override
     protected void onDestroy() {
@@ -280,6 +310,7 @@ public class controller extends ActionBarActivity {
     }
 
     private void setupApp() {
+
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
 
