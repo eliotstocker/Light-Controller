@@ -85,9 +85,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import tv.piratemedia.lightcontroler.pebble.pebble;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
-import com.getpebble.android.kit.PebbleKit.PebbleDataReceiver;
 
 
 public class controller extends ActionBarActivity {
@@ -119,7 +117,6 @@ public class controller extends ActionBarActivity {
 
     private DrawerFrameLayout drawer;
 
-    //public static PebbleDataReceiver dataReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +146,6 @@ public class controller extends ActionBarActivity {
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
-        //Create a new pebble (not sure if this is needed)
-        //new pebble();
-        /* Pebble related activities, added by mrwhale 18-06-2016
-        call pebble class to do pebble activities */
-        // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
-        // TODO modify wear wifi option to be "wearable" to include pebble too
-        pebble.pebbleaction(ctx);
     }
 
     class MyHandler extends Handler {
@@ -273,22 +263,7 @@ public class controller extends ActionBarActivity {
 
         }
         attemptDiscovery();
-        // not doing pebble stuff here anymore. was causing many instances of pebble to be created,
-        // so it would turn the lights on/off as many times as there were instances, moved up to onCreate() seems to be more stable now
     }
-
-    /* Dont need this anymore to pause pebble as it didnt seem to be working properly
-    @Override
-    protected void onPause(){
-        super.onPause();
-        //Pause the pebble data reciever so we dont cause issues
-        Log.d("controller","pausing pebble");
-        if (dataReceiver != null) {
-            unregisterReceiver(dataReceiver);
-            dataReceiver = null;
-        }
-
-    } */
 
     @Override
     protected void onDestroy() {
