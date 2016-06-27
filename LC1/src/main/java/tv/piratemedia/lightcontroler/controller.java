@@ -19,14 +19,18 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -86,6 +90,7 @@ import java.util.List;
 import java.util.UUID;
 
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
+import tv.piratemedia.lightcontroler.pebble.pebbleReceiver;
 
 
 public class controller extends ActionBarActivity {
@@ -146,6 +151,15 @@ public class controller extends ActionBarActivity {
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
+        /*
+        IntentFilter pebbleintent = new IntentFilter("com.getpebble.action.app.RECEIVE");
+
+        BroadcastReceiver pebble = new pebbleReceiver();
+        HandlerThread handlerThread = new HandlerThread("pebblehandler");
+        handlerThread.start();
+        Looper looper = handlerThread.getLooper();
+        Handler handler = new Handler(looper);
+        registerReceiver(pebble, pebbleintent, null, handler); // Will not */
     }
 
     class MyHandler extends Handler {
