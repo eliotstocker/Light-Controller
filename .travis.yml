@@ -51,3 +51,4 @@ deploy:
   on:
     repo: eliotstocker/Light-Controller
     tags: true
+
