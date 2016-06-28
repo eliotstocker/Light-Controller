@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
@@ -16,8 +17,7 @@ import static com.getpebble.android.kit.Constants.MSG_DATA;
 import static com.getpebble.android.kit.Constants.TRANSACTION_ID;
 import tv.piratemedia.lightcontroler.controlCommands;
 import tv.piratemedia.lightcontroler.controller;
-import tv.piratemedia.lightcontroler.utils;
-import tv.piratemedia.lightcontroler.wear.WearSettings;
+import tv.piratemedia.lightcontroler.controlPreferences;
 
 import java.util.UUID;
 /*
@@ -42,12 +42,20 @@ public class pebbleReceiver extends BroadcastReceiver {
     //Create a new controller to handle the sending of commands to the bridge
     controller mCont = new controller();
     controlCommands contCmd;
+    //private static SharedPreferences prefs;
+
     //Tag for logging
     //TODO is there a way to only have it send to log if its flagged as debug or something? if(DEBUG){ Log.D()} something like this
     static String TAG = "Pebble Receiver";
     @Override
     //On receive. Does the deed when we hear from the pebble
     public void onReceive(Context context, Intent intent) {
+        /*if(!prefs.getBoolean("pref_pebble", false)) {
+            Log.d(TAG,"pebble prefs is false");
+        } */
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        boolean test = prefs.getBoolean("pref_pebble", false);
+        Log.d(TAG,"Pebble prefs is " + test);
         /* Future special. Code to see if we are on the right wifi, if not then dont bother to send command?
         utils utils = new utils(context);
         final SharedPreferences prefs = context.getSharedPreferences(WearSettings.NETWORKS_PREFS, Context.MODE_PRIVATE);

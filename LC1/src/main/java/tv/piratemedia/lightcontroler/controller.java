@@ -295,6 +295,16 @@ public class controller extends ActionBarActivity {
         if(!prefs.getBoolean("pref_disable_auto_find", false)) {
             Controller.discover();
         }
+
+        /* Code to try and unregister pebble stuff if its unselcted in settings menu. not quite sure where to put this though, what reloads after a settings change?
+         ComponentName pebblereceiver = new ComponentName(ctx,pebbleReceiver.class);
+        int status = ctx.getPackageManager().getComponentEnabledSetting(pebblereceiver);
+        if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            Log.d("Package", "pebbl receiver is enabled");
+        } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED){
+            Log.d("Package", "pebbl receiver is disabled");
+        }
+        Log.d("Packge", "Test log"); */
         //start timer here for no discovery (try 3 times)
     }
 
