@@ -118,6 +118,9 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Log.d(TAG,"failed received -> dict " + e);
                 return;
             }
+            //Todo add here at the end of a receive, send state information back to the watch by calling pebbleSender?
+            pebbleSender pSender = new pebbleSender();
+            pSender.sendState(context, contCmd);
         }
     }
 }
