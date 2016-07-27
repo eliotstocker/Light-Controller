@@ -47,6 +47,7 @@ public class pebbleReceiver extends BroadcastReceiver {
     //Tag for logging
     //TODO is there a way to only have it send to log if its flagged as debug or something? if(DEBUG){ Log.D()} something like this
     static String TAG = "Pebble Receiver";
+
     @Override
     //On receive. Does the deed when we hear from the pebble
     public void onReceive(Context context, Intent intent) {
@@ -123,4 +124,5 @@ public class pebbleReceiver extends BroadcastReceiver {
             pSender.sendState(context, contCmd);
         }
     }
+
 }

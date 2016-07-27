@@ -90,7 +90,7 @@ import java.util.List;
 import java.util.UUID;
 
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
-import tv.piratemedia.lightcontroler.pebble.pebbleReceiver;
+import tv.piratemedia.lightcontroler.pebble.pebbleSender;
 
 
 public class controller extends ActionBarActivity {
@@ -122,6 +122,8 @@ public class controller extends ActionBarActivity {
 
     private DrawerFrameLayout drawer;
 
+    private pebbleSender pSender;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,15 +153,11 @@ public class controller extends ActionBarActivity {
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
-        /*
-        IntentFilter pebbleintent = new IntentFilter("com.getpebble.action.app.RECEIVE");
 
-        BroadcastReceiver pebble = new pebbleReceiver();
-        HandlerThread handlerThread = new HandlerThread("pebblehandler");
-        handlerThread.start();
-        Looper looper = handlerThread.getLooper();
-        Handler handler = new Handler(looper);
-        registerReceiver(pebble, pebbleintent, null, handler); // Will not */
+        //Call Pebble sender, get it to check if pebble is connceted and send up light states
+        //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
+        pSender = new pebbleSender();
+        pSender.initialConnect(ctx, Controller);
     }
 
     class MyHandler extends Handler {
