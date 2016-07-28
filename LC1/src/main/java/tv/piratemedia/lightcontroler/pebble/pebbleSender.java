@@ -47,6 +47,7 @@ public class pebbleSender {
     public pebbleSender(Context context){
         this.context = context;
     }
+
     /* Send state information of the lights to the watchapp
     *
     * */
@@ -60,37 +61,48 @@ public class pebbleSender {
         PebbleKit.sendDataToPebble(context, WatchUUID, dict);
 
     }
-
+    /*Initial connect
+    * method that is called from onCreate() in main activity, so when the android app starts, we will see if the watch is connected,
+    * start the pebble watch app, then send light state data to the watch. The watch will store this data for later use (WIP)
+    * */
     public void initialConnect(controlCommands contCmd){
         Log.d(TAG, "initial connect");
         //Is watch connected?
         Boolean isConnected = PebbleKit.isWatchConnected(context);
         Log.d(TAG, "Is connected? " + isConnected);
-        PebbleKit.startAppOnPebble(context, WatchUUID);
-
-        //If connected and app is running then send state info
+        //If watch is connected start app then send state
         if(isConnected) {
-            Boolean zone0state = contCmd.appState.getOnOff(0);
-            Boolean zone1state = contCmd.appState.getOnOff(1);
-            Boolean zone2state = contCmd.appState.getOnOff(2);
-            Boolean zone3state = contCmd.appState.getOnOff(3);
-            Boolean zone4state = contCmd.appState.getOnOff(4);
-            Boolean zone5state = contCmd.appState.getOnOff(5);
-            Boolean zone6state = contCmd.appState.getOnOff(6);
-            Boolean zone7state = contCmd.appState.getOnOff(7);
-            Boolean zone8state = contCmd.appState.getOnOff(8);
-            Boolean zone9state = contCmd.appState.getOnOff(9);
+            PebbleKit.startAppOnPebble(context, WatchUUID);
+            //If state of zone x is on, then add a byte value of 1 to pebbledictionary, if its false, then add 0
+            if(contCmd.appState.getOnOff(0)) dict.addInt8(AppKeyZone0status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone0status, Byte.valueOf("0"));
 
-            dict.addString(AppKeyZone0status, zone0state.toString());
-            dict.addString(AppKeyZone1status, zone1state.toString());
-            dict.addString(AppKeyZone2status, zone2state.toString());
-            dict.addString(AppKeyZone3status, zone3state.toString());
-            dict.addString(AppKeyZone4status, zone4state.toString());
-            dict.addString(AppKeyZone5status, zone5state.toString());
-            dict.addString(AppKeyZone6status, zone6state.toString());
-            dict.addString(AppKeyZone7status, zone7state.toString());
-            dict.addString(AppKeyZone8status, zone8state.toString());
-            dict.addString(AppKeyZone9status, zone9state.toString());
+            if(contCmd.appState.getOnOff(1)) dict.addInt8(AppKeyZone1status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone1status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(2)) dict.addInt8(AppKeyZone2status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone2status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(3)) dict.addInt8(AppKeyZone3status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone3status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(4)) dict.addInt8(AppKeyZone4status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone4status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(5)) dict.addInt8(AppKeyZone5status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone5status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(6)) dict.addInt8(AppKeyZone6status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone6status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(7)) dict.addInt8(AppKeyZone7status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone7status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(8)) dict.addInt8(AppKeyZone8status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone8status, Byte.valueOf("0"));
+
+            if(contCmd.appState.getOnOff(9)) dict.addInt8(AppKeyZone9status, Byte.valueOf("1"));
+            else dict.addInt8(AppKeyZone9status, Byte.valueOf("0"));
 
             PebbleKit.sendDataToPebble(context, WatchUUID, dict);
         }else Log.d(TAG, "not connected");

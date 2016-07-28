@@ -35,9 +35,7 @@ public class pebbleReceiver extends BroadcastReceiver {
 
     // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
     // TODO modify wear wifi option to be "wearable" to include pebble too
-    // todo add the ability to send data to the watch.Need to send Zone data to the watch so it can display it
-    //TODO probably should put a if statement to check if pebble is conncted/if we are on the right wifi, so we dont do any work we done need to
-    //TODO put some more logic around getting zone value to verify its an int 0-9
+    // todo add the ability to send data to the watch.Need to send Zone data to the watch so it can display it - In progress
 
     // Variables to hold the key values in the tuple sent from pebble. Matches pebble app values
     private static final int KEY_CMD = 3;
@@ -87,8 +85,8 @@ public class pebbleReceiver extends BroadcastReceiver {
             }
             final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
             final String jsonData = intent.getStringExtra(MSG_DATA);
-            final String testack = intent.getStringExtra(INTENT_APP_ACK);
-            Log.d(TAG, "pebble ack = " + testack);
+            //final String testack = intent.getStringExtra(INTENT_APP_ACK);
+            //Log.d(TAG, "pebble ack = " + testack);
             if (jsonData == null || jsonData.isEmpty()) {
                 Log.d(TAG, "jsonData null");
                 return;
@@ -100,7 +98,7 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Long cmdValue = data.getUnsignedIntegerAsLong(KEY_CMD);
                 // do what you need with the data
                 if (zoneValue != null && cmdValue != null) {
-                    //TODO throw error if teither of these dont exist and tell pebble?
+                    //TODO throw error if either of these dont exist and tell pebble? shouldnt need this as we are only getting response from pebble app. so if its doing something wrong then ive made bad code in the pebble watch app
                     int zone = zoneValue.intValue();
                     int cmd = cmdValue.intValue();
                     Log.d(TAG, "going to turn zone " + zone + " cmd " + cmd);
@@ -119,13 +117,12 @@ public class pebbleReceiver extends BroadcastReceiver {
                     }
                 }
                 //Todo add exception handle if cant send the message
-                //TODO if statement about wifi and phone connectivity can go here, this is what initialises the above that does the dirty work
                 PebbleKit.sendAckToPebble(context, transactionId);
             } catch (JSONException e) {
                 Log.d(TAG,"failed received -> dict " + e);
                 return;
             }
-            //Todo add here at the end of a receive, send state information back to the watch by calling pebbleSender?
+            //Todo add here at the end of a receive, send state information back to the watch by calling pebbleSender. maybe we just do it locally on the pebble storage, save the message for later
            // pebbleSender pSender = new pebbleSender();
             //pSender.sendState(context, contCmd);
         }
