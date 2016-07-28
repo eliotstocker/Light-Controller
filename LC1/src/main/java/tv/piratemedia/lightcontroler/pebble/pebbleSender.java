@@ -39,59 +39,61 @@ public class pebbleSender {
     final int AppKeyZone7status = 12;
     final int AppKeyZone8status = 13;
     final int AppKeyZone9status = 14;
-
+    Context context;
     PebbleDictionary dict = new PebbleDictionary();
 
     private String TAG = "Pebble Sender";
 
+    public pebbleSender(Context context){
+        this.context = context;
+    }
     /* Send state information of the lights to the watchapp
     *
     * */
-    public void sendState(Context context, controlCommands contCmd){
+    public void sendState(controlCommands contCmd){
         Boolean zone0state = contCmd.appState.getOnOff(0);
         Log.d(TAG, "zone 0 state is " + zone0state );
 
 
         //Lets setup to send to the watch
         dict.addString(AppKeyZone0status, zone0state.toString());
-
         PebbleKit.sendDataToPebble(context, WatchUUID, dict);
 
     }
 
-    public void initialConnect(Context context, controlCommands contCmd){
+    public void initialConnect(controlCommands contCmd){
         Log.d(TAG, "initial connect");
         //Is watch connected?
         Boolean isConnected = PebbleKit.isWatchConnected(context);
         Log.d(TAG, "Is connected? " + isConnected);
+        PebbleKit.startAppOnPebble(context, WatchUUID);
 
-        //If connected, lets gather states and send to watch
+        //If connected and app is running then send state info
+        if(isConnected) {
+            Boolean zone0state = contCmd.appState.getOnOff(0);
+            Boolean zone1state = contCmd.appState.getOnOff(1);
+            Boolean zone2state = contCmd.appState.getOnOff(2);
+            Boolean zone3state = contCmd.appState.getOnOff(3);
+            Boolean zone4state = contCmd.appState.getOnOff(4);
+            Boolean zone5state = contCmd.appState.getOnOff(5);
+            Boolean zone6state = contCmd.appState.getOnOff(6);
+            Boolean zone7state = contCmd.appState.getOnOff(7);
+            Boolean zone8state = contCmd.appState.getOnOff(8);
+            Boolean zone9state = contCmd.appState.getOnOff(9);
 
-        Boolean zone0state = contCmd.appState.getOnOff(0);
-        Boolean zone1state = contCmd.appState.getOnOff(1);
-        Boolean zone2state = contCmd.appState.getOnOff(2);
-        Boolean zone3state = contCmd.appState.getOnOff(3);
-        Boolean zone4state = contCmd.appState.getOnOff(4);
-        Boolean zone5state = contCmd.appState.getOnOff(5);
-        Boolean zone6state = contCmd.appState.getOnOff(6);
-        Boolean zone7state = contCmd.appState.getOnOff(7);
-        Boolean zone8state = contCmd.appState.getOnOff(8);
-        Boolean zone9state = contCmd.appState.getOnOff(9);
+            dict.addString(AppKeyZone0status, zone0state.toString());
+            dict.addString(AppKeyZone1status, zone1state.toString());
+            dict.addString(AppKeyZone2status, zone2state.toString());
+            dict.addString(AppKeyZone3status, zone3state.toString());
+            dict.addString(AppKeyZone4status, zone4state.toString());
+            dict.addString(AppKeyZone5status, zone5state.toString());
+            dict.addString(AppKeyZone6status, zone6state.toString());
+            dict.addString(AppKeyZone7status, zone7state.toString());
+            dict.addString(AppKeyZone8status, zone8state.toString());
+            dict.addString(AppKeyZone9status, zone9state.toString());
 
-        dict.addString(AppKeyZone0status,zone0state.toString());
-        dict.addString(AppKeyZone1status,zone1state.toString());
-        dict.addString(AppKeyZone2status,zone2state.toString());
-        dict.addString(AppKeyZone3status,zone3state.toString());
-        dict.addString(AppKeyZone4status,zone4state.toString());
-        dict.addString(AppKeyZone5status,zone5state.toString());
-        dict.addString(AppKeyZone6status,zone6state.toString());
-        dict.addString(AppKeyZone7status,zone7state.toString());
-        dict.addString(AppKeyZone8status,zone8state.toString());
-        dict.addString(AppKeyZone9status,zone9state.toString());
-
-        PebbleKit.sendDataToPebble(context, WatchUUID, dict);
-
-
+            PebbleKit.sendDataToPebble(context, WatchUUID, dict);
+        }else Log.d(TAG, "not connected");
     }
 
 }

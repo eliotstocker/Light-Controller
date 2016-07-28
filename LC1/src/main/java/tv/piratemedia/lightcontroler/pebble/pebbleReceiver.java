@@ -10,11 +10,14 @@ import android.util.Log;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
+
+import static com.getpebble.android.kit.Constants.INTENT_APP_ACK;
 import static com.getpebble.android.kit.Constants.INTENT_APP_RECEIVE;
 import static tv.piratemedia.lightcontroler.Constants.WatchUUID;
 import org.json.JSONException;
 import static com.getpebble.android.kit.Constants.MSG_DATA;
 import static com.getpebble.android.kit.Constants.TRANSACTION_ID;
+import static com.getpebble.android.kit.PebbleKit.PebbleAckReceiver;
 import tv.piratemedia.lightcontroler.controlCommands;
 import tv.piratemedia.lightcontroler.controller;
 import tv.piratemedia.lightcontroler.controlPreferences;
@@ -54,9 +57,10 @@ public class pebbleReceiver extends BroadcastReceiver {
         /*if(!prefs.getBoolean("pref_pebble", false)) {
             Log.d(TAG,"pebble prefs is false");
         } */
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         boolean test = prefs.getBoolean("pref_pebble", false);
-        Log.d(TAG,"Pebble prefs is " + test);
+        //Log.d(TAG,"Pebble prefs is " + test);
         /* Future special. Code to see if we are on the right wifi, if not then dont bother to send command?
         utils utils = new utils(context);
         final SharedPreferences prefs = context.getSharedPreferences(WearSettings.NETWORKS_PREFS, Context.MODE_PRIVATE);
@@ -67,10 +71,10 @@ public class pebbleReceiver extends BroadcastReceiver {
         //Code necessary to have this Receiver service accept input from the pebble even if main app is not running
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        contCmd = new controlCommands(context, mCont.mHandler);
         //Log.d(TAG, "on recieve");
         //Check to see if the intent is from the pebble
         if (intent.getAction().equals(INTENT_APP_RECEIVE)) {
+            contCmd = new controlCommands(context, mCont.mHandler);
             //Log.d("pebble app R", "Got intent to receive");
             //Log.d(TAG,"WAT UUID -" + WatchUUID + "- this");
 
@@ -83,6 +87,8 @@ public class pebbleReceiver extends BroadcastReceiver {
             }
             final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
             final String jsonData = intent.getStringExtra(MSG_DATA);
+            final String testack = intent.getStringExtra(INTENT_APP_ACK);
+            Log.d(TAG, "pebble ack = " + testack);
             if (jsonData == null || jsonData.isEmpty()) {
                 Log.d(TAG, "jsonData null");
                 return;
@@ -120,9 +126,8 @@ public class pebbleReceiver extends BroadcastReceiver {
                 return;
             }
             //Todo add here at the end of a receive, send state information back to the watch by calling pebbleSender?
-            pebbleSender pSender = new pebbleSender();
-            pSender.sendState(context, contCmd);
+           // pebbleSender pSender = new pebbleSender();
+            //pSender.sendState(context, contCmd);
         }
     }
-
 }

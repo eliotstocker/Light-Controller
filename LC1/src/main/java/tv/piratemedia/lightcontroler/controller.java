@@ -156,8 +156,7 @@ public class controller extends ActionBarActivity {
 
         //Call Pebble sender, get it to check if pebble is connceted and send up light states
         //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
-        pSender = new pebbleSender();
-        pSender.initialConnect(ctx, Controller);
+        new pebbleSender(ctx).initialConnect(Controller);
     }
 
     class MyHandler extends Handler {

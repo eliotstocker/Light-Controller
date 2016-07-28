@@ -185,8 +185,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />
-                <action android:name="com.getpebble.action.app.ACK" />
-                <action android:name="com.getpebble.action.app.NACK" />
+                <action android:name="com.getpebble.action.app.RECEIVE_ACK" />
+                <action android:name="com.getpebble.action.app.RECEIVE_NACK" />
             </intent-filter>
         </receiver>
 
