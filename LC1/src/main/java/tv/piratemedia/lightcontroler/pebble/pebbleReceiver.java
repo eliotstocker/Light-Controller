@@ -116,6 +116,7 @@ public class pebbleReceiver extends BroadcastReceiver {
                             break;
                     }
                 }
+                //TODo else if these 2 dont exist, it must be a command from teh watch to say it doesnt have the names in its storage, so now lets send them1
                 //Todo add exception handle if cant send the message
                 PebbleKit.sendAckToPebble(context, transactionId);
             } catch (JSONException e) {
