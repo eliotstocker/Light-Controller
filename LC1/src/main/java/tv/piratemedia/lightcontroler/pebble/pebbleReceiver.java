@@ -84,6 +84,7 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Log.d(TAG , "Not my uuid, plz ignore");
                 return;
             }
+
             Log.d(TAG, "sending ack to pebble. Got the message bro");
             PebbleKit.sendAckToPebble(context, transactionId);
             if (jsonData == null || jsonData.isEmpty()) {
@@ -122,9 +123,8 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Log.d(TAG,"failed received -> dict " + e);
                 return;
             }
-            //Todo add here at the end of a receive, send state information back to the watch by calling pebbleSender. maybe we just do it locally on the pebble storage, save the message for later
-           // pebbleSender pSender = new pebbleSender();
-            //pSender.sendState(context, contCmd);
         }
     }
+    //TODO add a timer function that gets called when we first hear from the watch app. If no messages received within a
+    // specified period of time we should force close the app
 }
