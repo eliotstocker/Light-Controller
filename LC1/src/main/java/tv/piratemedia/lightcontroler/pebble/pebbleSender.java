@@ -40,6 +40,13 @@ public class pebbleSender {
     final int AppKeyZone8status = 13;
     final int AppKeyZone9status = 14;
     final int AppKeyZone1Name = 15;
+    final int AppKeyZone2Name = 16;
+    final int AppKeyZone3Name = 17;
+    final int AppKeyZone4Name = 18;
+    final int AppKeyZone5Name = 19;
+    final int AppKeyZone6Name = 20;
+    final int AppKeyZone7Name = 21;
+    final int AppKeyZone8Name = 22;
     private SharedPreferences prefs;
 
     Context context;
@@ -75,12 +82,27 @@ public class pebbleSender {
         if(PebbleKit.isWatchConnected(context)){
             PebbleKit.startAppOnPebble(context, WatchUUID);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            Log.d(TAG, "Zone name 2 = " + preferences.getString("pref_zone1", "MODE_PRIVATE"));
-            String zone0Name = preferences.getString("pref_zone1", "MODE_PRIVATE");
-            //Log.d(TAG, "Zone 0 name in prefs = " + zone0Name);
-            dict.addString(AppKeyZone1Name,zone0Name);
-            PebbleKit.sendDataToPebble(context, WatchUUID, dict);
+            Log.d(TAG, "Zone name 1 = " + preferences.getString("pref_zone1", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 2 = " + preferences.getString("pref_zone2", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 3 = " + preferences.getString("pref_zone3", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 4 = " + preferences.getString("pref_zone4", "MODE_PRIVATE"));
 
+            Log.d(TAG, "Zone name 5 = " + preferences.getString("pref_zone5", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 6 = " + preferences.getString("pref_zone6", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 7 = " + preferences.getString("pref_zone7", "MODE_PRIVATE"));
+            Log.d(TAG, "Zone name 8 = " + preferences.getString("pref_zone8", "MODE_PRIVATE"));
+            //String zone1Name = preferences.getString("pref_zone1", "MODE_PRIVATE");
+            //Log.d(TAG, "Zone 0 name in prefs = " + zone0Name);
+            dict.addString(AppKeyZone1Name,preferences.getString("pref_zone1", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone2Name,preferences.getString("pref_zone2", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone3Name,preferences.getString("pref_zone3", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone4Name,preferences.getString("pref_zone4", "MODE_PRIVATE"));
+
+            dict.addString(AppKeyZone5Name,preferences.getString("pref_zone5", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone6Name,preferences.getString("pref_zone6", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone7Name,preferences.getString("pref_zone7", "MODE_PRIVATE"));
+            dict.addString(AppKeyZone8Name,preferences.getString("pref_zone8", "MODE_PRIVATE"));
+            PebbleKit.sendDataToPebble(context, WatchUUID, dict);
         }
     }
     /*Initial connect

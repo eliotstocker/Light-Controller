@@ -72,7 +72,8 @@ public class pebbleReceiver extends BroadcastReceiver {
         //Log.d(TAG, "on recieve");
         //Check to see if the intent is from the pebble
         if (intent.getAction().equals(INTENT_APP_RECEIVE)) {
-            contCmd = new controlCommands(context, mCont.mHandler);
+            final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
+            final String jsonData = intent.getStringExtra(MSG_DATA);
             //Log.d("pebble app R", "Got intent to receive");
             //Log.d(TAG,"WAT UUID -" + WatchUUID + "- this");
 
@@ -83,15 +84,14 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Log.d(TAG , "Not my uuid, plz ignore");
                 return;
             }
-            final int transactionId = intent.getIntExtra(TRANSACTION_ID, -1);
-            final String jsonData = intent.getStringExtra(MSG_DATA);
-            //final String testack = intent.getStringExtra(INTENT_APP_ACK);
-            //Log.d(TAG, "pebble ack = " + testack);
+            Log.d(TAG, "sending ack to pebble. Got the message bro");
+            PebbleKit.sendAckToPebble(context, transactionId);
             if (jsonData == null || jsonData.isEmpty()) {
                 Log.d(TAG, "jsonData null");
                 return;
             }
             try {
+                contCmd = new controlCommands(context, mCont.mHandler);
                 //extract data from pebble message
                 final PebbleDictionary data = PebbleDictionary.fromJson(jsonData);
                 Long zoneValue = data.getUnsignedIntegerAsLong(KEY_ZONE);
@@ -118,7 +118,6 @@ public class pebbleReceiver extends BroadcastReceiver {
                 }
                 //TODo else if these 2 dont exist, it must be a command from teh watch to say it doesnt have the names in its storage, so now lets send them1
                 //Todo add exception handle if cant send the message
-                PebbleKit.sendAckToPebble(context, transactionId);
             } catch (JSONException e) {
                 Log.d(TAG,"failed received -> dict " + e);
                 return;
