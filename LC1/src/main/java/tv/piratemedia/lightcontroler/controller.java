@@ -88,7 +88,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
-
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 import tv.piratemedia.lightcontroler.pebble.pebbleSender;
 
@@ -157,6 +156,7 @@ public class controller extends ActionBarActivity {
         //Call Pebble sender, get it to check if pebble is connceted and send up light states
         //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
         new pebbleSender(ctx).initialConnect(Controller);
+        new pebbleSender(ctx).sendZoneNames();
     }
 
     class MyHandler extends Handler {

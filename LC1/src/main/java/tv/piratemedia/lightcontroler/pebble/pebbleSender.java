@@ -39,6 +39,9 @@ public class pebbleSender {
     final int AppKeyZone7status = 12;
     final int AppKeyZone8status = 13;
     final int AppKeyZone9status = 14;
+    final int AppKeyZone1Name = 15;
+    private SharedPreferences prefs;
+
     Context context;
     PebbleDictionary dict = new PebbleDictionary();
 
@@ -60,6 +63,25 @@ public class pebbleSender {
         dict.addString(AppKeyZone0status, zone0state.toString());
         PebbleKit.sendDataToPebble(context, WatchUUID, dict);
 
+    }
+    /*
+    * Class that will handle gathering zone names and then send them up to the watch for storage.
+    * Plan is for this class to be only called when you finish updaing the zone names in the settings page
+    * Also cgoing to be called if the pebble looks in self storage, and cant see that it has any names stored
+    * Pebble storage is persistant, so in theory this only will have to be called once after you install the watch app
+    * */
+    public void sendZoneNames(){
+        Log.d(TAG, "Gathering zone names");
+        if(PebbleKit.isWatchConnected(context)){
+            PebbleKit.startAppOnPebble(context, WatchUUID);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            Log.d(TAG, "Zone name 2 = " + preferences.getString("pref_zone1", "MODE_PRIVATE"));
+            String zone0Name = preferences.getString("pref_zone1", "MODE_PRIVATE");
+            //Log.d(TAG, "Zone 0 name in prefs = " + zone0Name);
+            dict.addString(AppKeyZone1Name,zone0Name);
+            PebbleKit.sendDataToPebble(context, WatchUUID, dict);
+
+        }
     }
     /*Initial connect
     * method that is called from onCreate() in main activity, so when the android app starts, we will see if the watch is connected,
