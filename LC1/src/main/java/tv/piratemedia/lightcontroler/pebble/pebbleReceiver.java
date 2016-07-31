@@ -10,17 +10,13 @@ import android.util.Log;
 import com.getpebble.android.kit.Constants;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
-
-import static com.getpebble.android.kit.Constants.INTENT_APP_ACK;
 import static com.getpebble.android.kit.Constants.INTENT_APP_RECEIVE;
 import static tv.piratemedia.lightcontroler.Constants.WatchUUID;
 import org.json.JSONException;
 import static com.getpebble.android.kit.Constants.MSG_DATA;
 import static com.getpebble.android.kit.Constants.TRANSACTION_ID;
-import static com.getpebble.android.kit.PebbleKit.PebbleAckReceiver;
 import tv.piratemedia.lightcontroler.controlCommands;
 import tv.piratemedia.lightcontroler.controller;
-import tv.piratemedia.lightcontroler.controlPreferences;
 
 import java.util.UUID;
 /*
