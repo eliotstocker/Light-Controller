@@ -31,7 +31,6 @@ public class pebbleReceiver extends BroadcastReceiver {
 
     // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
     // TODO modify wear wifi option to be "wearable" to include pebble too
-    // todo add the ability to send data to the watch.Need to send Zone data to the watch so it can display it - In progress
 
     // Variables to hold the key values in the tuple sent from pebble. Matches pebble app values
     private static final int KEY_CMD = 3;
@@ -62,6 +61,7 @@ public class pebbleReceiver extends BroadcastReceiver {
         if(utils.getWifiName() != null && prefs.getBoolean(utils.getWifiName(), false)) {
             Log.d(TAG,"Not on home wifi");
         }*/
+
         //Code necessary to have this Receiver service accept input from the pebble even if main app is not running
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -95,7 +95,6 @@ public class pebbleReceiver extends BroadcastReceiver {
                 Long cmdValue = data.getUnsignedIntegerAsLong(KEY_CMD);
                 // do what you need with the data
                 if (zoneValue != null && cmdValue != null) {
-                    //TODO throw error if either of these dont exist and tell pebble? shouldnt need this as we are only getting response from pebble app. so if its doing something wrong then ive made bad code in the pebble watch app
                     int zone = zoneValue.intValue();
                     int cmd = cmdValue.intValue();
                     Log.d(TAG, "going to turn zone " + zone + " cmd " + cmd);
@@ -121,6 +120,5 @@ public class pebbleReceiver extends BroadcastReceiver {
             }
         }
     }
-    //TODO add a timer function that gets called when we first hear from the watch app. If no messages received within a
-    // specified period of time we should force close the app
+    //TODO add a timer function that gets called when we first hear from the watch app. If no messages received within a specified period of time we should force close the app
 }

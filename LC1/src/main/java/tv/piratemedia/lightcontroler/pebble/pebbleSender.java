@@ -9,13 +9,14 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 import static tv.piratemedia.lightcontroler.Constants.WatchUUID;
 import tv.piratemedia.lightcontroler.controlCommands;
 /**
- * Created by harry on 27/07/16.
+ * Created by mrwhale on 27/07/16.
  * This class serves as a way for the Lightcontroller to send out data to the watch
  * For example, this will be used to send the watch state information of the lights,
  * and setting information (when i get around to implementing this, tell the watch onyl to show x Zones)
  */
 public class pebbleSender {
     // Create variables to match the appmessage keys in the watch app
+    //Initialise varibales that hold the same key numbers as that in the watch app
     final int AppKeyZone0status = 5;
     final int AppKeyZone1status = 6;
     final int AppKeyZone2status = 7;
@@ -58,6 +59,7 @@ public class pebbleSender {
         //PebbleKit.sendDataToPebble(context, WatchUUID, dict);
 
     }
+
     /*
     * Class that will handle gathering zone names and then send them up to the watch for storage.
     * Plan is for this class to be only called when you finish updaing the zone names in the settings page
@@ -101,6 +103,7 @@ public class pebbleSender {
     * method that is called from onCreate() in main activity, so when the android app starts, we will see if the watch is connected,
     * start the pebble watch app, then send light state data to the watch. The watch will store this data for later use (WIP)
     * */
+    //TODo rename this to something more appropriate - like sendZoneStates or something
     public void initialConnect(controlCommands contCmd){
         Log.d(TAG, "initial connect");
         //If watch is connected start app then send state
