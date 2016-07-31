@@ -58,6 +58,7 @@ public class pebbleReceiver extends BroadcastReceiver {
         utils utils = new utils(context);
         final SharedPreferences prefs = context.getSharedPreferences(WearSettings.NETWORKS_PREFS, Context.MODE_PRIVATE);
 
+ 
         if(utils.getWifiName() != null && prefs.getBoolean(utils.getWifiName(), false)) {
             Log.d(TAG,"Not on home wifi");
         }*/
