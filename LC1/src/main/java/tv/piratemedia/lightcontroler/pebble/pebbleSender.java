@@ -2,6 +2,7 @@ package tv.piratemedia.lightcontroler.pebble;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import com.getpebble.android.kit.PebbleKit;
@@ -71,7 +72,8 @@ public class pebbleSender {
         if(PebbleKit.isWatchConnected(context)){
             //Start  the app on the pebble
             PebbleKit.startAppOnPebble(context, WatchUUID);
-            //Create shared preference manager to we can get zone anmes
+            SystemClock.sleep(1000);
+            //Create shared preference manager to we can get zone names
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             /*Log.d(TAG, "Zone name 1 = " + preferences.getString("pref_zone1", "MODE_PRIVATE"));
             Log.d(TAG, "Zone name 2 = " + preferences.getString("pref_zone2", "MODE_PRIVATE"));
@@ -82,8 +84,7 @@ public class pebbleSender {
             Log.d(TAG, "Zone name 6 = " + preferences.getString("pref_zone6", "MODE_PRIVATE"));
             Log.d(TAG, "Zone name 7 = " + preferences.getString("pref_zone7", "MODE_PRIVATE"));
             Log.d(TAG, "Zone name 8 = " + preferences.getString("pref_zone8", "MODE_PRIVATE")); */
-            //String zone1Name = preferences.getString("pref_zone1", "MODE_PRIVATE");
-            //Log.d(TAG, "Zone 0 name in prefs = " + zone0Name);
+
             //Get and add zone names to pebble dictionary for sending to pebble. Send zone names in groups based on light type
             // This is to save on incoming message size on the pebble app. try keep things small
             dictColor.addString(AppKeyZone1Name,preferences.getString("pref_zone1", "MODE_PRIVATE"));
@@ -125,6 +126,7 @@ public class pebbleSender {
 
             if(contCmd.appState.getOnOff(4)) dictColor.addInt8(AppKeyZone4status, Byte.valueOf("1"));
             else dictColor.addInt8(AppKeyZone4status, Byte.valueOf("0"));
+            //Send colour zones states
             PebbleKit.sendDataToPebble(context, WatchUUID, dictColor);
 
             if(contCmd.appState.getOnOff(5)) dictWhite.addInt8(AppKeyZone5status, Byte.valueOf("1"));
@@ -141,6 +143,7 @@ public class pebbleSender {
 
             if(contCmd.appState.getOnOff(9)) dictWhite.addInt8(AppKeyZone9status, Byte.valueOf("1"));
             else dictWhite.addInt8(AppKeyZone9status, Byte.valueOf("0"));
+            //Send white zone states
             PebbleKit.sendDataToPebble(context, WatchUUID, dictWhite);
         }else Log.d(TAG, "not connected");
     }
