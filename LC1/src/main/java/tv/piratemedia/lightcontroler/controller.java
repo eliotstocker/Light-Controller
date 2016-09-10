@@ -19,14 +19,18 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -84,10 +88,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
-
-import tv.piratemedia.lightcontroler.pebble.pebble;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
-import com.getpebble.android.kit.PebbleKit.PebbleDataReceiver;
+import tv.piratemedia.lightcontroler.pebble.pebbleSender;
 
 
 public class controller extends ActionBarActivity {
@@ -119,7 +121,8 @@ public class controller extends ActionBarActivity {
 
     private DrawerFrameLayout drawer;
 
-    //public static PebbleDataReceiver dataReceiver;
+    private pebbleSender pSender;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +152,18 @@ public class controller extends ActionBarActivity {
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
-        //Create a new pebble (not sure if this is needed)
-        //new pebble();
-        /* Pebble related activities, added by mrwhale 18-06-2016
-        call pebble class to do pebble activities */
-        // todo add in a setting option to "enable" pebble. Then we can use this to check if they actually want to be calling this method
-        // TODO modify wear wifi option to be "wearable" to include pebble too
-        pebble.pebbleaction(ctx);
+
+        //Call Pebble sender, get it to check if pebble is connceted and send up light states
+        //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
+        if(prefs.getBoolean("pref_pebble", false)){
+            Log.d("Controller", "Pebble pref is active, lets start the app up");
+            new pebbleSender(ctx).initialConnect(Controller);
+            new pebbleSender(ctx).sendZoneNames();
+        }else{
+            //TODO add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we dont have it running in background listening for things
+            Log.d("Controller", "Pebble prefs is inactive. Lets shut down the listener service so its not running anymore");
+        }
+
     }
 
     class MyHandler extends Handler {
@@ -273,22 +281,7 @@ public class controller extends ActionBarActivity {
 
         }
         attemptDiscovery();
-        // not doing pebble stuff here anymore. was causing many instances of pebble to be created,
-        // so it would turn the lights on/off as many times as there were instances, moved up to onCreate() seems to be more stable now
     }
-
-    /* Dont need this anymore to pause pebble as it didnt seem to be working properly
-    @Override
-    protected void onPause(){
-        super.onPause();
-        //Pause the pebble data reciever so we dont cause issues
-        Log.d("controller","pausing pebble");
-        if (dataReceiver != null) {
-            unregisterReceiver(dataReceiver);
-            dataReceiver = null;
-        }
-
-    } */
 
     @Override
     protected void onDestroy() {
@@ -306,6 +299,16 @@ public class controller extends ActionBarActivity {
         if(!prefs.getBoolean("pref_disable_auto_find", false)) {
             Controller.discover();
         }
+
+        /* Code to try and unregister pebble stuff if its unselcted in settings menu. not quite sure where to put this though, what reloads after a settings change?
+         ComponentName pebblereceiver = new ComponentName(ctx,pebbleReceiver.class);
+        int status = ctx.getPackageManager().getComponentEnabledSetting(pebblereceiver);
+        if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            Log.d("Package", "pebbl receiver is enabled");
+        } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED){
+            Log.d("Package", "pebbl receiver is disabled");
+        }
+        Log.d("Packge", "Test log"); */
         //start timer here for no discovery (try 3 times)
     }
 

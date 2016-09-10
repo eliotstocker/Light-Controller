@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by mrwhale on 19/01/15.
  * This class will listen for changes in state of wifi, as to know whether we are connected to the correct SSID so then we can display a card on the watch
+ * I guess we done need this class anymore? has old code in there. (referring statically to my home ssid
  */
 public class broadcastListener extends BroadcastReceiver {
     //private Context mCtx;
@@ -33,9 +34,6 @@ public class broadcastListener extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //TODO: Have this in settings so user can set their SSID that has the wifi bridge, or automatically retrieve and save it when issuing successful commands
-        // Need help with setting up the ssid_name variable to be changeable by user. (unsure how it all works in the current setup, Need to talk to Eliot)
-
-
 
         Log.d("BroadcastListener", "There was a change in state");
 
