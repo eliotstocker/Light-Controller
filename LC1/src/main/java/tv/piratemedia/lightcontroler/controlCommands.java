@@ -175,7 +175,7 @@ public class controlCommands {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        LightsOn(5);
+        LightsOn(9);
     }
 
     public void LightsOff(int zone) {
@@ -230,7 +230,7 @@ public class controlCommands {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        LightsOff(5);
+        LightsOff(9);
     }
 
     public void setToWhite(int zone) {
