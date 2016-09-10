@@ -13,10 +13,11 @@ The best way to control your LED Bulbs, Including Home and Lockscreen widgets
 
 New Light Controller API Availabel here:
 http://eliotstocker.github.io/Light-ControllerAPI
-
+UPDATED: Pebble support
+UPDATED: Wear support
 UPDATED: Now Controls your Dual White Bulbs for 4 More Zones.
 
-have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app if you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
+have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app is for you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
 
 The widget gives you easy access to switch each zone on and off as well as global control. also included is easy access to the main application for more advanced control.
 
@@ -47,11 +48,11 @@ New Features Coming soon:
 This Project is Open source
 
 Contributors:
-Eliot Stocker
-Louis Orleans
-AppLamp (Thanks for Providing Hardware too!)
-Harry Sibenaler
-Matthew Nagel
+* Eliot Stocker
+* Louis Orleans
+* AppLamp (Thanks for Providing Hardware too!)
+* Harry Sibenaler
+* Matthew Nagel
 
 Come and join us in the Issue tracker for new features and bug fixes.
 
@@ -77,3 +78,4 @@ Light controller uses the following libraries:
 * [Material-Drawer](https://github.com/HeinrichReimer/material-drawer) by [HeinrichReimer](https://github.com/HeinrichReimer)
 * [CircularSeekBar](https://github.com/devadvance/circularseekbar) by [devadvance](https://github.com/devadvance)
 * [Google Play Services for Wear](https://developer.android.com/training/wearables/apps/packaging.html) by [Google](https://developer.android.com/)
+* [PebbleKit Android](https://github.com/pebble/pebble-android-sdk) by [Pebble](https://www.pebble.com/)
