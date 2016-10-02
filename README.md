@@ -13,9 +13,6 @@ The best way to control your LED Bulbs, Including Home and Lockscreen widgets
 
 New Light Controller API Availabel here:
 http://eliotstocker.github.io/Light-ControllerAPI
-UPDATED: Pebble support
-UPDATED: Wear support
-UPDATED: Now Controls your Dual White Bulbs for 4 More Zones.
 
 have you got LED lights, but find yourself using the Lightswitch more often than not because of the need to open the app in order to simply turn on the lights? this app is for you, it was developed specifically in order to give you the light switches where they are most accessible. you choose where you want the switches, be it on one of your home screens, on the lock screen or both.
 
