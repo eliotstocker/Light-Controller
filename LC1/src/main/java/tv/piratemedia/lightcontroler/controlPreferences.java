@@ -32,6 +32,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
+import android.support.v4.app.NavUtils;
 
 import java.util.regex.Pattern;
 
@@ -232,6 +233,6 @@ public class controlPreferences extends ActionBarActivity {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
         sendBroadcast(intent);
 
-        startActivity(getParentActivityIntent());
+        startActivity(NavUtils.getParentActivityIntent(this));
     }
 }

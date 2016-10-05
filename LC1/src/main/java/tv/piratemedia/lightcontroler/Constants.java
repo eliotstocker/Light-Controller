@@ -14,6 +14,8 @@ package tv.piratemedia.lightcontroler;
 
 import android.content.Context;
 
+import java.util.UUID;
+
 /**
  * Class of constants used by this Locale plug-in.
  */
@@ -35,6 +37,7 @@ public final class Constants
      */
     public static final boolean IS_PARAMETER_CHECKING_ENABLED = BuildConfig.DEBUG;
 
+    public static final UUID WatchUUID = UUID.fromString("769877de-70dc-4d8b-ae10-3dbc8f5d1619");
     /**
      * Flag to enable runtime checking of whether a method is called on the correct thread.
      */

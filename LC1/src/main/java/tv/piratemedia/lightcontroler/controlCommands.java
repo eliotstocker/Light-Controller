@@ -168,6 +168,16 @@ public class controlCommands {
         appState.setOnOff(zone, true);
     }
 
+    public void globalOn() {
+        LightsOn(0);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LightsOn(9);
+    }
+
     public void LightsOff(int zone) {
         byte[] messageBA = new byte[3];
         switch(zone) {
@@ -211,6 +221,16 @@ public class controlCommands {
             //add alert to tell user we cant send command
         }
         appState.setOnOff(zone, false);
+    }
+
+    public void globalOff() {
+        LightsOff(0);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LightsOff(9);
     }
 
     public void setToWhite(int zone) {

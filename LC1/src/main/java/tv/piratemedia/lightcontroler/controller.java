@@ -19,15 +19,18 @@ package tv.piratemedia.lightcontroler;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -61,7 +64,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
@@ -85,8 +87,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-
+import java.util.UUID;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
+import tv.piratemedia.lightcontroler.pebble.pebbleSender;
+
 
 public class controller extends ActionBarActivity {
 
@@ -95,6 +99,7 @@ public class controller extends ActionBarActivity {
      * current dropdown position.
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+    final UUID appUuid = UUID.fromString("1d6c7f01-d948-42a6-aa4e-b2084210ebbc");
 
     private static controlCommands Controller;
     private static boolean micStarted = false;
@@ -110,12 +115,14 @@ public class controller extends ActionBarActivity {
 
     public MyHandler mHandler = null;
     private utils Utils;
-
     private boolean gotDevice = false;
 
     private String DeviceMac = "";
 
     private DrawerFrameLayout drawer;
+
+    private pebbleSender pSender;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,12 +142,28 @@ public class controller extends ActionBarActivity {
         Intent i = new Intent(this, notificationService.class);
         i.setAction(notificationService.START_SERVICE);
         this.startService(i);
+        if(Build.VERSION.SDK_INT == 22) {
+            //getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
 
         drawer.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
         appState = new SaveState(this);
         Utils = new utils(this);
         new DataLayerListenerService();
+
+        //Call Pebble sender, get it to check if pebble is connceted and send up light states
+        //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
+        if(prefs.getBoolean("pref_pebble", false)){
+            Log.d("Controller", "Pebble pref is active, lets start the app up");
+            new pebbleSender(ctx).initialConnect(Controller);
+            new pebbleSender(ctx).sendZoneNames();
+        }else{
+            //TODO add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we dont have it running in background listening for things
+            Log.d("Controller", "Pebble prefs is inactive. Lets shut down the listener service so its not running anymore");
+        }
+
     }
 
     class MyHandler extends Handler {
@@ -276,10 +299,21 @@ public class controller extends ActionBarActivity {
         if(!prefs.getBoolean("pref_disable_auto_find", false)) {
             Controller.discover();
         }
+
+        /* Code to try and unregister pebble stuff if its unselcted in settings menu. not quite sure where to put this though, what reloads after a settings change?
+         ComponentName pebblereceiver = new ComponentName(ctx,pebbleReceiver.class);
+        int status = ctx.getPackageManager().getComponentEnabledSetting(pebblereceiver);
+        if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
+            Log.d("Package", "pebbl receiver is enabled");
+        } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED){
+            Log.d("Package", "pebbl receiver is disabled");
+        }
+        Log.d("Packge", "Test log"); */
         //start timer here for no discovery (try 3 times)
     }
 
     private void setupApp() {
+
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
 
@@ -468,6 +502,11 @@ public class controller extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
+        } else if(prefs.getBoolean("rgbw_enabled", false) && prefs.getBoolean("white_enabled", false)) {
+            getMenuInflater().inflate(R.menu.controller_alt, menu);
+            Log.d("menus", "alt menu");
+        } else {
+            Log.d("menus", "no menu");
         }
         return true;
     }
@@ -550,6 +589,10 @@ public class controller extends ActionBarActivity {
 //        } else if(id == R.id.action_menu) {
 //            popupMenu();
 //            return true;
+        } else if(id == R.id.action_global_on) {
+            Controller.globalOn();
+        } else if(id == R.id.action_global_off) {
+            Controller.globalOff();
         } else if(id == android.R.id.home) {
             drawer.openDrawer();
         }

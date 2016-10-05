@@ -23,6 +23,13 @@
             android:id="@+id/group"
             android:layout_gravity="center_horizontal">
 
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Global"
+                android:id="@+id/sg"
+                android:checked="false" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

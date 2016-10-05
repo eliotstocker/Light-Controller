@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.RemoteViews;
 
@@ -31,7 +33,7 @@ public class controlWidgetConfig extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.control_widget_config);
 
-        if(Build.VERSION.SDK_INT == 21) {
+        if(Build.VERSION.SDK_INT >= 21) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
@@ -59,6 +61,7 @@ public class controlWidgetConfig extends ActionBarActivity {
 
         RadioGroup rg = (RadioGroup)findViewById(R.id.group);
         Button done = (Button)findViewById(R.id.done);
+        CheckBox sg = (CheckBox)findViewById(R.id.superglobal);
 
         Log.d("widgetID", "id: " + mAppWidgetId);
 
@@ -73,6 +76,18 @@ public class controlWidgetConfig extends ActionBarActivity {
                 }
             }
         });
+
+        sg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    prefs.edit().putBoolean("widget_" + mAppWidgetId + "_super", true).commit();
+                } else {
+                    prefs.edit().putBoolean("widget_" + mAppWidgetId + "_super", false).commit();
+                }
+            }
+        });
+
 
         done.setOnClickListener(new View.OnClickListener() {
             private static final int LIGHT_ON = 0;
@@ -91,13 +106,21 @@ public class controlWidgetConfig extends ActionBarActivity {
                     views.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", getBaseContext().getString(R.string.Zone3)));
                     views.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", getBaseContext().getString(R.string.Zone4)));
 
-                    views.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,getBaseContext(),true));
+                    if(prefs.getBoolean("widget_" + mAppWidgetId + "_super", false)) {
+                        views.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(getBaseContext(), true));
+                    } else {
+                        views.setOnClickPendingIntent(R.id.ig, createPendingIntent(0, getBaseContext(), true));
+                    }
                     views.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,getBaseContext(),true));
 
-                    views.setOnClickPendingIntent(R.id.og,createPendingIntent(0,getBaseContext(),false));
+                    if(prefs.getBoolean("widget_" + mAppWidgetId + "_super", false)) {
+                        views.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(getBaseContext(), false));
+                    } else {
+                        views.setOnClickPendingIntent(R.id.og, createPendingIntent(0, getBaseContext(), false));
+                    }
                     views.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,getBaseContext(),false));
@@ -108,13 +131,21 @@ public class controlWidgetConfig extends ActionBarActivity {
                     views.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", getBaseContext().getString(R.string.Zone3)));
                     views.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4)));
 
-                    views.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,getBaseContext(),true));
+                    if(prefs.getBoolean("widget_" + mAppWidgetId + "_super", false)) {
+                        views.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(getBaseContext(), true));
+                    } else {
+                        views.setOnClickPendingIntent(R.id.ig, createPendingIntent(9, getBaseContext(), true));
+                    }
                     views.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,getBaseContext(),true));
                     views.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,getBaseContext(),true));
 
-                    views.setOnClickPendingIntent(R.id.og,createPendingIntent(9,getBaseContext(),false));
+                    if(prefs.getBoolean("widget_" + mAppWidgetId + "_super", false)) {
+                        views.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(getBaseContext(), false));
+                    } else {
+                        views.setOnClickPendingIntent(R.id.og, createPendingIntent(9, getBaseContext(), false));
+                    }
                     views.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,getBaseContext(),false));
@@ -173,6 +204,20 @@ public class controlWidgetConfig extends ActionBarActivity {
                     launchIntent.setData(Uri.parse(i + ":" + LIGHT_OFF));
                 }
                 launchIntent.putExtra("light_zone",i);
+                PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                        launchIntent, 0 /* no flags */);
+                return pi;
+            }
+
+            public PendingIntent createSuperPendingIntent(Context cont, boolean on) {
+                Intent launchIntent = new Intent();
+                launchIntent.setClass(cont, controlWidgetProvider.class);
+                launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+                if(on) {
+                    launchIntent.setData(Uri.parse("super:" + LIGHT_ON));
+                } else {
+                    launchIntent.setData(Uri.parse("super:" + LIGHT_OFF));
+                }
                 PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                         launchIntent, 0 /* no flags */);
                 return pi;

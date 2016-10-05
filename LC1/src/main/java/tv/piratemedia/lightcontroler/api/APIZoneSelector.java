@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -46,6 +47,8 @@ public class APIZoneSelector extends Activity {
         final RadioGroup rg = (RadioGroup)findViewById(R.id.group);
         final RadioGroup rg2 = (RadioGroup)findViewById(R.id.group2);
 
+        final RadioButton sg = (RadioButton)findViewById(R.id.sg);
+
         final RadioButton g = (RadioButton)findViewById(R.id.g);
         final RadioButton z1 = (RadioButton)findViewById(R.id.z1);
         final RadioButton z2 = (RadioButton)findViewById(R.id.z2);
@@ -67,6 +70,37 @@ public class APIZoneSelector extends Activity {
         z6.setText(prefs.getString("pref_zone6", "Zone 2"));
         z7.setText(prefs.getString("pref_zone7", "Zone 3"));
         z8.setText(prefs.getString("pref_zone8", "Zone 4"));
+
+        sg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    if(changing) {
+                        changing = false;
+                        return;
+                    }
+                    selectedType = "super";
+                    selectedZone = 0;
+
+                    if(first) {
+                        first = false;
+                    } else {
+                        changing = true;
+                    }
+                    g.setChecked(false);
+                    z1.setChecked(false);
+                    z2.setChecked(false);
+                    z3.setChecked(false);
+                    z4.setChecked(false);
+
+                    g2.setChecked(false);
+                    z5.setChecked(false);
+                    z6.setChecked(false);
+                    z7.setChecked(false);
+                    z8.setChecked(false);
+                }
+            }
+        });
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override

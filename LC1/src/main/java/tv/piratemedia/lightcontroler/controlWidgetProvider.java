@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.StrictMode;
@@ -38,78 +39,8 @@ import android.widget.RemoteViews;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class controlWidgetProvider extends AppWidgetProvider {
-
-    public static class ClockUpdateService extends Service {
-        private static final String ACTION_UPDATE =
-                "tv.piratemedia.lightcontroler.clock.action.UPDATE";
-        private SharedPreferences prefs;
-
-        private final static IntentFilter intentFilter;
-
-        static {
-            intentFilter = new IntentFilter();
-            intentFilter.addAction(Intent.ACTION_TIME_TICK);
-            intentFilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-            intentFilter.addAction(Intent.ACTION_TIME_CHANGED);
-            intentFilter.addAction(ACTION_UPDATE);
-        }
-
-        /**
-         * BroadcastReceiver receiving the updates.
-         */
-        private final BroadcastReceiver clockChangedReceiver = new
-                BroadcastReceiver() {
-                    /**
-                     * {@inheritDoc}
-                     */
-                    public void onReceive(Context context, Intent intent) {
-                        Log.d("wear", "Update Clock");
-                        Intent updateIntent = new Intent();
-                        updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                        updateIntent.putExtra("action", "update");
-                        context.sendBroadcast(updateIntent);
-                    }
-                };
-
-        /**
-         * {@inheritDoc}
-         */
-        public IBinder onBind(Intent intent) {
-            return null;
-        }
-        /**
-         * {@inheritDoc}
-         */
-        public void onCreate() {
-            super.onCreate();
-            prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-            registerReceiver(clockChangedReceiver, intentFilter);
-        }
-        /**
-         * {@inheritDoc}
-         */
-        public void onDestroy() {
-            super.onDestroy();
-
-            unregisterReceiver(clockChangedReceiver);
-        }
-        /**
-         * {@inheritDoc}
-         */
-        public void onStart(Intent intent, int startId) {
-            if (intent != null && intent.getAction() != null) {
-                if (intent.getAction().equals(ACTION_UPDATE)) {
-                    Intent updateIntent = new Intent();
-                    updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                    this.sendBroadcast(updateIntent);
-                }
-            }
-        }
-    }
 
     private static final int LIGHT_ON = 0;
     private static final int LIGHT_OFF = 1;
@@ -117,7 +48,6 @@ public class controlWidgetProvider extends AppWidgetProvider {
     private controlCommands Controller;
     private static AppWidgetManager aWM;
     private static ComponentName thisWidget;
-    private Map<Integer, Integer> HeightList = new HashMap<Integer, Integer>();
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -190,14 +120,21 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone3", context.getString(R.string.Zone3)));
                 remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone4", context.getString(R.string.Zone4)));
 
-                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(0,context,true));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(0, context, true));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
 
-                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(0,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(0, context, false));
+                }                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
@@ -207,13 +144,21 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setTextViewText(R.id.headzone3, prefs.getString("pref_zone7", context.getString(R.string.Zone3)));
                 remoteViews.setTextViewText(R.id.headzone4, prefs.getString("pref_zone8", context.getString(R.string.Zone4)));
 
-                remoteViews.setOnClickPendingIntent(R.id.ig,createPendingIntent(9,context,true));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(9, context, true));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
                 remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
 
-                remoteViews.setOnClickPendingIntent(R.id.og,createPendingIntent(9,context,false));
+                if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
+                } else {
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(9, context, false));
+                }
                 remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
@@ -229,11 +174,15 @@ public class controlWidgetProvider extends AppWidgetProvider {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
 
-            if(HeightList.containsKey(widgetId) && HeightList.get(widgetId) < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
-                Log.d("widget", "Hide Date Time");
-                remoteViews.setViewVisibility(R.id.datetime, View.GONE);
-            } else {
-                remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
+            if(Build.VERSION.SDK_INT >= 16) {
+                int height = appWidgetManager.getAppWidgetOptions(widgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
+
+                if (height < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
+                    Log.d("widget", "Hide Date Time");
+                    remoteViews.setViewVisibility(R.id.datetime, View.GONE);
+                } else {
+                    remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
+                }
             }
 
             remoteViews.setTextViewText(R.id.timeHour, hourString);
@@ -262,12 +211,25 @@ public class controlWidgetProvider extends AppWidgetProvider {
         return pi;
     }
 
+    public PendingIntent createSuperPendingIntent(Context cont, boolean on) {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(cont, controlWidgetProvider.class);
+        launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        if(on) {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_ON));
+        } else {
+            launchIntent.setData(Uri.parse("super:" + LIGHT_OFF));
+        }
+        PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
+                launchIntent, 0 /* no flags */);
+        return pi;
+    }
+
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                 R.layout.control_widget_init);
         Log.d("widget", "Get Widget Size");
-        HeightList.put(appWidgetId, newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT));
         updateUI(context, appWidgetManager);
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
@@ -289,11 +251,19 @@ public class controlWidgetProvider extends AppWidgetProvider {
             if (intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)) {
                 Uri data = intent.getData();
                 int buttonId = Integer.parseInt(data.getSchemeSpecificPart());
-                int zone = Integer.parseInt(data.getScheme());
-                if (buttonId == LIGHT_ON) {
-                    Controller.LightsOn(zone);
-                } else if (buttonId == LIGHT_OFF) {
-                    Controller.LightsOff(zone);
+                if(data.getScheme().equals("super")) {
+                    if (buttonId == LIGHT_ON) {
+                        Controller.globalOn();
+                    } else if (buttonId == LIGHT_OFF) {
+                        Controller.globalOff();
+                    }
+                } else {
+                    int zone = Integer.parseInt(data.getScheme());
+                    if (buttonId == LIGHT_ON) {
+                        Controller.LightsOn(zone);
+                    } else if (buttonId == LIGHT_OFF) {
+                        Controller.LightsOff(zone);
+                    }
                 }
             } else {
                 //do nothing

@@ -42,6 +42,7 @@ public class APIReciever extends BroadcastReceiver {
 
     public static final String TYPE_WHITE = "white";
     public static final String TYPE_COLOR = "color";
+    public static final String TYPE_SUPER = "super";
 
     private int mId = 0;
 
@@ -147,6 +148,8 @@ public class APIReciever extends BroadcastReceiver {
                             c.LightsOn(8);
                             break;
                     }
+                } else if (intent.getStringExtra("type").equals(TYPE_SUPER)) {
+                    c.globalOn();
                 }
                 break;
             case LIGHT_OFF_INTENT:
@@ -188,6 +191,8 @@ public class APIReciever extends BroadcastReceiver {
                             c.LightsOff(8);
                             break;
                     }
+                } else if (intent.getStringExtra("type").equals(TYPE_SUPER)) {
+                    c.globalOff();
                 }
                 break;
             case LIGHT_COLOR_INTENT:
