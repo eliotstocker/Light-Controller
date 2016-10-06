@@ -153,14 +153,14 @@ public class controller extends ActionBarActivity {
         Utils = new utils(this);
         new DataLayerListenerService();
 
-        //Call Pebble sender, get it to check if pebble is connceted and send up light states
-        //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
+        //Call Pebble sender, get it to check if pebble is connected and send up light states
+        // TODO: need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
         if(prefs.getBoolean("pref_pebble", false)){
             Log.d("Controller", "Pebble pref is active, lets start the app up");
             new pebbleSender(ctx).initialConnect(Controller);
             new pebbleSender(ctx).sendZoneNames();
         }else{
-            //TODO add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we dont have it running in background listening for things
+            // TODO: add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we don't have it running in background listening for things
             Log.d("Controller", "Pebble prefs is inactive. Lets shut down the listener service so its not running anymore");
         }
 
@@ -208,20 +208,20 @@ public class controller extends ActionBarActivity {
                             Controller.setWifiNetwork(NetworkInfo[1]);
                         } else {
                             new MaterialDialog.Builder(_this)
-                                    .title("Password For: " + NetworkInfo[1])
-                                    .theme(Theme.DARK)
-                                    .customView(input, false)
-                                    .content("Please type the network password")
-                                    .positiveText("OK")
-                                    .negativeText("Cancel")
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
-                                        }
-                                    })
-                                    .build()
-                                    .show();
+                                .title("Password For: " + NetworkInfo[1])
+                                .theme(Theme.DARK)
+                                .customView(input, false)
+                                .content("Please type the network password")
+                                .positiveText("OK")
+                                .negativeText("Cancel")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
+                                    }
+                                })
+                                .build()
+                                .show();
                         }
                         return false;
                     }
@@ -262,7 +262,7 @@ public class controller extends ActionBarActivity {
             if (!Devices.contains(Mac + "-known")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("A new Light Control device has been found, Would you like to save/control it?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
+                    .setNegativeButton("No", dialogClickListener).show();
             } else {
                 if (Devices.getBoolean(Mac + "-known", false)) {
                     gotDevice = true;
@@ -300,15 +300,15 @@ public class controller extends ActionBarActivity {
             Controller.discover();
         }
 
-        /* Code to try and unregister pebble stuff if its unselcted in settings menu. not quite sure where to put this though, what reloads after a settings change?
+        /* Code to try and unregister pebble stuff if its unselected in settings menu. not quite sure where to put this though, what reloads after a settings change?
          ComponentName pebblereceiver = new ComponentName(ctx,pebbleReceiver.class);
         int status = ctx.getPackageManager().getComponentEnabledSetting(pebblereceiver);
         if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-            Log.d("Package", "pebbl receiver is enabled");
+            Log.d("Package", "pebble receiver is enabled");
         } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED){
-            Log.d("Package", "pebbl receiver is disabled");
+            Log.d("Package", "pebble receiver is disabled");
         }
-        Log.d("Packge", "Test log"); */
+        Log.d("Package", "Test log"); */
         //start timer here for no discovery (try 3 times)
     }
 
@@ -364,20 +364,24 @@ public class controller extends ActionBarActivity {
                     if(i == 5) {
                         drawer.addDivider();
                     }
-                    drawer.addItem(new DrawerItem()
+
+                    prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    if(i <= 0 || prefs.getBoolean("pref_zone"+i+"_enabled", true)) {
+                        drawer.addItem(new DrawerItem()
                             .setTextMode(DrawerItem.SINGLE_LINE)
                             .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
                             .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
                                 @Override
                                 public void onClick(DrawerItem drawerItem, int i, int i2) {
                                     int item = i2;
-                                    if(item > 4) {
+                                    if (item > 4) {
                                         item--;
                                     }
                                     pager.setCurrentItem(item, true);
                                     drawer.closeDrawer();
                                 }
                             }));
+                    }
                 }
                 drawer.addDivider();
                 drawer.addItem(new DrawerItem()
@@ -463,7 +467,7 @@ public class controller extends ActionBarActivity {
         try {
             tabs.setBackgroundColor(c);
         } catch(Exception e) {
-            //do nothing
+            // do nothing
         }
 
         float[] hsv = new float[3];
@@ -473,7 +477,7 @@ public class controller extends ActionBarActivity {
 
         drawer.setStatusBarBackgroundColor(c);
 
-        //little hack to make the statusbar background redraw when called from another thread
+        // little hack to make the status bar background redraw when called from another thread
         drawer.openDrawer();
         drawer.closeDrawer();
     }
