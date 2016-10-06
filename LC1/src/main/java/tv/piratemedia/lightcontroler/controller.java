@@ -86,6 +86,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
@@ -361,27 +362,24 @@ public class controller extends ActionBarActivity {
                 tabs.setVisibility(View.GONE);
 
                 for(int i = 0; i < pager.getAdapter().getCount(); i++) {
-                    if(i == 5) {
+                    if(pager.getAdapter().getPageTitle(i).toString().equals(("All White"))) {
                         drawer.addDivider();
                     }
 
-                    prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                    if(i <= 0 || prefs.getBoolean("pref_zone"+i+"_enabled", true)) {
-                        drawer.addItem(new DrawerItem()
-                            .setTextMode(DrawerItem.SINGLE_LINE)
-                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
-                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-                                @Override
-                                public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                    int item = i2;
-                                    if (item > 4) {
-                                        item--;
-                                    }
-                                    pager.setCurrentItem(item, true);
-                                    drawer.closeDrawer();
+                    drawer.addItem(new DrawerItem()
+                        .setId(i)
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int item) {
+                                if (item > 4) {
+                                    item--;
                                 }
-                            }));
-                    }
+                                pager.setCurrentItem(drawerItem.getId(), true);
+                                drawer.closeDrawer();
+                            }
+                        }));
                 }
                 drawer.addDivider();
                 drawer.addItem(new DrawerItem()
@@ -634,121 +632,62 @@ public class controller extends ActionBarActivity {
         return null;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G1 = null;
-        Fragment G2 = null;
-        Fragment z1 = null;
-        Fragment z2 = null;
-        Fragment z3 = null;
-        Fragment z4 = null;
-        Fragment z5 = null;
-        Fragment z6 = null;
-        Fragment z7 = null;
-        Fragment z8 = null;
+        private class ControlPage {
+            public Fragment fragment;
+            public String title;
+
+            public ControlPage (Fragment fragment, String title) {
+                this.fragment = fragment;
+                this.title = title;
+            }
+        }
+
+        ArrayList<ControlPage> pages = new ArrayList();
+
         private controller mThis;
 
         public ControllerPager(FragmentManager fm, controller t) {
             super(fm);
             mThis = t;
+
+            if (prefs.getBoolean("rgbw_enabled", false)) {
+                pages.add(new ControlPage(RGBWFragment.newInstance(0), "All Color"));
+
+                for (int i = 1; i <= 4; i++) {
+                    if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
+                        pages.add(new ControlPage(RGBWFragment.newInstance(i - 1), prefs.getString("pref_zone" + i, "Zone " + i)));
+                    }
+                }
+            }
+            if (prefs.getBoolean("white_enabled", false)) {
+                pages.add(new ControlPage(WhiteFragment.newInstance(9), "All White"));
+
+                for (int i = 5; i <= 8; i++) {
+                    if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
+                        pages.add(new ControlPage(WhiteFragment.newInstance(i - 1), prefs.getString("pref_zone" + (i - 4), "Zone " + (i - 4))));
+                    }
+                }
+            }
         }
 
         @Override
-        public android.support.v4.app.Fragment getItem(int i) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && i > 0) {
-                i += 4;
-            }
-            switch(i) {
-                case 0:
-                    if(G1 == null) {
-                        G1 = RGBWFragment.newInstance(0);
-                    }
-                    return G1;
-                case 1:
-                    if(z1 == null) {
-                        z1 = RGBWFragment.newInstance(1);
-                    }
-                    return z1;
-                case 2:
-                    if(z2 == null) {
-                        z2 = RGBWFragment.newInstance(2);
-                    }
-                    return z2;
-                case 3:
-                    if(z3 == null) {
-                        z3 = RGBWFragment.newInstance(3);
-                    }
-                    return z3;
-                case 4:
-                    if(z4 == null) {
-                        z4 = RGBWFragment.newInstance(4);
-                    }
-                    return z4;
-                case 5:
-                    if(G2 == null) {
-                        G2 = WhiteFragment.newInstance(9);
-                    }
-                    return G2;
-                case 6:
-                    if(z5 == null) {
-                        z5 = WhiteFragment.newInstance(5);
-                    }
-                    return z5;
-                case 7:
-                    if(z6 == null) {
-                        z6 = WhiteFragment.newInstance(6);
-                    }
-                    return z6;
-                case 8:
-                    if(z7 == null) {
-                        z7 = WhiteFragment.newInstance(7);
-                    }
-                    return z7;
-                case 9:
-                    if(z8 == null) {
-                        z8 = WhiteFragment.newInstance(8);
-                    }
-                    return z8;
-                default:
-                    if(G1 == null) {
-                        G1 = RGBWFragment.newInstance(0);
-                    }
-                    return G1;
-            }
+        public Fragment getItem(int i) {
+            return pages.get(i).fragment;
         }
 
         @Override
         public int getCount() {
-            int count = 0;
-            if(prefs.getBoolean("rgbw_enabled", false)) {
-                count += 5;
-            }
-            if(prefs.getBoolean("white_enabled", false)) {
-                count += 5;
-            }
-            return count;
+            return pages.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && position > 0) {
-                position += 4;
+            if (position < pages.size()) {
+                return pages.get(position).title;
+            } else {
+                return "Unknown";
             }
-            switch(position) {
-                case 0: return "All Color";
-                case 1: return prefs.getString("pref_zone1", "Zone 1");
-                case 2: return prefs.getString("pref_zone2", "Zone 2");
-                case 3: return prefs.getString("pref_zone3", "Zone 3");
-                case 4: return prefs.getString("pref_zone4", "Zone 4");
-                case 5: return "All White";
-                case 6: return prefs.getString("pref_zone5", "White 1");
-                case 7: return prefs.getString("pref_zone6", "White 2");
-                case 8: return prefs.getString("pref_zone7", "White 3");
-                case 9: return prefs.getString("pref_zone8", "White 4");
-            }
-            return "unknown";
         }
 
         @Override
