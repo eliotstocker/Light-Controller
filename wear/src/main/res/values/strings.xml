@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Light controller</string>
+    <string name="app_name">Light Controller</string>
     <item name="button1" type="id">1</item>
     <item name="button2" type="id">2</item>
     <item name="button3" type="id">3</item>
