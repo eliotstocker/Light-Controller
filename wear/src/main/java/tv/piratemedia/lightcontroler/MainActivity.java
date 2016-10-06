@@ -74,8 +74,8 @@ public class MainActivity extends FragmentActivity {
         brightnessValPixels = screenHeight;
         pixelsPerBrightnessStep = screenHeight / (float) BRIGHTNESS_STEPS;
         resources = getResources();
-        brightnessTextContainer = (LinearLayout) findViewById(R.id.brightnesscontainer);
-        txtBrightness = (TextView) findViewById(R.id.brightnesstext);
+        brightnessTextContainer = (LinearLayout) findViewById(R.id.brightnessContainer);
+        txtBrightness = (TextView) findViewById(R.id.brightnessText);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -145,8 +145,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        IntentFilter intentFilter = new IntentFilter(
-                "tv.piratemedia.lightcontroler.wear.updated_zones");
+        IntentFilter intentFilter = new IntentFilter("tv.piratemedia.lightcontroler.wear.updated_zones");
         registerReceiver(bc, intentFilter);
 
         final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
