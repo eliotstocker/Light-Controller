@@ -25,6 +25,11 @@ import java.util.List;
 
 public class listenerService extends WearableListenerService {
 
+    private class ZoneInfo {
+        boolean enabled = true;
+        String name = "Zone";
+    }
+
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
         NotificationManagerCompat notificationManager =
@@ -32,38 +37,19 @@ public class listenerService extends WearableListenerService {
         int notificationId = 11447;
         switch(messageEvent.getPath()) {
             case "/zones":
-                //recieved zone list, cache locally
-                boolean changes = false;
+                // received zone list, cache locally
                 ObjectInputStream ois = null;
                 try {
                     ois = new ObjectInputStream(new ByteArrayInputStream(messageEvent.getData()));
-                    List<String> list = (List<String>) ois.readObject();
+                    Object readObj = ois.readObject();
+                    List<ZoneInfo> list = (List<ZoneInfo>) readObj;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                    if(!prefs.getString("pref_zone0", "").equals(list.get(0)) ||
-                            !prefs.getString("pref_zone1", "").equals(list.get(1)) ||
-                            !prefs.getString("pref_zone2", "").equals(list.get(2)) ||
-                            !prefs.getString("pref_zone3", "").equals(list.get(3)) ||
-                            !prefs.getString("pref_zone4", "").equals(list.get(4)) ||
-                            !prefs.getString("pref_zone5", "").equals(list.get(5)) ||
-                            !prefs.getString("pref_zone6", "").equals(list.get(6)) ||
-                            !prefs.getString("pref_zone7", "").equals(list.get(7)) ||
-                            !prefs.getString("pref_zone8", "").equals(list.get(8)) ||
-                            !prefs.getString("pref_zone9", "").equals(list.get(9))) {
-                        changes = true;
-                    }
-                    
-                    if(changes) {
-                        prefs.edit().putString("pref_zone0", list.get(0))
-                                .putString("pref_zone1", list.get(1))
-                                .putString("pref_zone2", list.get(2))
-                                .putString("pref_zone3", list.get(3))
-                                .putString("pref_zone4", list.get(4))
-                                .putString("pref_zone5", list.get(5))
-                                .putString("pref_zone6", list.get(6))
-                                .putString("pref_zone7", list.get(7))
-                                .putString("pref_zone8", list.get(8))
-                                .putString("pref_zone9", list.get(9)).apply();
+                    for (int i = 0; i < list.size(); i++) {
+                        prefs.edit()
+                            .putString("pref_zone" + i, list.get(i).name)
+                            .putBoolean("pref_zone" + i + "_enabled", list.get(i).enabled)
+                            .apply();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -74,11 +60,11 @@ public class listenerService extends WearableListenerService {
                         e.printStackTrace();
                     }
                 }
-                if(changes) {
-                    Intent intent = new Intent();
-                    intent.setAction("tv.piratemedia.lightcontroler.wear.updated_zones");
-                    sendBroadcast(intent);
-                }
+
+                Intent intent = new Intent();
+                intent.setAction("tv.piratemedia.lightcontroler.wear.updated_zones");
+                sendBroadcast(intent);
+
                 break;
             case "/wifi-connected":
                 Intent viewIntent = new Intent(this, MainActivity.class);

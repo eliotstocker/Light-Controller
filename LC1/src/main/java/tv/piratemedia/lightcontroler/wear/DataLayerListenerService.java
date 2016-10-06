@@ -29,6 +29,8 @@ public class DataLayerListenerService extends WearableListenerService {
     private static final String TAG = "DataLayer";
     private GoogleApiClient mApiClient;
 
+    private static final int NUMBER_OF_ZONES = 4;
+
     public void connectToWatch(Context context){
         //setup google API connnection to wearable
         mApiClient = new GoogleApiClient.Builder(context)
@@ -37,7 +39,17 @@ public class DataLayerListenerService extends WearableListenerService {
         mApiClient.connect();
 
     }
-    
+
+    private class ZoneInfo {
+        String name = "Zone";
+        boolean enabled = true;
+
+        ZoneInfo (String name, boolean enabled) {
+            this.name = name;
+            this.enabled = enabled;
+        }
+    }
+
     @Override
     //On message received event, does an action when the handheld app receives a message from the watch
     public void onMessageReceived(MessageEvent messageEvent) {
@@ -60,17 +72,15 @@ public class DataLayerListenerService extends WearableListenerService {
                         for (int i = 0; i < nodes.size(); i++) {
                             final Node node = nodes.get(i);
                             Log.d("Wear","Sending Zone List");
-                            List<String> zones = new ArrayList<String>(10);
-                            zones.add("All Color");
-                            zones.add(prefs.getString("pref_zone1", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone2", getApplicationContext().getString(R.string.Zone2)));
-                            zones.add(prefs.getString("pref_zone3", getApplicationContext().getString(R.string.Zone3)));
-                            zones.add(prefs.getString("pref_zone4", getApplicationContext().getString(R.string.Zone4)));
-                            zones.add(prefs.getString("pref_zone5", getApplicationContext().getString(R.string.Zone1)));
-                            zones.add(prefs.getString("pref_zone6", getApplicationContext().getString(R.string.Zone2)));
-                            zones.add(prefs.getString("pref_zone7", getApplicationContext().getString(R.string.Zone3)));
-                            zones.add(prefs.getString("pref_zone8", getApplicationContext().getString(R.string.Zone4)));
-                            zones.add("All White");
+
+                            List<ZoneInfo> zones = new ArrayList<>();
+
+                            zones.add(new ZoneInfo("All Color", prefs.getBoolean("rgbw_enabled", true)));
+                            zones.add(new ZoneInfo("All White", prefs.getBoolean("white_enabled", true)));
+                            for (int j = 1; j <= NUMBER_OF_ZONES * 2; j++) {
+                                String defaultZoneName = "Zone " + (j - (j <= 4 ? 0 : 1));
+                                zones.add(new ZoneInfo(prefs.getString("pref_zone" + j, defaultZoneName), prefs.getBoolean("pref_zone" + j + "_enabled", true)));
+                            }
 
                             ByteArrayOutputStream bos = new ByteArrayOutputStream();
                             try {
