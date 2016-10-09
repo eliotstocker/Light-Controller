@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +24,7 @@ import android.widget.RemoteViews;
 /**
  * Created by eliotstocker on 26/10/14.
  */
-public class switchWidgetConfig extends ActionBarActivity {
+public class switchWidgetConfig extends AppCompatActivity {
     private Toolbar mActionBarToolbar;
     private int mAppWidgetId;
 
@@ -58,27 +59,26 @@ public class switchWidgetConfig extends ActionBarActivity {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         RadioButton sg = (RadioButton)findViewById(R.id.sg);
-        RadioButton z1 = (RadioButton)findViewById(R.id.z1);
-        RadioButton z2 = (RadioButton)findViewById(R.id.z2);
-        RadioButton z3 = (RadioButton)findViewById(R.id.z3);
-        RadioButton z4 = (RadioButton)findViewById(R.id.z4);
-        RadioButton z5 = (RadioButton)findViewById(R.id.z5);
-        RadioButton z6 = (RadioButton)findViewById(R.id.z6);
-        RadioButton z7 = (RadioButton)findViewById(R.id.z7);
-        RadioButton z8 = (RadioButton)findViewById(R.id.z8);
+
+        RadioButton zones[] = {
+                (RadioButton) findViewById(R.id.z1),
+                (RadioButton) findViewById(R.id.z2),
+                (RadioButton) findViewById(R.id.z3),
+                (RadioButton) findViewById(R.id.z4),
+                (RadioButton) findViewById(R.id.z5),
+                (RadioButton) findViewById(R.id.z6),
+                (RadioButton) findViewById(R.id.z7),
+                (RadioButton) findViewById(R.id.z8)
+        };
+
         RadioGroup rg = (RadioGroup)findViewById(R.id.group);
         Button done = (Button)findViewById(R.id.done);
         CheckBox show = (CheckBox)findViewById(R.id.show_title);
 
-        z1.setText(prefs.getString("pref_zone1", "Zone 1"));
-        z2.setText(prefs.getString("pref_zone2", "Zone 2"));
-        z3.setText(prefs.getString("pref_zone3", "Zone 3"));
-        z4.setText(prefs.getString("pref_zone4", "Zone 4"));
-
-        z5.setText(prefs.getString("pref_zone5", "Zone 1"));
-        z6.setText(prefs.getString("pref_zone6", "Zone 2"));
-        z7.setText(prefs.getString("pref_zone7", "Zone 3"));
-        z8.setText(prefs.getString("pref_zone8", "Zone 4"));
+        for (int i = 1; i <= zones.length; i++) {
+            zones[i - 1].setText(prefs.getString("pref_zone" + i, "Zone " + (i <= 4 ? i : i - 4)));
+            zones[i - 1].setEnabled(prefs.getBoolean("pref_zone" + i + "_enabled", true));
+        }
 
         Log.d("widgetID", "id: " + mAppWidgetId);
 
