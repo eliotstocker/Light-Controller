@@ -30,6 +30,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
@@ -37,7 +38,7 @@ import android.support.v4.app.NavUtils;
 
 import java.util.regex.Pattern;
 
-public class controlPreferences extends ActionBarActivity {
+public class controlPreferences extends AppCompatActivity {
     private Toolbar mActionBarToolbar;
 
     @Override
@@ -48,8 +49,7 @@ public class controlPreferences extends ActionBarActivity {
 
         // Display the fragment as the main content.
         FragmentManager mFragmentManager = getFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager
-                .beginTransaction();
+        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         PrefsFragment mPrefsFragment = new PrefsFragment();
         mFragmentTransaction.add(R.id.prefs_layout, mPrefsFragment);
         mFragmentTransaction.commit();
@@ -222,7 +222,7 @@ public class controlPreferences extends ActionBarActivity {
                 }
             });
 
-            final Activity app = (controlPreferences)getActivity();
+            final Activity app = getActivity();
 
             try {
                 controllerIP.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

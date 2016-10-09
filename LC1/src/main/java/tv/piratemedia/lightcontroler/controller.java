@@ -25,9 +25,14 @@ import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -59,6 +64,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -500,7 +506,7 @@ public class controller extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
@@ -729,13 +735,27 @@ public class controller extends ActionBarActivity {
         public RGBWFragment() {
         }
 
+        boolean initialLayoutComplete = false;
+        SeekBar brightness;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             if(!recreateView) {
                 final View rootView = inflater.inflate(R.layout.rgbw_control, container, false);
 
-                SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                this.brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                final ViewGroup.LayoutParams brightnessLayout = brightness.getLayoutParams();
+                brightness.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (!initialLayoutComplete) {
+                            brightnessLayout.width = Math.abs(brightness.getBottom() - brightness.getTop());
+                            brightness.setLayoutParams(brightnessLayout);
+                            initialLayoutComplete = true;
+                        }
+                    }
+                });
                 Button on = (Button) rootView.findViewById(R.id.on);
                 Button off = (Button) rootView.findViewById(R.id.off);
                 Button disco = (Button) rootView.findViewById(R.id.disco);
@@ -763,7 +783,7 @@ public class controller extends ActionBarActivity {
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
                     color.setColor(savedColor);
-                    ((controller) getActivity()).setActionbarColor(savedColor);
+                    setTintColor(savedColor);
                 }
 
                 if (micStarted) {
@@ -803,7 +823,8 @@ public class controller extends ActionBarActivity {
                     public void onColorChanged(int i) {
                         if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
-                            ((controller) getActivity()).setActionbarColor(i);
+
+                            setTintColor(i);
                             /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);*/
                         }
@@ -832,6 +853,7 @@ public class controller extends ActionBarActivity {
                 on.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
                         Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
@@ -885,7 +907,7 @@ public class controller extends ActionBarActivity {
                         Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
-                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                        setTintColor(Color.parseColor("#ffee58"));
                     }
                 });
 
@@ -970,7 +992,18 @@ public class controller extends ActionBarActivity {
                 return cacheView;
             }
         }
+
+        private void setTintColor (int color) {
+            ((controller) getActivity()).setActionbarColor(color);
+
+            brightness.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                brightness.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            }
+        }
     }
+
     public static class WhiteFragment extends Fragment {
 
         public boolean recreateView = false;

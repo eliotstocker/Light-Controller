@@ -2,6 +2,7 @@
 # Built application files
 */build
 build
+**/*.apk
 
 # Local configuration files (sdk path, etc)
 .idea
