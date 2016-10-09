@@ -138,7 +138,7 @@ public class switchWidgetConfig extends ActionBarActivity {
                         case -1:
                         case 0:
                         case 9:
-                            label = getBaseContext().getString(R.string.gloabl);
+                            label = getBaseContext().getString(R.string.global);
                             break;
                         case 1:
                             label = prefs.getString("pref_zone1", getBaseContext().getString(R.string.Zone1));

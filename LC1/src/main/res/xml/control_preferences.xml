@@ -24,11 +24,11 @@
     <PreferenceCategory android:title="Interface Settings" >
         <CheckBoxPreference
             android:title="Use Tabs for Navigation"
-            android:summary="Disable the Naviagation draw and enable tabs (Like Older Versions)"
+            android:summary="Disable the Navigation draw and enable tabs (Like older versions)"
             android:key="navigation_tabs"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_zones_head" >
-        <PreferenceScreen android:title="RGBW Zones"
+        <PreferenceScreen android:title="@string/cat_rgbw_zones_head"
             android:key="pref_screen_rgbw">
             <PreferenceCategory android:title="@string/cat_rgbw_zones_head" >
                 <CheckBoxPreference
@@ -47,7 +47,7 @@
                 android:key="pref_zone1"
                 android:defaultValue="@string/Zone1"/>
             <SwitchPreference
-                android:title="Zone 1 Enabled"
+                android:title="@string/pref_zone_1_enabled"
                 android:key="pref_zone1_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -55,7 +55,7 @@
                 android:key="pref_zone2"
                 android:defaultValue="@string/Zone2"/>
             <SwitchPreference
-                android:title="Zone 2 Enabled"
+                android:title="@string/pref_zone_2_enabled"
                 android:key="pref_zone2_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -63,7 +63,7 @@
                 android:key="pref_zone3"
                 android:defaultValue="@string/Zone3"/>
             <SwitchPreference
-                android:title="Zone 3 Enabled"
+                android:title="@string/pref_zone_3_enabled"
                 android:key="pref_zone3_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -71,12 +71,13 @@
                 android:key="pref_zone4"
                 android:defaultValue="@string/Zone4"/>
             <SwitchPreference
-                android:title="Zone 4 Enabled"
+                android:title="@string/pref_zone_4_enabled"
                 android:key="pref_zone4_enabled"
                 android:defaultValue="true"/>
         </PreferenceScreen>
         <PreferenceScreen android:title="White Zones">
-            <PreferenceCategory android:title="@string/cat_white_zones_head" >
+            <PreferenceCategory android:title="@string/cat_white_zones_head"
+                android:key="pref_screen_white">
                 <CheckBoxPreference
                     android:title="@string/pref_white_enable"
                     android:defaultValue="false"
@@ -93,7 +94,7 @@
                 android:key="pref_zone5"
                 android:defaultValue="@string/Zone1"/>
             <SwitchPreference
-                android:title="Zone 1 Enabled"
+                android:title="@string/pref_zone_1_enabled"
                 android:key="pref_zone5_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -101,7 +102,7 @@
                 android:key="pref_zone6"
                 android:defaultValue="@string/Zone2"/>
             <SwitchPreference
-                android:title="Zone 2 Enabled"
+                android:title="@string/pref_zone_2_enabled"
                 android:key="pref_zone6_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -109,7 +110,7 @@
                 android:key="pref_zone7"
                 android:defaultValue="@string/Zone3"/>
             <SwitchPreference
-                android:title="Zone 3 Enabled"
+                android:title="@string/pref_zone_3_enabled"
                 android:key="pref_zone7_enabled"
                 android:defaultValue="true"/>
             <EditTextPreference
@@ -117,7 +118,7 @@
                 android:key="pref_zone8"
                 android:defaultValue="@string/Zone4"/>
             <SwitchPreference
-                android:title="Zone 4 Enabled"
+                android:title="@string/pref_zone_4_enabled"
                 android:key="pref_zone8_enabled"
                 android:defaultValue="true"/>
         </PreferenceScreen>
