@@ -4,6 +4,7 @@
     <color name="background_color">#FF1a1a1a</color>
     <color name="colorPrimary">#FFef6c00</color>
     <color name="colorPrimaryDark">#FFe65100</color>
+    <color name="colorPrimaryStatusBar">#8F4100</color>
     <color name="colorAccent">#FFef6c00</color>
     <color name="colorAccentLow">#6eef6c00</color>
     <color name="colorTabs">#FFFFFFFF</color>

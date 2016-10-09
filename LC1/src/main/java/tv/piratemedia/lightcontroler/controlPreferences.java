@@ -29,10 +29,14 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
@@ -54,9 +58,33 @@ public class controlPreferences extends AppCompatActivity {
         mFragmentTransaction.add(R.id.prefs_layout, mPrefsFragment);
         mFragmentTransaction.commit();
 
-        if(Build.VERSION.SDK_INT == 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+//        if(Build.VERSION.SDK_INT == 21) {
+//            Window window = getWindow();
+//
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //status bar height
+            int statusBarHeight = 64;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+
+            View view = new View(this);
+            view.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            view.getLayoutParams().height = statusBarHeight;
+            ((ViewGroup) w.getDecorView()).addView(view);
+            view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
+
+        setTheme(R.style.LightController_PreferenceTheme);
 
         mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         setSupportActionBar(mActionBarToolbar);
@@ -78,6 +106,8 @@ public class controlPreferences extends AppCompatActivity {
 
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            getActivity().setTheme(R.style.LightController_PreferenceTheme);
 
             addPreferencesFromResource(R.xml.control_preferences);
 
