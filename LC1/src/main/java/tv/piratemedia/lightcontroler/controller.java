@@ -662,7 +662,7 @@ public class controller extends ActionBarActivity {
 
                 for (int i = 1; i <= 4; i++) {
                     if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
-                        pages.add(new ControlPage(RGBWFragment.newInstance(i - 1), prefs.getString("pref_zone" + i, "Zone " + i)));
+                        pages.add(new ControlPage(RGBWFragment.newInstance(i), prefs.getString("pref_zone" + i, "Zone " + i)));
                     }
                 }
             }
@@ -671,7 +671,7 @@ public class controller extends ActionBarActivity {
 
                 for (int i = 5; i <= 8; i++) {
                     if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
-                        pages.add(new ControlPage(WhiteFragment.newInstance(i - 1), prefs.getString("pref_zone" + (i - 4), "Zone " + (i - 4))));
+                        pages.add(new ControlPage(WhiteFragment.newInstance(i), prefs.getString("pref_zone" + (i - 4), "Zone " + (i - 4))));
                     }
                 }
             }
