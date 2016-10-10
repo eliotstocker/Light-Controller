@@ -94,22 +94,6 @@ public class controlWidgetProvider extends AppWidgetProvider {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        Calendar c = Calendar.getInstance();
-        int min = c.get(Calendar.MINUTE);
-        String minString = "00";
-        if(min < 10) {
-            minString = "0"+min;
-        } else {
-            minString = Integer.toString(min);
-        }
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        String hourString = "00";
-        if(hour < 10) {
-            hourString = "0"+hour;
-        } else {
-            hourString = Integer.toString(hour);
-        }
-
         for (int widgetId : allWidgetIds) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
                     R.layout.control_widget_init);
@@ -138,6 +122,11 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+
+                remoteViews.setViewVisibility(R.id.zone1, prefs.getBoolean("pref_zone1_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone2, prefs.getBoolean("pref_zone2_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone3, prefs.getBoolean("pref_zone3_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone4, prefs.getBoolean("pref_zone4_enabled", true) ? View.VISIBLE : View.GONE);
             } else {
                 remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone5", context.getString(R.string.Zone1)));
                 remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone6", context.getString(R.string.Zone2)));
@@ -163,34 +152,12 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
                 remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(8,context,false));
+
+                remoteViews.setViewVisibility(R.id.zone1, prefs.getBoolean("pref_zone5_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone2, prefs.getBoolean("pref_zone6_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone3, prefs.getBoolean("pref_zone7_enabled", true) ? View.VISIBLE : View.GONE);
+                remoteViews.setViewVisibility(R.id.zone4, prefs.getBoolean("pref_zone8_enabled", true) ? View.VISIBLE : View.GONE);
             }
-
-
-            Intent intent = new Intent(context, controlPreferences.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.settings, pendingIntent);
-
-            intent = new Intent(context, controller.class);
-            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            remoteViews.setOnClickPendingIntent(R.id.app, pendingIntent);
-
-            if(Build.VERSION.SDK_INT >= 16) {
-                int height = appWidgetManager.getAppWidgetOptions(widgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT);
-
-                if (height < context.getResources().getDimensionPixelSize(R.dimen.widget_no_clock)) {
-                    Log.d("widget", "Hide Date Time");
-                    remoteViews.setViewVisibility(R.id.datetime, View.GONE);
-                } else {
-                    remoteViews.setViewVisibility(R.id.datetime, View.VISIBLE);
-                }
-            }
-
-            remoteViews.setTextViewText(R.id.timeHour, hourString);
-            remoteViews.setTextViewText(R.id.timeMinute, minString);
-            remoteViews.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-            SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-            String month_name = month_date.format(c.getTime());
-            remoteViews.setTextViewText(R.id.dateMonth, month_name);
 
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }

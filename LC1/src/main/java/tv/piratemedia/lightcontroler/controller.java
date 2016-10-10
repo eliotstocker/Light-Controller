@@ -649,7 +649,7 @@ public class controller extends ActionBarActivity {
             }
         }
 
-        ArrayList<ControlPage> pages = new ArrayList();
+        ArrayList<ControlPage> pages = new ArrayList<>();
 
         private controller mThis;
 

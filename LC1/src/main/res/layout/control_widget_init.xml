@@ -1,82 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_above="@+id/main"
-            android:gravity="center_vertical|center_horizontal"
-            android:id="@+id/datetime">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/main"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="-15dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00"
-                    android:id="@+id/timeHour"
-                    android:textSize="35dp"
-                    android:fontFamily="sans-serif"
-                    android:paddingRight="3dp"
-                    android:textColor="@android:color/white"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00"
-                    android:id="@+id/timeMinute"
-                    android:textSize="35dp"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="@android:color/white"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="-8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/dateDay"
-                    android:fontFamily="sans-serif-light"
-                    android:paddingRight="3dp"
-                    android:textColor="@android:color/white"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/dateMonth"
-                    android:paddingLeft="3dp"
-                    android:textColor="@android:color/white"/>
-            </LinearLayout>
-        </LinearLayout>
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/widget_margin">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
-            android:layout_alignParentBottom="true"
+            android:layout_height="match_parent"
             android:id="@+id/main"
-            android:background="#22000000">
+            android:background="#22000000"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <LinearLayout
+                android:id="@+id/global"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -85,10 +30,10 @@
 
                 <TextView
                     android:layout_width="85dp"
-                    android:layout_height="13dp"
+                    android:layout_height="match_parent"
                     android:text="@string/global"
                     android:id="@+id/textView"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -96,7 +41,6 @@
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
-                    android:layout_marginTop="36dp"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@android:color/white"/>
 
@@ -130,6 +74,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/zone1"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -141,10 +86,10 @@
 
                 <TextView
                     android:layout_width="85dp"
-                    android:layout_height="13dp"
+                    android:layout_height="match_parent"
                     android:text="@string/Zone1"
                     android:id="@+id/headzone1"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -152,9 +97,9 @@
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
-                    android:layout_marginTop="36dp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:clickable="false" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -185,6 +130,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/zone2"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -193,10 +139,10 @@
 
                 <TextView
                     android:layout_width="85dp"
-                    android:layout_height="13dp"
+                    android:layout_height="match_parent"
                     android:text="@string/Zone2"
                     android:id="@+id/headzone2"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -204,9 +150,9 @@
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
-                    android:layout_marginTop="36dp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:clickable="false" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -236,6 +182,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/zone3"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -244,10 +191,10 @@
 
                 <TextView
                     android:layout_width="85dp"
-                    android:layout_height="13dp"
+                    android:layout_height="match_parent"
                     android:text="@string/Zone3"
                     android:id="@+id/headzone3"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -255,9 +202,9 @@
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
-                    android:layout_marginTop="36dp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:clickable="false" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -287,6 +234,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/zone4"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -295,10 +243,10 @@
 
                 <TextView
                     android:layout_width="85dp"
-                    android:layout_height="13dp"
+                    android:layout_height="match_parent"
                     android:text="@string/Zone4"
                     android:id="@+id/headzone4"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_vertical|center_horizontal"
                     android:textSize="10dp"
                     android:singleLine="true"
                     android:ellipsize="end"
@@ -307,9 +255,9 @@
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
-                    android:layout_marginTop="36dp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:clickable="false" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -338,35 +286,35 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.15"
-                android:gravity="center_vertical|center_horizontal"
-                android:layout_gravity="center">
+            <!--<LinearLayout-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:layout_weight="1.15"-->
+                <!--android:gravity="center_vertical|center_horizontal"-->
+                <!--android:layout_gravity="center">-->
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/settings"
-                    android:background="#00ffffff"
-                    android:src="@drawable/settings"
-                    android:alpha="0.7"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="10dp" />
+                <!--<ImageButton-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/settings"-->
+                    <!--android:background="#00ffffff"-->
+                    <!--android:src="@drawable/settings"-->
+                    <!--android:alpha="0.7"-->
+                    <!--android:layout_marginBottom="5dp"-->
+                    <!--android:layout_marginTop="10dp" />-->
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/app"
-                    android:background="#00FFFFFF"
-                    android:src="@drawable/bulb"
-                    android:adjustViewBounds="false"
-                    android:alpha="0.7"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp" />
-            </LinearLayout>
+                <!--<ImageButton-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:id="@+id/app"-->
+                    <!--android:background="#00FFFFFF"-->
+                    <!--android:src="@drawable/bulb"-->
+                    <!--android:adjustViewBounds="false"-->
+                    <!--android:alpha="0.7"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:layout_marginTop="5dp" />-->
+            <!--</LinearLayout>-->
         </LinearLayout>
 
     </RelativeLayout>

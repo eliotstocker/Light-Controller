@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -71,13 +70,20 @@ public class switchWidgetConfig extends AppCompatActivity {
                 (RadioButton) findViewById(R.id.z8)
         };
 
-        RadioGroup rg = (RadioGroup)findViewById(R.id.group);
+        RadioGroup rg = (RadioGroup) findViewById(R.id.group);
+        RadioButton g1 = (RadioButton) findViewById(R.id.g1);
+        RadioButton g2 = (RadioButton) findViewById(R.id.g2);
         Button done = (Button)findViewById(R.id.done);
         CheckBox show = (CheckBox)findViewById(R.id.show_title);
 
+        g1.setEnabled(prefs.getBoolean("rgbw_enabled", true));
+        g2.setEnabled(prefs.getBoolean("white_enabled", true));
+
         for (int i = 1; i <= zones.length; i++) {
             zones[i - 1].setText(prefs.getString("pref_zone" + i, "Zone " + (i <= 4 ? i : i - 4)));
-            zones[i - 1].setEnabled(prefs.getBoolean("pref_zone" + i + "_enabled", true));
+
+            boolean zoneGroupEnabled = prefs.getBoolean((i <= 4 ? "rgbw_enabled" : "white_enabled"), true);
+            zones[i - 1].setEnabled(zoneGroupEnabled && prefs.getBoolean("pref_zone" + i + "_enabled", true));
         }
 
         Log.d("widgetID", "id: " + mAppWidgetId);
@@ -85,7 +91,7 @@ public class switchWidgetConfig extends AppCompatActivity {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.g) {
+                if (checkedId == R.id.g1) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 0).commit();
                 } else if (checkedId == R.id.z1) {
                     prefs.edit().putInt("widget_" + mAppWidgetId + "_zone", 1).commit();
@@ -132,37 +138,43 @@ public class switchWidgetConfig extends AppCompatActivity {
                 int ControlZone = prefs.getInt("widget_"+mAppWidgetId+"_zone", 0);
                 boolean ShowTitle = prefs.getBoolean("widget_"+mAppWidgetId+"_title", true);
 
+                Context context = getBaseContext();
+
                 if(ShowTitle) {
                     String label = "";
                     switch(ControlZone) {
                         case -1:
+                            label = context.getString(R.string.global);
+                            break;
                         case 0:
-                        case 9:
-                            label = getBaseContext().getString(R.string.global);
+                            label = context.getString(R.string.pref_zone_color);
                             break;
                         case 1:
-                            label = prefs.getString("pref_zone1", getBaseContext().getString(R.string.Zone1));
+                            label = prefs.getString("pref_zone1", context.getString(R.string.Zone1));
                             break;
                         case 2:
-                            label = prefs.getString("pref_zone2", getBaseContext().getString(R.string.Zone2));
+                            label = prefs.getString("pref_zone2", context.getString(R.string.Zone2));
                             break;
                         case 3:
-                            label = prefs.getString("pref_zone3", getBaseContext().getString(R.string.Zone3));
+                            label = prefs.getString("pref_zone3", context.getString(R.string.Zone3));
                             break;
                         case 4:
-                            label = prefs.getString("pref_zone4", getBaseContext().getString(R.string.Zone4));
+                            label = prefs.getString("pref_zone4", context.getString(R.string.Zone4));
                             break;
                         case 5:
-                            label = prefs.getString("pref_zone5", getBaseContext().getString(R.string.Zone1));
+                            label = prefs.getString("pref_zone5", context.getString(R.string.Zone1));
                             break;
                         case 6:
-                            label = prefs.getString("pref_zone6", getBaseContext().getString(R.string.Zone2));
+                            label = prefs.getString("pref_zone6", context.getString(R.string.Zone2));
                             break;
                         case 7:
-                            label = prefs.getString("pref_zone7", getBaseContext().getString(R.string.Zone3));
+                            label = prefs.getString("pref_zone7", context.getString(R.string.Zone3));
                             break;
                         case 8:
-                            label = prefs.getString("pref_zone8", getBaseContext().getString(R.string.Zone4));
+                            label = prefs.getString("pref_zone8", context.getString(R.string.Zone4));
+                            break;
+                        case 9:
+                            label = context.getString(R.string.pref_zone_white);
                             break;
                     }
                     views.setTextViewText(R.id.zone_label, label);

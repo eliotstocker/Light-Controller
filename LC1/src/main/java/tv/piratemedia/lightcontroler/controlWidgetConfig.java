@@ -10,12 +10,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RemoteViews;
 
@@ -25,7 +27,7 @@ import java.util.Calendar;
 /**
  * Created by eliotstocker on 26/10/14.
  */
-public class controlWidgetConfig extends ActionBarActivity {
+public class controlWidgetConfig extends AppCompatActivity {
     private Toolbar mActionBarToolbar;
     private int mAppWidgetId;
 
@@ -60,10 +62,23 @@ public class controlWidgetConfig extends ActionBarActivity {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         RadioGroup rg = (RadioGroup)findViewById(R.id.group);
-        Button done = (Button)findViewById(R.id.done);
-        CheckBox sg = (CheckBox)findViewById(R.id.superglobal);
+        RadioButton rgbwRadio = (RadioButton) findViewById(R.id.rgbw);
+        RadioButton whiteRadio = (RadioButton) findViewById(R.id.white);
+        Button done = (Button) findViewById(R.id.done);
+        CheckBox sg = (CheckBox) findViewById(R.id.superglobal);
 
         Log.d("widgetID", "id: " + mAppWidgetId);
+
+        boolean rgbwEnabled = prefs.getBoolean("rgbw_enabled", true);
+        rgbwRadio.setEnabled(rgbwEnabled);
+        boolean whiteEnabled = prefs.getBoolean("white_enabled", true);
+        whiteRadio.setEnabled(whiteEnabled);
+
+        if (rgbwEnabled && !whiteEnabled) {
+            rgbwRadio.setChecked(true);
+        } else if (whiteEnabled && !rgbwEnabled) {
+            whiteRadio.setChecked(true);
+        }
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -125,6 +140,11 @@ public class controlWidgetConfig extends ActionBarActivity {
                     views.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,getBaseContext(),false));
+
+                    views.setViewVisibility(R.id.zone1, prefs.getBoolean("pref_zone1_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone2, prefs.getBoolean("pref_zone2_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone3, prefs.getBoolean("pref_zone3_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone4, prefs.getBoolean("pref_zone4_enabled", true) ? View.VISIBLE : View.GONE);
                 } else {
                     views.setTextViewText(R.id.headzone1, prefs.getString("pref_zone5", getBaseContext().getString(R.string.Zone1)));
                     views.setTextViewText(R.id.headzone2, prefs.getString("pref_zone6", getBaseContext().getString(R.string.Zone2)));
@@ -150,41 +170,12 @@ public class controlWidgetConfig extends ActionBarActivity {
                     views.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,getBaseContext(),false));
                     views.setOnClickPendingIntent(R.id.o4,createPendingIntent(8,getBaseContext(),false));
+
+                    views.setViewVisibility(R.id.zone1, prefs.getBoolean("pref_zone5_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone2, prefs.getBoolean("pref_zone6_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone3, prefs.getBoolean("pref_zone7_enabled", true) ? View.VISIBLE : View.GONE);
+                    views.setViewVisibility(R.id.zone4, prefs.getBoolean("pref_zone8_enabled", true) ? View.VISIBLE : View.GONE);
                 }
-
-
-                Intent intent = new Intent(getBaseContext(), controlPreferences.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, 0);
-                views.setOnClickPendingIntent(R.id.settings, pendingIntent);
-
-                intent = new Intent(getBaseContext(), controller.class);
-                pendingIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, 0);
-                views.setOnClickPendingIntent(R.id.app, pendingIntent);
-
-                views.setViewVisibility(R.id.datetime, View.GONE);
-
-                Calendar c = Calendar.getInstance();
-                int min = c.get(Calendar.MINUTE);
-                String minString = "00";
-                if(min < 10) {
-                    minString = "0"+min;
-                } else {
-                    minString = Integer.toString(min);
-                }
-                int hour = c.get(Calendar.HOUR_OF_DAY);
-                String hourString = "00";
-                if(hour < 10) {
-                    hourString = "0"+hour;
-                } else {
-                    hourString = Integer.toString(hour);
-                }
-
-                views.setTextViewText(R.id.timeHour, hourString);
-                views.setTextViewText(R.id.timeMinute, minString);
-                views.setTextViewText(R.id.dateDay, Integer.toString(c.get(Calendar.DAY_OF_MONTH)));
-                SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
-                String month_name = month_date.format(c.getTime());
-                views.setTextViewText(R.id.dateMonth, month_name);
 
                 appWidgetManager.updateAppWidget(mAppWidgetId, views);
 

@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="Global"
                 android:id="@+id/sg"
-                android:checked="false" />
+                android:checked="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All Color"
-                android:id="@+id/g"
+                android:id="@+id/g1"
                 android:checked="false" />
 
             <RadioButton

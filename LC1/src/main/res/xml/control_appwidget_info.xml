@@ -3,10 +3,12 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="294dp"
     android:minHeight="40dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
     android:updatePeriodMillis="2000"
     android:previewImage="@drawable/widget"
     android:initialLayout="@layout/control_widget_init"
-    android:resizeMode="vertical"
+    android:resizeMode="horizontal|vertical"
     android:configure="tv.piratemedia.lightcontroler.controlWidgetConfig"
     android:widgetCategory="home_screen|keyguard"
     android:initialKeyguardLayout="@layout/control_widget_init">
