@@ -49,7 +49,7 @@ public class APIZoneSelector extends Activity {
 
         final RadioButton sg = (RadioButton)findViewById(R.id.sg);
 
-        final RadioButton g = (RadioButton)findViewById(R.id.g);
+        final RadioButton g = (RadioButton)findViewById(R.id.g1);
         final RadioButton z1 = (RadioButton)findViewById(R.id.z1);
         final RadioButton z2 = (RadioButton)findViewById(R.id.z2);
         final RadioButton z3 = (RadioButton)findViewById(R.id.z3);
@@ -110,7 +110,7 @@ public class APIZoneSelector extends Activity {
                     return;
                 }
                 selectedType = "color";
-                if (checkedId == R.id.g) {
+                if (checkedId == R.id.g1) {
                     selectedZone = 0;
                 } else if (checkedId == R.id.z1) {
                     selectedZone = 1;
@@ -174,7 +174,7 @@ public class APIZoneSelector extends Activity {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Intent i = new Intent();
         LightZone lz = new LightZone();
-        lz.Name = selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.gloabl);
+        lz.Name = selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.global);
         lz.Type = selectedType;
         lz.ID = selectedZone;
         lz.Global = selectedZone > 0 && selectedZone < 9;

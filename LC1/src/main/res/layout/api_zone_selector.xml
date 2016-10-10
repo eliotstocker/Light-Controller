@@ -62,8 +62,8 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/gloabl"
-                    android:id="@+id/g"
+                    android:text="@string/global"
+                    android:id="@+id/g1"
                     android:textColor="@color/abc_primary_text_material_light" />
 
                 <RadioButton
@@ -113,7 +113,7 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/gloabl"
+                    android:text="@string/global"
                     android:id="@+id/g2"
                     android:checked="false"
                     android:textColor="@color/abc_primary_text_material_light" />

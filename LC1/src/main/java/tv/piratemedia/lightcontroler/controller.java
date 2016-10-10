@@ -25,9 +25,14 @@ import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -59,6 +64,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -86,6 +92,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
@@ -153,14 +160,14 @@ public class controller extends ActionBarActivity {
         Utils = new utils(this);
         new DataLayerListenerService();
 
-        //Call Pebble sender, get it to check if pebble is connceted and send up light states
-        //Todo need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
+        //Call Pebble sender, get it to check if pebble is connected and send up light states
+        // TODO: need to rethink this as pebble app only gets communication if its running. So maybe detect if app is running, then send? or when app becomes active, send
         if(prefs.getBoolean("pref_pebble", false)){
             Log.d("Controller", "Pebble pref is active, lets start the app up");
             new pebbleSender(ctx).initialConnect(Controller);
             new pebbleSender(ctx).sendZoneNames();
         }else{
-            //TODO add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we dont have it running in background listening for things
+            // TODO: add this functionality so the broadcast listener for pebble stops (pebbleReceiver) so we don't have it running in background listening for things
             Log.d("Controller", "Pebble prefs is inactive. Lets shut down the listener service so its not running anymore");
         }
 
@@ -208,20 +215,20 @@ public class controller extends ActionBarActivity {
                             Controller.setWifiNetwork(NetworkInfo[1]);
                         } else {
                             new MaterialDialog.Builder(_this)
-                                    .title("Password For: " + NetworkInfo[1])
-                                    .theme(Theme.DARK)
-                                    .customView(input, false)
-                                    .content("Please type the network password")
-                                    .positiveText("OK")
-                                    .negativeText("Cancel")
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
-                                        }
-                                    })
-                                    .build()
-                                    .show();
+                                .title("Password For: " + NetworkInfo[1])
+                                .theme(Theme.DARK)
+                                .customView(input, false)
+                                .content("Please type the network password")
+                                .positiveText("OK")
+                                .negativeText("Cancel")
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        Controller.setWifiNetwork(NetworkInfo[1], "WPA2PSK", "AES", input.getText().toString());
+                                    }
+                                })
+                                .build()
+                                .show();
                         }
                         return false;
                     }
@@ -262,7 +269,7 @@ public class controller extends ActionBarActivity {
             if (!Devices.contains(Mac + "-known")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("A new Light Control device has been found, Would you like to save/control it?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
+                    .setNegativeButton("No", dialogClickListener).show();
             } else {
                 if (Devices.getBoolean(Mac + "-known", false)) {
                     gotDevice = true;
@@ -300,15 +307,15 @@ public class controller extends ActionBarActivity {
             Controller.discover();
         }
 
-        /* Code to try and unregister pebble stuff if its unselcted in settings menu. not quite sure where to put this though, what reloads after a settings change?
+        /* Code to try and unregister pebble stuff if its unselected in settings menu. not quite sure where to put this though, what reloads after a settings change?
          ComponentName pebblereceiver = new ComponentName(ctx,pebbleReceiver.class);
         int status = ctx.getPackageManager().getComponentEnabledSetting(pebblereceiver);
         if(status == PackageManager.COMPONENT_ENABLED_STATE_ENABLED) {
-            Log.d("Package", "pebbl receiver is enabled");
+            Log.d("Package", "pebble receiver is enabled");
         } else if(status == PackageManager.COMPONENT_ENABLED_STATE_DISABLED){
-            Log.d("Package", "pebbl receiver is disabled");
+            Log.d("Package", "pebble receiver is disabled");
         }
-        Log.d("Packge", "Test log"); */
+        Log.d("Package", "Test log"); */
         //start timer here for no discovery (try 3 times)
     }
 
@@ -361,23 +368,24 @@ public class controller extends ActionBarActivity {
                 tabs.setVisibility(View.GONE);
 
                 for(int i = 0; i < pager.getAdapter().getCount(); i++) {
-                    if(i == 5) {
+                    if(pager.getAdapter().getPageTitle(i).toString().equals(("All White"))) {
                         drawer.addDivider();
                     }
+
                     drawer.addItem(new DrawerItem()
-                            .setTextMode(DrawerItem.SINGLE_LINE)
-                            .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
-                            .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-                                @Override
-                                public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                    int item = i2;
-                                    if(item > 4) {
-                                        item--;
-                                    }
-                                    pager.setCurrentItem(item, true);
-                                    drawer.closeDrawer();
+                        .setId(i)
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(pager.getAdapter().getPageTitle(i).toString())
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int item) {
+                                if (item > 4) {
+                                    item--;
                                 }
-                            }));
+                                pager.setCurrentItem(drawerItem.getId(), true);
+                                drawer.closeDrawer();
+                            }
+                        }));
                 }
                 drawer.addDivider();
                 drawer.addItem(new DrawerItem()
@@ -463,7 +471,7 @@ public class controller extends ActionBarActivity {
         try {
             tabs.setBackgroundColor(c);
         } catch(Exception e) {
-            //do nothing
+            // do nothing
         }
 
         float[] hsv = new float[3];
@@ -473,7 +481,7 @@ public class controller extends ActionBarActivity {
 
         drawer.setStatusBarBackgroundColor(c);
 
-        //little hack to make the statusbar background redraw when called from another thread
+        // little hack to make the status bar background redraw when called from another thread
         drawer.openDrawer();
         drawer.closeDrawer();
     }
@@ -498,7 +506,7 @@ public class controller extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
@@ -630,121 +638,62 @@ public class controller extends ActionBarActivity {
         return null;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class ControllerPager extends FragmentPagerAdapter {
-        Fragment G1 = null;
-        Fragment G2 = null;
-        Fragment z1 = null;
-        Fragment z2 = null;
-        Fragment z3 = null;
-        Fragment z4 = null;
-        Fragment z5 = null;
-        Fragment z6 = null;
-        Fragment z7 = null;
-        Fragment z8 = null;
+        private class ControlPage {
+            public Fragment fragment;
+            public String title;
+
+            public ControlPage (Fragment fragment, String title) {
+                this.fragment = fragment;
+                this.title = title;
+            }
+        }
+
+        ArrayList<ControlPage> pages = new ArrayList<>();
+
         private controller mThis;
 
         public ControllerPager(FragmentManager fm, controller t) {
             super(fm);
             mThis = t;
+
+            if (prefs.getBoolean("rgbw_enabled", false)) {
+                pages.add(new ControlPage(RGBWFragment.newInstance(0), "All Color"));
+
+                for (int i = 1; i <= 4; i++) {
+                    if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
+                        pages.add(new ControlPage(RGBWFragment.newInstance(i), prefs.getString("pref_zone" + i, "Zone " + i)));
+                    }
+                }
+            }
+            if (prefs.getBoolean("white_enabled", false)) {
+                pages.add(new ControlPage(WhiteFragment.newInstance(9), "All White"));
+
+                for (int i = 5; i <= 8; i++) {
+                    if (prefs.getBoolean("pref_zone" + i + "_enabled", true)) {
+                        pages.add(new ControlPage(WhiteFragment.newInstance(i), prefs.getString("pref_zone" + (i - 4), "Zone " + (i - 4))));
+                    }
+                }
+            }
         }
 
         @Override
-        public android.support.v4.app.Fragment getItem(int i) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && i > 0) {
-                i += 4;
-            }
-            switch(i) {
-                case 0:
-                    if(G1 == null) {
-                        G1 = RGBWFragment.newInstance(0);
-                    }
-                    return G1;
-                case 1:
-                    if(z1 == null) {
-                        z1 = RGBWFragment.newInstance(1);
-                    }
-                    return z1;
-                case 2:
-                    if(z2 == null) {
-                        z2 = RGBWFragment.newInstance(2);
-                    }
-                    return z2;
-                case 3:
-                    if(z3 == null) {
-                        z3 = RGBWFragment.newInstance(3);
-                    }
-                    return z3;
-                case 4:
-                    if(z4 == null) {
-                        z4 = RGBWFragment.newInstance(4);
-                    }
-                    return z4;
-                case 5:
-                    if(G2 == null) {
-                        G2 = WhiteFragment.newInstance(9);
-                    }
-                    return G2;
-                case 6:
-                    if(z5 == null) {
-                        z5 = WhiteFragment.newInstance(5);
-                    }
-                    return z5;
-                case 7:
-                    if(z6 == null) {
-                        z6 = WhiteFragment.newInstance(6);
-                    }
-                    return z6;
-                case 8:
-                    if(z7 == null) {
-                        z7 = WhiteFragment.newInstance(7);
-                    }
-                    return z7;
-                case 9:
-                    if(z8 == null) {
-                        z8 = WhiteFragment.newInstance(8);
-                    }
-                    return z8;
-                default:
-                    if(G1 == null) {
-                        G1 = RGBWFragment.newInstance(0);
-                    }
-                    return G1;
-            }
+        public Fragment getItem(int i) {
+            return pages.get(i).fragment;
         }
 
         @Override
         public int getCount() {
-            int count = 0;
-            if(prefs.getBoolean("rgbw_enabled", false)) {
-                count += 5;
-            }
-            if(prefs.getBoolean("white_enabled", false)) {
-                count += 5;
-            }
-            return count;
+            return pages.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && position > 0) {
-                position += 4;
+            if (position < pages.size()) {
+                return pages.get(position).title;
+            } else {
+                return "Unknown";
             }
-            switch(position) {
-                case 0: return "All Color";
-                case 1: return prefs.getString("pref_zone1", "Zone 1");
-                case 2: return prefs.getString("pref_zone2", "Zone 2");
-                case 3: return prefs.getString("pref_zone3", "Zone 3");
-                case 4: return prefs.getString("pref_zone4", "Zone 4");
-                case 5: return "All White";
-                case 6: return prefs.getString("pref_zone5", "White 1");
-                case 7: return prefs.getString("pref_zone6", "White 2");
-                case 8: return prefs.getString("pref_zone7", "White 3");
-                case 9: return prefs.getString("pref_zone8", "White 4");
-            }
-            return "unknown";
         }
 
         @Override
@@ -786,13 +735,27 @@ public class controller extends ActionBarActivity {
         public RGBWFragment() {
         }
 
+        boolean initialLayoutComplete = false;
+        SeekBar brightness;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             if(!recreateView) {
                 final View rootView = inflater.inflate(R.layout.rgbw_control, container, false);
 
-                SeekBar brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                this.brightness = (SeekBar) rootView.findViewById(R.id.brightness);
+                final ViewGroup.LayoutParams brightnessLayout = brightness.getLayoutParams();
+                brightness.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (!initialLayoutComplete) {
+                            brightnessLayout.width = Math.abs(brightness.getBottom() - brightness.getTop());
+                            brightness.setLayoutParams(brightnessLayout);
+                            initialLayoutComplete = true;
+                        }
+                    }
+                });
                 Button on = (Button) rootView.findViewById(R.id.on);
                 Button off = (Button) rootView.findViewById(R.id.off);
                 Button disco = (Button) rootView.findViewById(R.id.disco);
@@ -820,7 +783,7 @@ public class controller extends ActionBarActivity {
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
                     color.setColor(savedColor);
-                    ((controller) getActivity()).setActionbarColor(savedColor);
+                    setTintColor(savedColor);
                 }
 
                 if (micStarted) {
@@ -860,7 +823,8 @@ public class controller extends ActionBarActivity {
                     public void onColorChanged(int i) {
                         if(!disabled) {
                             Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
-                            ((controller) getActivity()).setActionbarColor(i);
+
+                            setTintColor(i);
                             /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);*/
                         }
@@ -889,6 +853,7 @@ public class controller extends ActionBarActivity {
                 on.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
                         Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
@@ -942,7 +907,7 @@ public class controller extends ActionBarActivity {
                         Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
-                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                        setTintColor(Color.parseColor("#ffee58"));
                     }
                 });
 
@@ -1027,7 +992,18 @@ public class controller extends ActionBarActivity {
                 return cacheView;
             }
         }
+
+        private void setTintColor (int color) {
+            ((controller) getActivity()).setActionbarColor(color);
+
+            brightness.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                brightness.getThumb().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            }
+        }
     }
+
     public static class WhiteFragment extends Fragment {
 
         public boolean recreateView = false;

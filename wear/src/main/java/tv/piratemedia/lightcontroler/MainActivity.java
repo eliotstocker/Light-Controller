@@ -4,16 +4,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +31,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity {
@@ -39,10 +46,14 @@ public class MainActivity extends FragmentActivity {
     private BroadcastReceiver bc;
     private int screenHeight = 0;
 
+    private SharedPreferences prefs = null;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         ShapeWear.initShapeWear(this);
 
@@ -74,8 +85,8 @@ public class MainActivity extends FragmentActivity {
         brightnessValPixels = screenHeight;
         pixelsPerBrightnessStep = screenHeight / (float) BRIGHTNESS_STEPS;
         resources = getResources();
-        brightnessTextContainer = (LinearLayout) findViewById(R.id.brightnesscontainer);
-        txtBrightness = (TextView) findViewById(R.id.brightnesstext);
+        brightnessTextContainer = (LinearLayout) findViewById(R.id.brightnessContainer);
+        txtBrightness = (TextView) findViewById(R.id.brightnessText);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -88,8 +99,7 @@ public class MainActivity extends FragmentActivity {
 
         mGestureDetector = new GestureDetector(this, new LongPressListener());
 
-        FragAdapter =
-                new ZonesPagerAdapter(getSupportFragmentManager());
+        FragAdapter = new ZonesPagerAdapter(getSupportFragmentManager(), this, prefs);
         ZonePager = (ViewPager) findViewById(R.id.pager);
         ZonePager.setAdapter(FragAdapter);
         ZonePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -128,13 +138,8 @@ public class MainActivity extends FragmentActivity {
                 if(intent.getAction().equals("tv.piratemedia.lightcontroler.wear.updated_zones")) {
                     for(int i = 0; i < FragAdapter.getCount(); i++) {
                         Log.d("Received", "update name in fragment");
-                        try {
-                            ColorZoneFragment f = (ColorZoneFragment) FragAdapter.getItem(i);
-                            f.updateName();
-                        } catch(ClassCastException e) {
-                            WhiteZoneFragment f = (WhiteZoneFragment) FragAdapter.getItem(i);
-                            f.updateName();
-                        }
+                        ZoneFragment f = FragAdapter.getItem(i);
+                        f.updateName();
                     }
                 }
             }
@@ -145,8 +150,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        IntentFilter intentFilter = new IntentFilter(
-                "tv.piratemedia.lightcontroler.wear.updated_zones");
+        IntentFilter intentFilter = new IntentFilter("tv.piratemedia.lightcontroler.wear.updated_zones");
         registerReceiver(bc, intentFilter);
 
         final PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mGoogleApiClient);
@@ -275,4 +279,3 @@ public class MainActivity extends FragmentActivity {
         }
     }
 }
-

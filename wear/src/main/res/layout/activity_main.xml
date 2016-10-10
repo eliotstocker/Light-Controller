@@ -33,7 +33,7 @@
         android:background="#000000"
         android:layout_alignParentBottom="false"
         android:gravity="center"
-        android:id="@+id/brightnesscontainer"
+        android:id="@+id/brightnessContainer"
         android:visibility="gone">
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="0%"
-            android:id="@+id/brightnesstext"
+            android:id="@+id/brightnessText"
             android:fontFamily="sans-serif-thin"
             android:layout_gravity="center" />
     </LinearLayout>

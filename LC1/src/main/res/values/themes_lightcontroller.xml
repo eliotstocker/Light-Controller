@@ -14,4 +14,16 @@
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
     </style>
+    <!-- This theme is used to show ActionBar on sub-PreferenceScreens -->
+    <style name="LightController.PreferenceTheme" parent="Theme.AppCompat">
+        <item name="android:windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimaryStatusBar</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
+    </style>
 </resources>
