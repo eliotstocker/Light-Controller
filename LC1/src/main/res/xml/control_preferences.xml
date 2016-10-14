@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <PreferenceCategory android:title="Light Control Providers" android:key="cat_providers">
+        <ListPreference
+                android:title="Select Provider"
+                android:key="pref_selected_provider"
+                android:defaultValue="0"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_head" >
         <CheckBoxPreference
             android:title="@string/disable_discovery_title"

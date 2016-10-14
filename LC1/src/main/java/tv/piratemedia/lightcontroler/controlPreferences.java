@@ -24,15 +24,14 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.preference.*;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
+import tv.piratemedia.lightcontroler.api.ControlProviders;
+import tv.piratemedia.lightcontroler.api.Provider;
 
 import java.util.regex.Pattern;
 
@@ -73,11 +72,29 @@ public class controlPreferences extends ActionBarActivity {
         private static final Pattern PARTIAl_IP_ADDRESS =
                 Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){3}"+
                         "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){1}$");
+        private Provider[] availableProviders;
 
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
             addPreferencesFromResource(R.xml.control_preferences);
+
+            availableProviders = ControlProviders.listProviders(getActivity());
+            ListPreference providers = (ListPreference) findPreference("pref_selected_provider");
+            if(availableProviders.length < 1) {
+                getPreferenceScreen().removePreference(findPreference("cat_providers"));
+            } else {
+                String[] entries = new String[availableProviders.length];
+                String[] values = new String[availableProviders.length];
+                int i = 0;
+                for(Provider p : availableProviders) {
+                    entries[i] = p.Name;
+                    values[i] = p.Package;
+                }
+
+                providers.setEntries(entries);
+                providers.setEntryValues(values);
+            }
 
             EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");
 
