@@ -102,6 +102,17 @@ public class controlPreferences extends ActionBarActivity {
                 if(providers.getValue().equals(null)) {
                     providers.setValueIndex(0);
                 }
+
+                providers.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        if(!newValue.equals("")) {
+                            Provider provider = ControlProviders.getProvider((String) newValue, getActivity());
+                            ControlProviders.sendCommand(provider, "Select", getActivity());
+                        }
+                        return true;
+                    }
+                });
             }
 
             EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");
