@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.preference.*;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
@@ -84,9 +85,11 @@ public class controlPreferences extends ActionBarActivity {
             if(availableProviders.length < 1) {
                 getPreferenceScreen().removePreference(findPreference("cat_providers"));
             } else {
-                String[] entries = new String[availableProviders.length];
-                String[] values = new String[availableProviders.length];
-                int i = 0;
+                String[] entries = new String[availableProviders.length + 1];
+                String[] values = new String[availableProviders.length + 1];
+                entries[0] = "Built in MiiLight Control";
+                values[0] = "";
+                int i = 1;
                 for(Provider p : availableProviders) {
                     entries[i] = p.Name;
                     values[i] = p.Package;
@@ -94,6 +97,11 @@ public class controlPreferences extends ActionBarActivity {
 
                 providers.setEntries(entries);
                 providers.setEntryValues(values);
+
+                Log.d("providers", providers.getValue());
+                if(providers.getValue().equals(null)) {
+                    providers.setValueIndex(0);
+                }
             }
 
             EditTextPreference controllerIP = (EditTextPreference) findPreference("pref_light_controller_ip");

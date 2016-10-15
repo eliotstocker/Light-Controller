@@ -3,8 +3,8 @@
     <PreferenceCategory android:title="Light Control Providers" android:key="cat_providers">
         <ListPreference
                 android:title="Select Provider"
-                android:key="pref_selected_provider"
-                android:defaultValue="0"/>
+                android:summary="%s"
+                android:key="pref_selected_provider"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/cat_head" >
         <CheckBoxPreference
