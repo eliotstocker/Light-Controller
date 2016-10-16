@@ -303,7 +303,6 @@
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:rotation="-90"
-                    android:autoText="false"
                     android:background="#22FFFFFF"
                     android:layout_marginLeft="-36dp"
                     android:layout_marginRight="-36dp"
