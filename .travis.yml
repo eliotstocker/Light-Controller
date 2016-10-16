@@ -11,7 +11,7 @@ android:
     - extra-google-google_play_services
     - extra-android-support
     - extra-android-m2repository
-    - sys-img-armeabi-v7a-android-24
+    - sys-img-x86-android-24
   licenses:
     - android-sdk-license-.+
 
