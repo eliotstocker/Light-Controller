@@ -22,6 +22,8 @@ import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.util.Log;
+import tv.piratemedia.lightcontroler.api.ControlProviders;
+import tv.piratemedia.lightcontroler.api.Provider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,11 +45,15 @@ public class controlCommands {
     public final int[] tolerance = new int[1];
     public SaveState appState = null;
 
+    private Provider provider = null;
+
     public controlCommands(Context context, Handler handler) {
         UDPC = new UDPConnection(context, handler);
         mContext = context;
         tolerance[0] = 25000;
         appState = new SaveState(context);
+
+        provider = ControlProviders.getCurrentProvider(context);
     }
 
     public void killUDPC() {
@@ -118,119 +124,151 @@ public class controlCommands {
     }
 
     public void LightsOn(int zone) {
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 0:
-                messageBA[0] = 66;
-                break;
-            case 1:
-                messageBA[0] = 69;
-                break;
-            case 2:
-                messageBA[0] = 71;
-                break;
-            case 3:
-                messageBA[0] = 73;
-                break;
-            case 4:
-                messageBA[0] = 75;
-                break;
-            case 5:
-                messageBA[0] = 56;
-                break;
-            case 6:
-                messageBA[0] = 61;
-                break;
-            case 7:
-                messageBA[0] = 55;
-                break;
-            case 8:
-                messageBA[0] = 50;
-                break;
-            case 9:
-                messageBA[0] = 53;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        LastOn = zone;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            String Type = ControlProviders.ZONE_TYPE_COLOR;
+            if(zone > 4) {
+                Type = ControlProviders.ZONE_TYPE_WHITE;
+                zone -= 4;
+                if(zone > 4) {
+                    zone = 0;
+                }
+            }
+            ControlProviders.sendCommand(provider, "LightOn", Type, zone, mContext);
+        } else {
+            byte[] messageBA = new byte[3];
+            switch (zone) {
+                case 0:
+                    messageBA[0] = 66;
+                    break;
+                case 1:
+                    messageBA[0] = 69;
+                    break;
+                case 2:
+                    messageBA[0] = 71;
+                    break;
+                case 3:
+                    messageBA[0] = 73;
+                    break;
+                case 4:
+                    messageBA[0] = 75;
+                    break;
+                case 5:
+                    messageBA[0] = 56;
+                    break;
+                case 6:
+                    messageBA[0] = 61;
+                    break;
+                case 7:
+                    messageBA[0] = 55;
+                    break;
+                case 8:
+                    messageBA[0] = 50;
+                    break;
+                case 9:
+                    messageBA[0] = 53;
+                    break;
+            }
+            messageBA[1] = 0;
+            messageBA[2] = 85;
+            LastOn = zone;
+            try {
+                UDPC.sendMessage(messageBA);
+            } catch (IOException e) {
+                e.printStackTrace();
+                //add alert to tell user we cant send command
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         appState.setOnOff(zone, true);
     }
 
     public void globalOn() {
-        LightsOn(0);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "GlobalOn", mContext);
+        } else {
+            LightsOn(0);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LightsOn(9);
         }
-        LightsOn(9);
     }
 
     public void LightsOff(int zone) {
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 0:
-                messageBA[0] = 65;
-                break;
-            case 1:
-                messageBA[0] = 70;
-                break;
-            case 2:
-                messageBA[0] = 72;
-                break;
-            case 3:
-                messageBA[0] = 74;
-                break;
-            case 4:
-                messageBA[0] = 76;
-                break;
-            case 5:
-                messageBA[0] = 59;
-                break;
-            case 6:
-                messageBA[0] = 51;
-                break;
-            case 7:
-                messageBA[0] = 58;
-                break;
-            case 8:
-                messageBA[0] = 54;
-                break;
-            case 9:
-                messageBA[0] = 57;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+        if(provider != null) {
+            String Type = ControlProviders.ZONE_TYPE_COLOR;
+            if(zone > 4) {
+                Type = ControlProviders.ZONE_TYPE_WHITE;
+                zone -= 4;
+                if(zone > 4) {
+                    zone = 0;
+                }
+            }
+            ControlProviders.sendCommand(provider, "LightOff", Type, zone, mContext);
+        } else {
+            byte[] messageBA = new byte[3];
+            switch (zone) {
+                case 0:
+                    messageBA[0] = 65;
+                    break;
+                case 1:
+                    messageBA[0] = 70;
+                    break;
+                case 2:
+                    messageBA[0] = 72;
+                    break;
+                case 3:
+                    messageBA[0] = 74;
+                    break;
+                case 4:
+                    messageBA[0] = 76;
+                    break;
+                case 5:
+                    messageBA[0] = 59;
+                    break;
+                case 6:
+                    messageBA[0] = 51;
+                    break;
+                case 7:
+                    messageBA[0] = 58;
+                    break;
+                case 8:
+                    messageBA[0] = 54;
+                    break;
+                case 9:
+                    messageBA[0] = 57;
+                    break;
+            }
+            messageBA[1] = 0;
+            messageBA[2] = 85;
+            try {
+                UDPC.sendMessage(messageBA);
+            } catch (IOException e) {
+                e.printStackTrace();
+                //add alert to tell user we cant send command
+            }
         }
         appState.setOnOff(zone, false);
     }
 
     public void globalOff() {
-        LightsOff(0);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "GlobalOff", mContext);
+        } else {
+            LightsOff(0);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LightsOff(9);
         }
-        LightsOff(9);
     }
 
     public void setToWhite(int zone) {

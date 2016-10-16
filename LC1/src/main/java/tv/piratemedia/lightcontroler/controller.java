@@ -379,19 +379,6 @@ public class controller extends ActionBarActivity {
                                 }
                             }));
                 }
-                drawer.addDivider();
-                drawer.addItem(new DrawerItem()
-                        .setTextMode(DrawerItem.SINGLE_LINE)
-                        .setTextPrimary(getResources().getString(R.string.action_settings))
-                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
-                            @Override
-                            public void onClick(DrawerItem drawerItem, int i, int i2) {
-                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
-                                startActivity(intent);
-                                finish();
-                                drawer.closeDrawer();
-                            }
-                        }));
 
                 final PackageManager pm = getPackageManager();
                 Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -408,7 +395,7 @@ public class controller extends ActionBarActivity {
                                     @Override
                                     public void onClick(DrawerItem drawerItem, int i, int i2) {
                                         Intent intent = new Intent(Intent.ACTION_MAIN);
-                                        Log.d("package", "pkg:" + info.resolvePackageName);
+                                        intent.addCategory("tv.piratemedia.lightcontroller.plugin");
                                         intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
                                         startActivity(intent);
                                         drawer.closeDrawer();
@@ -416,6 +403,19 @@ public class controller extends ActionBarActivity {
                                 }));
                     }
                 }
+                drawer.addDivider();
+                drawer.addItem(new DrawerItem()
+                        .setTextMode(DrawerItem.SINGLE_LINE)
+                        .setTextPrimary(getResources().getString(R.string.action_settings))
+                        .setOnItemClickListener(new DrawerItem.OnItemClickListener() {
+                            @Override
+                            public void onClick(DrawerItem drawerItem, int i, int i2) {
+                                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
+                                startActivity(intent);
+                                finish();
+                                drawer.closeDrawer();
+                            }
+                        }));
             } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }

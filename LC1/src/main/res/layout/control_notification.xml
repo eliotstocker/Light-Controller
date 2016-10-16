@@ -238,7 +238,6 @@
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:rotation="-90"
-                    android:autoText="false"
                     android:background="@color/widgetForeground"
                     android:layout_marginLeft="-26dp"
                     android:layout_marginRight="-26dp"
