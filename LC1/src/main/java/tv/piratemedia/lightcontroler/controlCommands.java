@@ -125,7 +125,15 @@ public class controlCommands {
 
     public void LightsOn(int zone) {
         if(provider != null) {
-            ControlProviders.sendCommand(provider, "LightOn", ControlProviders.ZONE_TYPE_COLOR, zone, mContext);
+            String Type = ControlProviders.ZONE_TYPE_COLOR;
+            if(zone > 4) {
+                Type = ControlProviders.ZONE_TYPE_WHITE;
+                zone -= 4;
+                if(zone > 4) {
+                    zone = 0;
+                }
+            }
+            ControlProviders.sendCommand(provider, "LightOn", Type, zone, mContext);
         } else {
             byte[] messageBA = new byte[3];
             switch (zone) {
@@ -179,68 +187,88 @@ public class controlCommands {
     }
 
     public void globalOn() {
-        LightsOn(0);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "GlobalOn", mContext);
+        } else {
+            LightsOn(0);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LightsOn(9);
         }
-        LightsOn(9);
     }
 
     public void LightsOff(int zone) {
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 0:
-                messageBA[0] = 65;
-                break;
-            case 1:
-                messageBA[0] = 70;
-                break;
-            case 2:
-                messageBA[0] = 72;
-                break;
-            case 3:
-                messageBA[0] = 74;
-                break;
-            case 4:
-                messageBA[0] = 76;
-                break;
-            case 5:
-                messageBA[0] = 59;
-                break;
-            case 6:
-                messageBA[0] = 51;
-                break;
-            case 7:
-                messageBA[0] = 58;
-                break;
-            case 8:
-                messageBA[0] = 54;
-                break;
-            case 9:
-                messageBA[0] = 57;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+        if(provider != null) {
+            String Type = ControlProviders.ZONE_TYPE_COLOR;
+            if(zone > 4) {
+                Type = ControlProviders.ZONE_TYPE_WHITE;
+                zone -= 4;
+                if(zone > 4) {
+                    zone = 0;
+                }
+            }
+            ControlProviders.sendCommand(provider, "LightOff", Type, zone, mContext);
+        } else {
+            byte[] messageBA = new byte[3];
+            switch (zone) {
+                case 0:
+                    messageBA[0] = 65;
+                    break;
+                case 1:
+                    messageBA[0] = 70;
+                    break;
+                case 2:
+                    messageBA[0] = 72;
+                    break;
+                case 3:
+                    messageBA[0] = 74;
+                    break;
+                case 4:
+                    messageBA[0] = 76;
+                    break;
+                case 5:
+                    messageBA[0] = 59;
+                    break;
+                case 6:
+                    messageBA[0] = 51;
+                    break;
+                case 7:
+                    messageBA[0] = 58;
+                    break;
+                case 8:
+                    messageBA[0] = 54;
+                    break;
+                case 9:
+                    messageBA[0] = 57;
+                    break;
+            }
+            messageBA[1] = 0;
+            messageBA[2] = 85;
+            try {
+                UDPC.sendMessage(messageBA);
+            } catch (IOException e) {
+                e.printStackTrace();
+                //add alert to tell user we cant send command
+            }
         }
         appState.setOnOff(zone, false);
     }
 
     public void globalOff() {
-        LightsOff(0);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "GlobalOff", mContext);
+        } else {
+            LightsOff(0);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            LightsOff(9);
         }
-        LightsOff(9);
     }
 
     public void setToWhite(int zone) {

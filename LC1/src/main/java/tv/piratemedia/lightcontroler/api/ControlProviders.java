@@ -22,9 +22,9 @@ public class ControlProviders {
     private static final String PROVIDER_CAT = "tv.piratemedia.lightcontroler.provider";
     private static final String PROVIDER_SELECT_ACTION = "tv.piratemedia.lightcontroler.provider.Select";
 
-    public static final int ZONE_TYPE_COLOR   = 0;
-    public static final int ZONE_TYPE_WHITE   = 1;
-    public static final int ZONE_TYPE_UNKNOWN = -1;
+    public static final String ZONE_TYPE_COLOR   = "color";
+    public static final String ZONE_TYPE_WHITE   = "white";
+    public static final String ZONE_TYPE_UNKNOWN = "unknown";
 
     public static Provider[] listProviders(Context context) {
         final PackageManager pm = context.getPackageManager();
@@ -115,10 +115,10 @@ public class ControlProviders {
     }
 
     public static void sendCommand(Provider provider, String action, Context context) {
-        sendCommand(provider, action, -1, -1, context);
+        sendCommand(provider, action, null, -1, context);
     }
 
-    public static void sendCommand(Provider provider, String action, int Type, int Zone, Context context) {
+    public static void sendCommand(Provider provider, String action, String Type, int Zone, Context context) {
         final PackageManager pm = context.getPackageManager();
         Signature[] signs = null;
         try {
@@ -141,7 +141,7 @@ public class ControlProviders {
         intent.setAction(PROVIDER_CAT+"."+action);
         intent.putExtra("app_id",  context.getPackageName());
         intent.putExtra("app_sig",  sig);
-        if(Type > -1) {
+        if(!Type.equals(null)) {
             intent.putExtra("type", Type);
         }
         if(Zone > -1) {
