@@ -98,8 +98,8 @@ public class controlPreferences extends ActionBarActivity {
                 providers.setEntries(entries);
                 providers.setEntryValues(values);
 
-                Log.d("providers", providers.getValue());
-                if(providers.getValue().equals(null)) {
+                //Log.d("providers", providers.getValue());
+                if(providers.getValue() == null || providers.getValue().equals(null)) {
                     providers.setValueIndex(0);
                 }
 
