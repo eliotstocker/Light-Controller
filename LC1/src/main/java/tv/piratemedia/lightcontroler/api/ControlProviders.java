@@ -127,10 +127,10 @@ public class ControlProviders {
             e.printStackTrace();
         }
 
-        String sig = null;
+        int sig = -1;
         if(signs != null) {
             for (Signature signature : signs) {
-                sig = signature.toCharsString();
+                sig = signature.hashCode();
             }
         }
 
