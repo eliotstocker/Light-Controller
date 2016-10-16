@@ -141,7 +141,7 @@ public class ControlProviders {
         intent.setAction(PROVIDER_CAT+"."+action);
         intent.putExtra("app_id",  context.getPackageName());
         intent.putExtra("app_sig",  sig);
-        if(!Type.equals(null)) {
+        if(Type != null) {
             intent.putExtra("type", Type);
         }
         if(Zone > -1) {

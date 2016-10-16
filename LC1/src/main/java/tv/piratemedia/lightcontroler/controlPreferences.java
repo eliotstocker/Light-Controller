@@ -99,7 +99,7 @@ public class controlPreferences extends ActionBarActivity {
                 providers.setEntryValues(values);
 
                 //Log.d("providers", providers.getValue());
-                if(providers.getValue() == null || providers.getValue().equals(null)) {
+                if(providers.getValue() == null) {
                     providers.setValueIndex(0);
                 }
 
