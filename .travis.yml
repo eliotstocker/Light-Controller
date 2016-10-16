@@ -11,7 +11,6 @@ android:
     - extra-google-google_play_services
     - extra-android-support
     - extra-android-m2repository
-    - sys-img-x86-android-24
   licenses:
     - android-sdk-license-.+
 
@@ -27,11 +26,6 @@ before_script:
   - sudo service riak stop || true
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
-
-  - echo no | android create avd --force -n test -t android-24 --abi x86
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -54,5 +48,8 @@ deploy:
   on:
     repo: eliotstocker/Light-Controller
     tags: true
+
+script:
+  - ./gradlew check
 
 after_failure: "cat $TRAVIS_BUILD_DIR/LC1/build/outputs/lint-results-debug.xml"
