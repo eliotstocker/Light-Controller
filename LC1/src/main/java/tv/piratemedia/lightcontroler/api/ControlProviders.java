@@ -13,6 +13,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,10 +34,10 @@ public class ControlProviders {
         intent.setAction(PROVIDER_SELECT_ACTION);
         List<ResolveInfo> infos = pm.queryBroadcastReceivers(intent, PackageManager.GET_RESOLVED_FILTER|PackageManager.GET_META_DATA);
 
-        Provider[] list = new Provider[infos.size()];
+        List<Provider> list = new ArrayList<>();
         int i = 0;
         for (ResolveInfo info : infos) {
-            list[i] = new Provider(info.loadLabel(pm).toString(), info.activityInfo.packageName, info.activityInfo.name.substring(info.activityInfo.packageName.length()));
+            Provider p = new Provider(info.loadLabel(pm).toString(), info.activityInfo.packageName, info.activityInfo.name.substring(info.activityInfo.packageName.length()));
             int XMLResource = info.activityInfo.metaData.getInt(PROVIDER_CAT);
             try {
                 XmlResourceParser xpp = pm.getResourcesForApplication(info.activityInfo.applicationInfo).getXml(XMLResource);
@@ -45,11 +46,12 @@ public class ControlProviders {
                 while (eventType != XmlPullParser.END_DOCUMENT)
                 {
                     if(eventType == XmlPullParser.START_TAG && xpp.getName().equals("control-provider")) {
-                        list[i].ColorBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorBrightnessStatefull", false);
-                        list[i].WhiteBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteBrightnessStatefull", false);
-                        list[i].ColorHasTemperature       = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorHasTemperature", false);
-                        list[i].ColorTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorTemperatureStatefull", false);
-                        list[i].WhiteTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteTemperatureStatefull", false);
+                        p.ColorBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorBrightnessStatefull", false);
+                        p.WhiteBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteBrightnessStatefull", false);
+                        p.ColorHasTemperature       = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorHasTemperature", false);
+                        p.ColorTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorTemperatureStatefull", false);
+                        p.WhiteTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteTemperatureStatefull", false);
+                        list.add(p);
                     }
                     eventType = xpp.next();
                 }
@@ -63,7 +65,7 @@ public class ControlProviders {
 
             i++;
         }
-        return list;
+        return (Provider[])list.toArray();
     }
 
     public static Provider getProvider(String pkg, Context context) {

@@ -53,6 +53,8 @@ script:
   - ./gradlew check
 
 notifications:
+  on_success: always
+  on_failure: always
   slack: piratemedia:$slack_api_key
 
 after_failure: "cat $TRAVIS_BUILD_DIR/LC1/build/outputs/lint-results-debug.xml"
