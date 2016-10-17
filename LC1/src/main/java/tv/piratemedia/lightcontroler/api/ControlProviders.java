@@ -1,5 +1,6 @@
 package tv.piratemedia.lightcontroler.api;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import tv.piratemedia.lightcontroler.controller;
 
 /**
  * Created by Eliot Stocker on 14/10/2016.
@@ -65,7 +69,7 @@ public class ControlProviders {
 
             i++;
         }
-        return (Provider[])list.toArray();
+        return list.toArray(new Provider[1]);
     }
 
     public static Provider getProvider(String pkg, Context context) {
@@ -141,7 +145,12 @@ public class ControlProviders {
         intent.setPackage(provider.Package);
         intent.addCategory(PROVIDER_CAT);
         intent.setAction(PROVIDER_CAT+"."+action);
-        intent.putExtra("app_id",  context.getPackageName());
+
+        Intent pii = new Intent(context, controller.class);
+        Random generator = new Random();
+        PendingIntent ver = PendingIntent.getActivity(context, generator.nextInt(), pii, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        intent.putExtra("app_ver",  ver);
         intent.putExtra("app_sig",  sig);
         if(Type != null) {
             intent.putExtra("type", Type);
