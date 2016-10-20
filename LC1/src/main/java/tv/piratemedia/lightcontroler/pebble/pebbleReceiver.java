@@ -15,6 +15,8 @@ import static tv.piratemedia.lightcontroler.Constants.WatchUUID;
 import org.json.JSONException;
 import static com.getpebble.android.kit.Constants.MSG_DATA;
 import static com.getpebble.android.kit.Constants.TRANSACTION_ID;
+
+import tv.piratemedia.lightcontroler.api.ControlProviders;
 import tv.piratemedia.lightcontroler.controlCommands;
 import tv.piratemedia.lightcontroler.controller;
 
@@ -100,15 +102,24 @@ public class pebbleReceiver extends BroadcastReceiver {
                     int cmd = cmdValue.intValue();
                     Log.d(TAG, "going to turn zone " + zone + " cmd " + cmd);
                     //Switch statement to see cmd (on/off) 0 = off, 1= on, then send the command to the controler with zone
+                    String type = ControlProviders.ZONE_TYPE_COLOR;
+                    if(zone > 4) {
+                        //white
+                        zone = zone - 4;
+                        if(zone > 8) {
+                            zone = 0;
+                        }
+                        type = ControlProviders.ZONE_TYPE_WHITE;
+                    }
                     switch (cmd) {
                         case 0:
                             //Turning off
-                            contCmd.LightsOff(zone);
+                            contCmd.LightsOff(type, zone);
                             contCmd.appState.setOnOff(zone, false);
                             break;
                         case 1:
                             //Turning on
-                            contCmd.LightsOn(zone);
+                            contCmd.LightsOn(type, zone);
                             contCmd.appState.setOnOff(zone, true);
                             break;
                     }

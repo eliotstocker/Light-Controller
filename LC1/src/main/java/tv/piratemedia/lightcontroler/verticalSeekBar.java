@@ -33,6 +33,13 @@ public class verticalSeekBar extends SeekBar {
         super(context, attrs, defStyle);
     }
 
+    private OnSeekBarChangeListener onChangeListener;
+    @Override
+    public void setOnSeekBarChangeListener(OnSeekBarChangeListener onChangeListener){
+        this.onChangeListener = onChangeListener;
+        super.setOnSeekBarChangeListener(onChangeListener);
+    }
+
     public verticalSeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -62,11 +69,16 @@ public class verticalSeekBar extends SeekBar {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                onChangeListener.onStartTrackingTouch(this);
+                break;
             case MotionEvent.ACTION_MOVE:
+                setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
+                onSizeChanged(getWidth(), getHeight(), 0, 0);
+                break;
             case MotionEvent.ACTION_UP:
                 setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
-
+                onChangeListener.onStopTrackingTouch(this);
                 break;
 
             case MotionEvent.ACTION_CANCEL:

@@ -26,6 +26,7 @@ import java.util.Locale;
 
 import tv.piratemedia.lightcontroler.Constants;
 import tv.piratemedia.lightcontroler.DataTypes.TaskerCommand;
+import tv.piratemedia.lightcontroler.api.ControlProviders;
 import tv.piratemedia.lightcontroler.bundle.BundleScrubber;
 import tv.piratemedia.lightcontroler.bundle.PluginBundleManager;
 import tv.piratemedia.lightcontroler.controlCommands;
@@ -86,20 +87,30 @@ public final class FireReceiver extends BroadcastReceiver
             }
             for (int i = in.length - 1; i >= 0; i--) {
                 TaskerCommand.TASKTYPE task = TaskerCommand.TASKTYPE.values()[Integer.parseInt(in[i][1])];
+                int zone = Integer.parseInt(in[i][0]);
+                String type = ControlProviders.ZONE_TYPE_COLOR;
+                if(zone > 4) {
+                    //white
+                    zone = zone - 4;
+                    if(zone > 8) {
+                        zone = 0;
+                    }
+                    type = ControlProviders.ZONE_TYPE_WHITE;
+                }
                 if (task == TaskerCommand.TASKTYPE.ON) {
-                    Controller.LightsOn(Integer.parseInt(in[i][0]));
+                    Controller.LightsOn(type, zone);
                 }
                 else if (task == TaskerCommand.TASKTYPE.OFF) {
-                    Controller.LightsOff(Integer.parseInt(in[i][0]));
+                    Controller.LightsOff(type, zone);
                 }
                 else if (task == TaskerCommand.TASKTYPE.WHITE) {
-                    Controller.setToWhite(Integer.parseInt(in[i][0]));
+                    Controller.setToWhite(type, zone);
                 }
                 else if (task == TaskerCommand.TASKTYPE.COLOR) {
-                    Controller.setColor(Integer.parseInt(in[i][0]), Integer.parseInt(in[i][2]));
+                    Controller.setColor(type, zone, Integer.parseInt(in[i][2]));
                 }
                 else if (task == TaskerCommand.TASKTYPE.BRIGHTNESS) {
-                    Controller.setBrightness(Integer.parseInt(in[i][0]), Integer.parseInt(in[i][2]));
+                    Controller.setBrightness(type, zone, Integer.parseInt(in[i][2]));
                 }
             }
         }

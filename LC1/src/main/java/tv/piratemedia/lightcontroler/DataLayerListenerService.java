@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import tv.piratemedia.lightcontroler.api.ControlProviders;
+
 /*
 Created by Harry Sibenaler (mrwhale)
 */
@@ -26,96 +28,96 @@ public class DataLayerListenerService extends WearableListenerService {
         switch (messageEvent.getPath()){
             case "/0":
                 if (!cmd.appState.getOnOff(5)) {
-                    cmd.LightsOn(5);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_WHITE, 1);
                     cmd.appState.setOnOff(5, true);
                     Log.d(TAG, "lights in w.zone 1 on");
                 }
                 else if (cmd.appState.getOnOff(5)){
-                    cmd.LightsOff(5);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_WHITE, 1);
                     cmd.appState.setOnOff(5, false);
                     Log.d(TAG, "lights in w.zone 1 off");
                 }
                 break;
             case "/1":
                 if (!cmd.appState.getOnOff(6)) {
-                    cmd.LightsOn(6);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_WHITE, 2);
                     cmd.appState.setOnOff(6, true);
                     Log.d(TAG, "lights in w.zone 2 on");
                 }
                 else if (cmd.appState.getOnOff(6)){
-                    cmd.LightsOff(6);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_WHITE, 2);
                     cmd.appState.setOnOff(6, false);
                     Log.d(TAG, "lights in w.zone 2 off");
                 }
                 break;
             case "/2":
                 if (!cmd.appState.getOnOff(7)) {
-                    cmd.LightsOn(7);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_WHITE, 3);
                     cmd.appState.setOnOff(7, true);
                     Log.d(TAG, "lights in w.zone 3 on");
                 }
                 else if (cmd.appState.getOnOff(7)){
-                    cmd.LightsOff(7);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_WHITE, 3);
                     cmd.appState.setOnOff(7, false);
                     Log.d(TAG, "lights in w.zone 3 off");
                 }
                 break;
             case "/3":
                 if (!cmd.appState.getOnOff(8)) {
-                    cmd.LightsOn(8);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_WHITE, 4);
                     cmd.appState.setOnOff(8, true);
                     Log.d(TAG, "lights in w.zone 4 on");
                 }
                 else if (cmd.appState.getOnOff(8)){
-                    cmd.LightsOff(8);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_WHITE, 4);
                     cmd.appState.setOnOff(8, false);
                     Log.d(TAG, "lights in w.zone 4 off");
                 }
                 break;
             case "/4":
                 if (!cmd.appState.getOnOff(1)) {
-                    cmd.LightsOn(1);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_COLOR, 1);
                     cmd.appState.setOnOff(1, true);
                     Log.d(TAG, "lights in rgbw zone 1 on");
                 }
                 else if (cmd.appState.getOnOff(1)){
-                    cmd.LightsOff(1);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_COLOR, 1);
                     cmd.appState.setOnOff(1, false);
                     Log.d(TAG, "lights in rgbw zone 1 off");
                 }
                 break;
             case "/5":
                 if (!cmd.appState.getOnOff(2)) {
-                    cmd.LightsOn(2);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_COLOR, 2);
                     cmd.appState.setOnOff(2, true);
                     Log.d(TAG, "lights in rgbw zone 2 on");
                 }
                 else if (cmd.appState.getOnOff(2)){
-                    cmd.LightsOff(2);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_COLOR, 2);
                     cmd.appState.setOnOff(2, false);
                     Log.d(TAG, "lights in rgbw zone 2 off");
                 }
                 break;
             case "/6":
                 if (!cmd.appState.getOnOff(3)) {
-                    cmd.LightsOn(3);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_COLOR, 3);
                     cmd.appState.setOnOff(3, true);
                     Log.d(TAG, "lights in rgbw zone 3 on");
                 }
                 else if (cmd.appState.getOnOff(3)){
-                    cmd.LightsOff(3);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_COLOR, 3);
                     cmd.appState.setOnOff(3, false);
                     Log.d(TAG, "lights in rgbw zone 3 off");
                 }
                 break;
             case "/7":
                 if (!cmd.appState.getOnOff(4)) {
-                    cmd.LightsOn(4);
+                    cmd.LightsOn(ControlProviders.ZONE_TYPE_COLOR, 4);
                     cmd.appState.setOnOff(4, true);
                     Log.d(TAG, "lights in rgbw zone 4 on");
                 }
                 else if (cmd.appState.getOnOff(4)){
-                    cmd.LightsOff(4);
+                    cmd.LightsOff(ControlProviders.ZONE_TYPE_COLOR, 4);
                     cmd.appState.setOnOff(4, false);
                     Log.d(TAG, "lights in rgbw zone 4 off");
                 }

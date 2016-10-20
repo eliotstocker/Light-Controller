@@ -40,6 +40,8 @@ import android.widget.RemoteViews;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import tv.piratemedia.lightcontroler.api.ControlProviders;
+
 public class controlWidgetProvider extends AppWidgetProvider {
 
     private static final int LIGHT_ON = 0;
@@ -123,21 +125,22 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
                     remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
                 } else {
-                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(0, context, true));
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,0, context, true));
                 }
-                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(1,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(2,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(3,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(4,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,1,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,2,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,3,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,4,context,true));
 
                 if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
                     remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
                 } else {
-                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(0, context, false));
-                }                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(1,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(2,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(3,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(4,context,false));
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,0, context, false));
+                }
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,1,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,2,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,3,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(ControlProviders.ZONE_TYPE_COLOR,4,context,false));
             } else {
                 remoteViews.setTextViewText(R.id.headzone1, prefs.getString("pref_zone5", context.getString(R.string.Zone1)));
                 remoteViews.setTextViewText(R.id.headzone2, prefs.getString("pref_zone6", context.getString(R.string.Zone2)));
@@ -147,22 +150,22 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
                     remoteViews.setOnClickPendingIntent(R.id.ig, createSuperPendingIntent(context, true));
                 } else {
-                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(9, context, true));
+                    remoteViews.setOnClickPendingIntent(R.id.ig, createPendingIntent(ControlProviders.ZONE_TYPE_WHITE, 0, context, true));
                 }
-                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(5,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(6,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(7,context,true));
-                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(8,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i1,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,1,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i2,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,2,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i3,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,3,context,true));
+                remoteViews.setOnClickPendingIntent(R.id.i4,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,4,context,true));
 
                 if(prefs.getBoolean("widget_" + widgetId + "_super", false)) {
                     remoteViews.setOnClickPendingIntent(R.id.og, createSuperPendingIntent(context, false));
                 } else {
-                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(9, context, false));
+                    remoteViews.setOnClickPendingIntent(R.id.og, createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,0, context, false));
                 }
-                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(5,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(6,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(7,context,false));
-                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(8,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o1,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,1,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o2,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,2,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o3,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,3,context,false));
+                remoteViews.setOnClickPendingIntent(R.id.o4,createPendingIntent(ControlProviders.ZONE_TYPE_WHITE,4,context,false));
             }
 
 
@@ -196,7 +199,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public PendingIntent createPendingIntent(int i, Context cont, boolean on) {
+    public PendingIntent createPendingIntent(String Type, int i, Context cont, boolean on) {
         Intent launchIntent = new Intent();
         launchIntent.setClass(cont, controlWidgetProvider.class);
         launchIntent.addCategory(Intent.CATEGORY_ALTERNATIVE);
@@ -206,6 +209,7 @@ public class controlWidgetProvider extends AppWidgetProvider {
             launchIntent.setData(Uri.parse(i + ":" + LIGHT_OFF));
         }
         launchIntent.putExtra("light_zone",i);
+        launchIntent.putExtra("light_type",Type);
         PendingIntent pi = PendingIntent.getBroadcast(cont, 0 /* no requestCode */,
                 launchIntent, 0 /* no flags */);
         return pi;
@@ -260,9 +264,9 @@ public class controlWidgetProvider extends AppWidgetProvider {
                 } else {
                     int zone = Integer.parseInt(data.getScheme());
                     if (buttonId == LIGHT_ON) {
-                        Controller.LightsOn(zone);
+                        Controller.LightsOn(intent.getStringExtra("light_type"), zone);
                     } else if (buttonId == LIGHT_OFF) {
-                        Controller.LightsOff(zone);
+                        Controller.LightsOff(intent.getStringExtra("light_type"), zone);
                     }
                 }
             } else {

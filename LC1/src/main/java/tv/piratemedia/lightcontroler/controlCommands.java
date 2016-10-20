@@ -28,6 +28,8 @@ import tv.piratemedia.lightcontroler.api.Provider;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -46,6 +48,7 @@ public class controlCommands {
     public SaveState appState = null;
 
     private Provider provider = null;
+    private MiiLightProvider mlp = null;
 
     public controlCommands(Context context, Handler handler) {
         UDPC = new UDPConnection(context, handler);
@@ -54,6 +57,9 @@ public class controlCommands {
         appState = new SaveState(context);
 
         provider = ControlProviders.getCurrentProvider(context);
+        if(provider == null) {
+            mlp = new MiiLightProvider(context, handler);
+        }
     }
 
     public void killUDPC() {
@@ -123,65 +129,11 @@ public class controlCommands {
         }
     }
 
-    public void LightsOn(int zone) {
+    public void LightsOn(String Type, int zone) {
         if(provider != null) {
-            String Type = ControlProviders.ZONE_TYPE_COLOR;
-            if(zone > 4) {
-                Type = ControlProviders.ZONE_TYPE_WHITE;
-                zone -= 4;
-                if(zone > 4) {
-                    zone = 0;
-                }
-            }
             ControlProviders.sendCommand(provider, "LightOn", Type, zone, mContext);
         } else {
-            byte[] messageBA = new byte[3];
-            switch (zone) {
-                case 0:
-                    messageBA[0] = 66;
-                    break;
-                case 1:
-                    messageBA[0] = 69;
-                    break;
-                case 2:
-                    messageBA[0] = 71;
-                    break;
-                case 3:
-                    messageBA[0] = 73;
-                    break;
-                case 4:
-                    messageBA[0] = 75;
-                    break;
-                case 5:
-                    messageBA[0] = 56;
-                    break;
-                case 6:
-                    messageBA[0] = 61;
-                    break;
-                case 7:
-                    messageBA[0] = 55;
-                    break;
-                case 8:
-                    messageBA[0] = 50;
-                    break;
-                case 9:
-                    messageBA[0] = 53;
-                    break;
-            }
-            messageBA[1] = 0;
-            messageBA[2] = 85;
-            LastOn = zone;
-            try {
-                UDPC.sendMessage(messageBA);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //add alert to tell user we cant send command
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            mlp.sendCommand("LightOn", Type, zone);
         }
         appState.setOnOff(zone, true);
     }
@@ -190,69 +142,17 @@ public class controlCommands {
         if(provider != null) {
             ControlProviders.sendCommand(provider, "GlobalOn", mContext);
         } else {
-            LightsOn(0);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            LightsOn(9);
+            mlp.sendCommand("GlobalOn");
         }
+        appState.setOnOff(0, true);
+        appState.setOnOff(9, true);
     }
 
-    public void LightsOff(int zone) {
+    public void LightsOff(String Type, int zone) {
         if(provider != null) {
-            String Type = ControlProviders.ZONE_TYPE_COLOR;
-            if(zone > 4) {
-                Type = ControlProviders.ZONE_TYPE_WHITE;
-                zone -= 4;
-                if(zone > 4) {
-                    zone = 0;
-                }
-            }
             ControlProviders.sendCommand(provider, "LightOff", Type, zone, mContext);
         } else {
-            byte[] messageBA = new byte[3];
-            switch (zone) {
-                case 0:
-                    messageBA[0] = 65;
-                    break;
-                case 1:
-                    messageBA[0] = 70;
-                    break;
-                case 2:
-                    messageBA[0] = 72;
-                    break;
-                case 3:
-                    messageBA[0] = 74;
-                    break;
-                case 4:
-                    messageBA[0] = 76;
-                    break;
-                case 5:
-                    messageBA[0] = 59;
-                    break;
-                case 6:
-                    messageBA[0] = 51;
-                    break;
-                case 7:
-                    messageBA[0] = 58;
-                    break;
-                case 8:
-                    messageBA[0] = 54;
-                    break;
-                case 9:
-                    messageBA[0] = 57;
-                    break;
-            }
-            messageBA[1] = 0;
-            messageBA[2] = 85;
-            try {
-                UDPC.sendMessage(messageBA);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //add alert to tell user we cant send command
-            }
+            mlp.sendCommand("LightOff", Type, zone);
         }
         appState.setOnOff(zone, false);
     }
@@ -261,236 +161,92 @@ public class controlCommands {
         if(provider != null) {
             ControlProviders.sendCommand(provider, "GlobalOff", mContext);
         } else {
-            LightsOff(0);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            LightsOff(9);
+            mlp.sendCommand("GlobalOff");
         }
+        appState.setOnOff(0, false);
+        appState.setOnOff(9, false);
     }
 
-    public void setToWhite(int zone) {
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 0:
-                messageBA[0] = (byte)194;
-                break;
-            case 1:
-                messageBA[0] = (byte)197;
-                break;
-            case 2:
-                messageBA[0] = (byte)199;
-                break;
-            case 3:
-                messageBA[0] = (byte)201;
-                break;
-            case 4:
-                messageBA[0] = (byte)203;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setToWhite(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "LightWhite", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("LightWhite", Type, zone);
         }
         appState.removeColor(zone);
     }
 
-    public void setBrightnessUpOne() {
-        byte[] messageBA = new byte[3];
-        messageBA[0] = 60;
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setBrightnessUpOne(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "IncreaseBrightness", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("IncreaseBrightness", Type, zone);
         }
     }
 
-    public void setBrightnessDownOne() {
-        byte[] messageBA = new byte[3];
-        messageBA[0] = 52;
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setBrightnessDownOne(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "DecreaseBrightness", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("DecreaseBrightness", Type, zone);
         }
     }
 
-    public void setWarmthUpOne() {
-        byte[] messageBA = new byte[3];
-        messageBA[0] = 62;
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setWarmthUpOne(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "IncreaseTemperature", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("IncreaseTemperature", Type, zone);
         }
     }
 
-    public void setWarmthDownOne() {
-        byte[] messageBA = new byte[3];
-        messageBA[0] = 63;
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setWarmthDownOne(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "DecreaseTemperature", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("DecreaseTemperature", Type, zone);
         }
     }
 
-    public void setToFull(int zone) {
-        LightsOn(zone);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 5:
-                messageBA[0] = (byte)184;
-                break;
-            case 6:
-                messageBA[0] = (byte)189;
-                break;
-            case 7:
-                messageBA[0] = (byte)183;
-                break;
-            case 8:
-                messageBA[0] = (byte)178;
-                break;
-            case 9:
-                messageBA[0] = (byte)181;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setToFull(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "LightFull", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("LightFull", Type, zone);
         }
     }
 
-    public void setColorToNight(int zone) {
-        LightsOff(zone);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 0:
-                    messageBA[0] = (byte)193;
-                    break;
-            case 1:
-                    messageBA[0] = (byte)198;
-                    break;
-            case 2:
-                    messageBA[0] = (byte)200;
-                    break;
-            case 3:
-                    messageBA[0] = (byte)202;
-                    break;
-            case 4:
-                    messageBA[0] = (byte)204;
-                    break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
-    }
-    public void setToNight(int zone) {
-        LightsOn(zone);
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        byte[] messageBA = new byte[3];
-        switch(zone) {
-            case 5:
-                messageBA[0] = (byte)187;
-                break;
-            case 6:
-                messageBA[0] = (byte)179;
-                break;
-            case 7:
-                messageBA[0] = (byte)186;
-                break;
-            case 8:
-                messageBA[0] = (byte)182;
-                break;
-            case 9:
-                messageBA[0] = (byte)185;
-                break;
-        }
-        messageBA[1] = 0;
-        messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
+    public void setToNight(String Type, int zone) {
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "LightNight", Type, zone, mContext);
+        } else {
+            mlp.sendCommand("LightNight", Type, zone);
         }
     }
 
-    private int[] values = {2,3,4,5,8,9,10,11,13,14,15,16,17,18,19,20,21,23,24,25};
-    private int LastBrightness = 20;
-    private int LastZone = 0;
-    private boolean finalSend = false;
-    public boolean touching = false;
-    public void setBrightness(int zoneid, int brightness) {
-        if(brightness >= values.length) {
-            brightness = values.length - 1;
+    public void setBrightness(String Type, int zone, float brightness) {
+        if(brightness > 1f) {
+            brightness = 1f;
         }
-        if(brightness < 0) {
-            brightness = 0;
+        if(brightness < 0f) {
+            brightness = 0f;
         }
+        Map<String, Object> data = new HashMap<>();
+        data.put("value", brightness);
         if(!sleeping) {
-            LightsOn(zoneid);
-            byte[] messageBA = new byte[3];
-            messageBA[0] = 78;
-            messageBA[1] = (byte)(values[brightness]);
-            messageBA[2] = 85;
-            try {
-                UDPC.sendMessage(messageBA);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //add alert to tell user we cant send command
-            }
-            appState.setBrighness(zoneid, brightness);
-            if(finalSend) {
-                finalSend = false;
+            if(provider != null) {
+                ControlProviders.sendCommand(provider, "Brightness", Type, zone, data, mContext);
             } else {
-                sleeping = true;
-                startTimeout();
+                mlp.sendCommand("Brightness", Type, zone, data);
             }
+            appState.setBrighness(zone, brightness);
+            sleeping = true;
+            startTimeout();
         }
-        LastBrightness = brightness;
-        LastZone = zoneid;
+    }
+
+    public void finishBrightness(String Type, int zone, float brightness) {
+        setBrightness(Type, zone, brightness);
     }
 
     public void startTimeout() {
@@ -501,10 +257,6 @@ public class controlCommands {
                 try {
                     sleep(100);
                     sleeping = false;
-                    if(!touching) {
-                        finalSend = true;
-                        setBrightness(LastZone, LastBrightness);
-                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -513,40 +265,23 @@ public class controlCommands {
         thread.start();
     }
 
-    public void setColor(int zoneid, int color) {
+    public void setColor(String Type, int zone, int color) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("value", color);
         if(!sleeping) {
-            float[] colors = new float[3];
-            Color.colorToHSV(color, colors);
-            Float deg = (float) Math.toRadians(-colors[0]);
-            Float dec = (deg/((float)Math.PI*2f))*255f;
-            if(LastOn != zoneid) {
-                LightsOn(zoneid);
+            if(provider != null) {
+                ControlProviders.sendCommand(provider, "LightColor", Type, zone, data, mContext);
+            } else {
+                mlp.sendCommand("LightColor", Type, zone, data);
             }
-            //rotation compensation
-            dec = dec + 175;
-            if(dec > 255) {
-                dec = dec - 255;
-            }
-
-            byte[] messageBA = new byte[3];
-            messageBA[0] = 64;
-            messageBA[1] = (byte)dec.intValue();
-            messageBA[2] = 85;
-            try {
-                UDPC.sendMessage(messageBA);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //add alert to tell user we cant send command
-            }
-            appState.setColor(zoneid, color);
-            touching = true;
+            appState.setColor(zone, color);
             sleeping = true;
             startTimeout();
         }
     }
 
     public void toggleDiscoMode(int zoneid) {
-        LightsOn(zoneid);
+        LightsOn(ControlProviders.ZONE_TYPE_COLOR, zoneid);
         byte[] messageBA = new byte[3];
         messageBA[0] = 77;
         messageBA[1] = 0;
@@ -619,7 +354,7 @@ public class controlCommands {
                         newColor += "00";
 
                         try {
-                            setColor(zone, Color.parseColor(newColor));
+                            setColor(ControlProviders.ZONE_TYPE_COLOR, zone, Color.parseColor(newColor));
                         } catch(IllegalArgumentException e) {
 
                         }
@@ -671,7 +406,7 @@ public class controlCommands {
                             if(i > 3) {
                                 i = 0;
                             }
-                            setColor(zone,strobeColors[i]);
+                            setColor(ControlProviders.ZONE_TYPE_COLOR, zone,strobeColors[i]);
                         }
                         TimeUnit.MILLISECONDS.sleep(50);
                     }

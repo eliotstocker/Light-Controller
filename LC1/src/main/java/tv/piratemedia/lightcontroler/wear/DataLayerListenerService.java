@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.piratemedia.lightcontroler.R;
+import tv.piratemedia.lightcontroler.api.ControlProviders;
 import tv.piratemedia.lightcontroler.controlCommands;
 import tv.piratemedia.lightcontroler.controller;
 
@@ -93,40 +94,51 @@ public class DataLayerListenerService extends WearableListenerService {
                 case "on":
                     if(zone > 4) {
                         //white
-                        cmd.LightsOn(zone);
+                        zone = zone - 4;
+                        if(zone > 8) {
+                            zone = 0;
+                        }
+                        cmd.LightsOn(ControlProviders.ZONE_TYPE_WHITE, zone);
                         cmd.appState.setOnOff(zone, true);
                     } else {
                         //color
-                        cmd.LightsOn(zone);
+                        cmd.LightsOn(ControlProviders.ZONE_TYPE_COLOR, zone);
                         cmd.appState.setOnOff(zone, true);
                     }
                     break;
                 case "off":
                     if(zone > 4) {
                         //white
-                        cmd.LightsOff(zone);
+                        zone = zone - 4;
+                        if(zone > 8) {
+                            zone = 0;
+                        }
+                        cmd.LightsOff(ControlProviders.ZONE_TYPE_WHITE, zone);
                         cmd.appState.setOnOff(zone, false);
                     } else {
                         //color
-                        cmd.LightsOff(zone);
+                        cmd.LightsOff(ControlProviders.ZONE_TYPE_COLOR, zone);
                         cmd.appState.setOnOff(zone, false);
                     }
                     break;
                 case "level":
                     cmd.appState.setOnOff(zone, true);
                     if(zone > 4) {
-                        cmd.LightsOn(zone);
+                        zone = zone - 4;
+                        if(zone > 8) {
+                            zone = 0;
+                        }
                         if(Integer.parseInt(path.getPathSegments().get(2)) == 1) {
-                            cmd.setBrightnessUpOne();
+                            cmd.setBrightnessUpOne(ControlProviders.ZONE_TYPE_WHITE, zone);
                             Log.d("wear", "up one");
                         } else if(Integer.parseInt(path.getPathSegments().get(2)) == -1) {
-                            cmd.setBrightnessDownOne();
+                            cmd.setBrightnessDownOne(ControlProviders.ZONE_TYPE_WHITE, zone);
                             Log.d("wear", "down one");
                         } else {
                             Log.d("wear", "unknown level: "+path.getPathSegments().get(2));
                         }
                     } else {
-                        cmd.setBrightness(zone, Integer.parseInt(path.getPathSegments().get(2)));
+                        cmd.setBrightness(ControlProviders.ZONE_TYPE_COLOR, zone, Integer.parseInt(path.getPathSegments().get(2)));
                         Log.d("wear", "set brightness for color");
                     }
             }

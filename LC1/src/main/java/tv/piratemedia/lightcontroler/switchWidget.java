@@ -13,6 +13,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import tv.piratemedia.lightcontroler.api.ControlProviders;
+
 
 /**
  * Implementation of App Widget functionality.
@@ -148,10 +150,19 @@ public class switchWidget extends AppWidgetProvider {
             Uri data = intent.getData();
             int buttonId = Integer.parseInt(data.getSchemeSpecificPart());
             int zone = Integer.parseInt(data.getScheme());
+            String type = ControlProviders.ZONE_TYPE_COLOR;
+            if(zone > 4) {
+                //white
+                zone = zone - 4;
+                if(zone > 8) {
+                    zone = 0;
+                }
+                type = ControlProviders.ZONE_TYPE_WHITE;
+            }
             if (buttonId == LIGHT_ON) {
-                Controller.LightsOn(zone);
+                Controller.LightsOn(type, zone);
             } else if (buttonId == LIGHT_OFF) {
-                Controller.LightsOff(zone);
+                Controller.LightsOff(type, zone);
             }
         } else {
             //do nothing

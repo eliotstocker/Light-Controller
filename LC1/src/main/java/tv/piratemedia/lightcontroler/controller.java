@@ -88,6 +88,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
+
+import tv.piratemedia.lightcontroler.api.ControlProviders;
 import tv.piratemedia.lightcontroler.wear.DataLayerListenerService;
 import tv.piratemedia.lightcontroler.pebble.pebbleSender;
 
@@ -684,27 +686,27 @@ public class controller extends ActionBarActivity {
                     return z4;
                 case 5:
                     if(G2 == null) {
-                        G2 = WhiteFragment.newInstance(9);
+                        G2 = WhiteFragment.newInstance(0);
                     }
                     return G2;
                 case 6:
                     if(z5 == null) {
-                        z5 = WhiteFragment.newInstance(5);
+                        z5 = WhiteFragment.newInstance(1);
                     }
                     return z5;
                 case 7:
                     if(z6 == null) {
-                        z6 = WhiteFragment.newInstance(6);
+                        z6 = WhiteFragment.newInstance(2);
                     }
                     return z6;
                 case 8:
                     if(z7 == null) {
-                        z7 = WhiteFragment.newInstance(7);
+                        z7 = WhiteFragment.newInstance(3);
                     }
                     return z7;
                 case 9:
                     if(z8 == null) {
-                        z8 = WhiteFragment.newInstance(8);
+                        z8 = WhiteFragment.newInstance(4);
                     }
                     return z8;
                 default:
@@ -816,7 +818,7 @@ public class controller extends ActionBarActivity {
 
                 //Return State
                 //io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
-                brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
+                brightness.setProgress((int) (((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)) * 100f));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
                     color.setColor(savedColor);
@@ -859,7 +861,7 @@ public class controller extends ActionBarActivity {
                     @Override
                     public void onColorChanged(int i) {
                         if(!disabled) {
-                            Controller.setColor(getArguments().getInt(ARG_SECTION_NUMBER), i);
+                            Controller.setColor(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER), i);
                             ((controller) getActivity()).setActionbarColor(i);
                             /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                             io.setChecked(true);*/
@@ -870,32 +872,31 @@ public class controller extends ActionBarActivity {
                 brightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        Controller.setBrightness(getArguments().getInt(ARG_SECTION_NUMBER), progress);
+                        Controller.setBrightness(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER), (float)progress / 100f);
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
                     }
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = true;
                     }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        Controller.touching = false;
+                        Controller.finishBrightness(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER), (float)seekBar.getProgress() / 100f);
                     }
                 });
 
                 on.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.LightsOn(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
                 off.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.LightsOff(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
                 /*io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -939,7 +940,7 @@ public class controller extends ActionBarActivity {
                 white.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToWhite(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToWhite(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
                         ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
@@ -949,7 +950,7 @@ public class controller extends ActionBarActivity {
                 night.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setColorToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToNight(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
 
@@ -1076,7 +1077,7 @@ public class controller extends ActionBarActivity {
 
                 //Return State
                 //io.setChecked(((controller)getActivity()).appState.getOnOff(getArguments().getInt(ARG_SECTION_NUMBER)));
-                brightness.setProgress(((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)));
+                brightness.setProgress((int) (((controller)getActivity()).appState.getBrightness(getArguments().getInt(ARG_SECTION_NUMBER)) * 100));
                 int savedColor = ((controller)getActivity()).appState.getColor(getArguments().getInt(ARG_SECTION_NUMBER));
                 if(savedColor < 0) {
                     ((controller) getActivity()).setActionbarColor(getResources().getColor(R.color.colorPrimary));
@@ -1094,11 +1095,11 @@ public class controller extends ActionBarActivity {
                             }
                             if (progress > BrightnessCache) {
                                 for (int i = progress; i > BrightnessCache; i--) {
-                                    Controller.setBrightnessUpOne();
+                                    Controller.setBrightnessUpOne(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                                 }
                             } else if (progress < BrightnessCache) {
                                 for (int i = progress; i < BrightnessCache; i++) {
-                                    Controller.setBrightnessDownOne();
+                                    Controller.setBrightnessDownOne(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                                 }
                             }
 
@@ -1122,7 +1123,7 @@ public class controller extends ActionBarActivity {
                     public void onStartTrackingTouch(CircularSeekBar seekBar) {
                         brightnessvalue.setAlpha(1.0f);
                         BrightnessCache = 11;
-                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        //Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                         brightnessTouching = true;
                     }
                 });
@@ -1140,11 +1141,11 @@ public class controller extends ActionBarActivity {
                             }
                             if (progress > WarmthCache) {
                                 for (int i = progress; i > WarmthCache; i--) {
-                                    Controller.setWarmthUpOne();
+                                    Controller.setWarmthUpOne(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                                 }
                             } else if (progress < WarmthCache) {
                                 for (int i = progress; i < WarmthCache; i++) {
-                                    Controller.setWarmthDownOne();
+                                    Controller.setWarmthDownOne(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                                 }
                             }
 
@@ -1168,7 +1169,7 @@ public class controller extends ActionBarActivity {
                     public void onStartTrackingTouch(CircularSeekBar seekBar) {
                         warmthvalue.setAlpha(1.0f);
                         WarmthCache = 11;
-                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        //Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
                         warmthTouching = true;
                     }
                 });
@@ -1176,13 +1177,13 @@ public class controller extends ActionBarActivity {
                 on.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.LightsOn(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.LightsOn(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
                 off.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.LightsOff(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.LightsOff(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                     }
                 });
                 /*io.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -1199,7 +1200,7 @@ public class controller extends ActionBarActivity {
                 full.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToFull(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToFull(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
                     }
@@ -1208,7 +1209,7 @@ public class controller extends ActionBarActivity {
                 night.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Controller.setToNight(getArguments().getInt(ARG_SECTION_NUMBER));
+                        Controller.setToNight(ControlProviders.ZONE_TYPE_WHITE, getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
                     }

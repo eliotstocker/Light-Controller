@@ -23,12 +23,16 @@ public class SaveState {
         return State.getBoolean(Zone+"-power", false);
     }
 
-    public void setBrighness(int Zone, int level) {
-        State.edit().putInt(Zone+"-brightness", level).apply();
+    public void setBrighness(int Zone, float level) {
+        State.edit().putFloat(Zone+"-brightness", level).apply();
     }
 
-    public int getBrightness(int Zone) {
-        return State.getInt(Zone+"-brightness", 30);
+    public float getBrightness(int Zone) {
+        try {
+            return State.getFloat(Zone + "-brightness", 1f);
+        } catch(Exception e) {
+            return (float)State.getInt(Zone + "-brightness", 20) / 20f;
+        }
     }
 
     public void setColor(int Zone, int Color) {

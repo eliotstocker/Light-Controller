@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import tv.piratemedia.lightcontroler.controller;
@@ -25,7 +26,7 @@ import tv.piratemedia.lightcontroler.controller;
  */
 public class ControlProviders {
     private static final String PROVIDER_CAT = "tv.piratemedia.lightcontroler.provider";
-    private static final String PROVIDER_SELECT_ACTION = "tv.piratemedia.lightcontroler.provider.Select";
+    private static final String PROVIDER_LIGHTON_ACTION = "tv.piratemedia.lightcontroler.provider.LightOn";
 
     public static final String ZONE_TYPE_COLOR   = "color";
     public static final String ZONE_TYPE_WHITE   = "white";
@@ -35,7 +36,7 @@ public class ControlProviders {
         final PackageManager pm = context.getPackageManager();
         Intent intent = new Intent();
         intent.addCategory(PROVIDER_CAT);
-        intent.setAction(PROVIDER_SELECT_ACTION);
+        intent.setAction(PROVIDER_LIGHTON_ACTION);
         List<ResolveInfo> infos = pm.queryBroadcastReceivers(intent, PackageManager.GET_RESOLVED_FILTER|PackageManager.GET_META_DATA);
 
         List<Provider> list = new ArrayList<>();
@@ -77,7 +78,7 @@ public class ControlProviders {
         Intent intent = new Intent();
         intent.setPackage(pkg);
         intent.addCategory(PROVIDER_CAT);
-        intent.setAction(PROVIDER_SELECT_ACTION);
+        intent.setAction(PROVIDER_LIGHTON_ACTION);
         List<ResolveInfo> infos = pm.queryBroadcastReceivers(intent, PackageManager.GET_RESOLVED_FILTER|PackageManager.GET_META_DATA);
 
         ResolveInfo info = infos.get(0);
@@ -121,10 +122,14 @@ public class ControlProviders {
     }
 
     public static void sendCommand(Provider provider, String action, Context context) {
-        sendCommand(provider, action, null, -1, context);
+        sendCommand(provider, action, null, -1, null, context);
     }
 
     public static void sendCommand(Provider provider, String action, String Type, int Zone, Context context) {
+        sendCommand(provider, action, Type, Zone, null, context);
+    }
+
+    public static void sendCommand(Provider provider, String action, String Type, int Zone, Map<String,Object> data, Context context) {
         final PackageManager pm = context.getPackageManager();
         Signature[] signs = null;
         try {
@@ -159,8 +164,27 @@ public class ControlProviders {
             intent.putExtra("zone", Zone);
         }
 
-        Log.d("SendIntent", "app_id: "+context.getPackageName()+" app_sig: "+sig);
-        Log.d("SendIntent", "action: "+PROVIDER_CAT+"."+action+" Category: "+PROVIDER_CAT+" Package: "+provider.Package);
+        if(data != null) {
+            for(String k : data.keySet()) {
+                switch(data.get(k).getClass().getName()) {
+                    case "java.lang.Float":
+                        intent.putExtra(k, (Float) data.get(k));
+                        break;
+                    case "java.lang.Integer":
+                        intent.putExtra(k, (Integer) data.get(k));
+                        break;
+                    case "java.lang.String":
+                        intent.putExtra(k, (String) data.get(k));
+                        break;
+                    case "java.lang.Boolean":
+                        intent.putExtra(k, (Boolean) data.get(k));
+                        break;
+                    default:
+                        Log.d("IntentExtras", "Sending unknown data type: " + data.get(k).getClass().getName());
+                }
+            }
+        }
+
         context.sendBroadcast(intent);
     }
 }
