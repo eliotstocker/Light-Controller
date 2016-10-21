@@ -52,7 +52,7 @@ deploy:
     tags: true
 
 script:
-  - ./gradlew check
+  - ./gradlew check assembleRelease
 
 notifications:
   on_success: always
