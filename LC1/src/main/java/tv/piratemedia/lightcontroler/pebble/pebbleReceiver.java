@@ -105,9 +105,10 @@ public class pebbleReceiver extends BroadcastReceiver {
                     String type = ControlProviders.ZONE_TYPE_COLOR;
                     if(zone > 4) {
                         //white
-                        zone = zone - 4;
                         if(zone > 8) {
                             zone = 0;
+                        } else {
+                            zone = zone - 4;
                         }
                         type = ControlProviders.ZONE_TYPE_WHITE;
                     }
