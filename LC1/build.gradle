@@ -60,4 +60,5 @@ dependencies {
     }
     compile project(':circularseekbar')
     compile 'com.heinrichreimersoftware.materialdrawer:library:1.4.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }
