@@ -8,9 +8,9 @@ android {
         applicationId "tv.piratemedia.lightcontroler"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1713
+        versionCode 1714
         multiDexEnabled true
-        versionName "1.8.0 Beta 2"
+        versionName "1.8.0 Beta 3"
     }
 
     if ( project.rootProject.file('signing.properties').isFile() ) {
