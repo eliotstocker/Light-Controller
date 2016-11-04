@@ -146,6 +146,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".zoneSetupWizard"
+            android:label="Setup Wizard"
+            android:theme="@style/Theme.AppCompat.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".zoneSetup"
+            android:label="Zone Setup"
+            android:theme="@style/Theme.AppCompat.Light">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".api.APIPermissionManager"
             android:label="Permission Manager"
             android:theme="@style/LightController">

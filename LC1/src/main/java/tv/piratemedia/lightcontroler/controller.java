@@ -326,7 +326,7 @@ public class controller extends ActionBarActivity {
         } else {
 
             final ViewPager pager = (ViewPager) findViewById(R.id.pager);
-            pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this));
+            pager.setAdapter(new ControllerPager(getSupportFragmentManager(), this, this));
 
             tabs = (PagerSlidingTabStrip) findViewById(R.id.pager_title_strip);
             tabs.setViewPager(pager);
@@ -647,10 +647,14 @@ public class controller extends ActionBarActivity {
         Fragment z7 = null;
         Fragment z8 = null;
         private controller mThis;
+        private SharedPreferences prefs;
+        private Context context;
 
-        public ControllerPager(FragmentManager fm, controller t) {
+        public ControllerPager(FragmentManager fm, controller t, Context context) {
             super(fm);
+            prefs = PreferenceManager.getDefaultSharedPreferences(context);
             mThis = t;
+            this.context = context;
         }
 
         @Override
@@ -714,6 +718,41 @@ public class controller extends ActionBarActivity {
                         G1 = RGBWFragment.newInstance(0);
                     }
                     return G1;
+            }
+        }
+
+        public void setupZone(int zone) {
+            Intent i = new Intent();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setComponent(new ComponentName(context.getPackageName(), zoneSetup.class.getCanonicalName()));
+            int z = zone;
+            if(z > 4) {
+                intent.putExtra("type", "white");
+                if(z > 8) {
+                    z = 0;
+                } else {
+                    z -= 4;
+                }
+            } else {
+                intent.putExtra("type", "color");
+            }
+            intent.putExtra("zone", z);
+            intent.putExtra("index", zone);
+            context.startActivity(intent);
+        }
+
+        public int getIndex(String type, int Zone) {
+            switch(type) {
+                case "color":
+                    return Zone;
+                case "white":
+                    int r = Zone - 4;
+                    if(r > 4) {
+                        r = 0;
+                    }
+                    return r;
+                default:
+                    return -1;
             }
         }
 
