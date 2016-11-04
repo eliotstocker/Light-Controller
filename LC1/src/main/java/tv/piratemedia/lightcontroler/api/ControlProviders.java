@@ -40,7 +40,6 @@ public class ControlProviders {
         List<ResolveInfo> infos = pm.queryBroadcastReceivers(intent, PackageManager.GET_RESOLVED_FILTER|PackageManager.GET_META_DATA);
 
         List<Provider> list = new ArrayList<>();
-        int i = 0;
         for (ResolveInfo info : infos) {
             Provider p = new Provider(info.loadLabel(pm).toString(), info.activityInfo.packageName, info.activityInfo.name.substring(info.activityInfo.packageName.length()));
             int XMLResource = info.activityInfo.metaData.getInt(PROVIDER_CAT);
@@ -67,8 +66,9 @@ public class ControlProviders {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            i++;
+        }
+        if(list.size() < 1) {
+            return new Provider[0];
         }
         return list.toArray(new Provider[1]);
     }
