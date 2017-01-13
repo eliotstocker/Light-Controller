@@ -66,12 +66,7 @@ public class MiiLightProvider {
         messageBA[1] = 0;
         messageBA[2] = 85;
         lastOn = Zone;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO: add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -104,28 +99,23 @@ public class MiiLightProvider {
                 case 0:
                     messageBA[0] = 57;
                     break;
-                case 5:
+                case 1:
                     messageBA[0] = 59;
                     break;
-                case 6:
+                case 2:
                     messageBA[0] = 51;
                     break;
-                case 7:
+                case 3:
                     messageBA[0] = 58;
                     break;
-                case 8:
+                case 4:
                     messageBA[0] = 54;
                     break;
             }
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO: add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onGlobalOn() {
@@ -167,12 +157,7 @@ public class MiiLightProvider {
         messageBA[0] = 78;
         messageBA[1] = (byte)(values[val]);
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
 
@@ -191,12 +176,7 @@ public class MiiLightProvider {
         messageBA[0] = 60;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO: add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onDecreaseBrightness(String Type, int Zone) {
@@ -214,12 +194,7 @@ public class MiiLightProvider {
         messageBA[0] = 52;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO: add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onSetColor(int Zone, int color) {
@@ -246,12 +221,7 @@ public class MiiLightProvider {
         messageBA[0] = 64;
         messageBA[1] = (byte)dec.intValue();
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onSetTemperature(String Type, int Zone, float Temp) {
@@ -273,12 +243,7 @@ public class MiiLightProvider {
         messageBA[0] = 62;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
 
@@ -297,12 +262,7 @@ public class MiiLightProvider {
         messageBA[0] = 63;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onSetNight(String Type, int Zone) {
@@ -352,12 +312,7 @@ public class MiiLightProvider {
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onSetFull(String Type, int Zone) {
@@ -387,12 +342,7 @@ public class MiiLightProvider {
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void onSetWhite(int Zone) {
@@ -416,12 +366,7 @@ public class MiiLightProvider {
         }
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //TODO: add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void sendCommand(String action) {

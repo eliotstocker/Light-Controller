@@ -50,9 +50,6 @@ public class APIReciever extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Set<String> enabled = prefs.getStringSet("enabled_api_apps", new HashSet<String>());
 

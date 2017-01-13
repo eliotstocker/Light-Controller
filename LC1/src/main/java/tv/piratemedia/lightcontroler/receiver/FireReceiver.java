@@ -54,9 +54,6 @@ public final class FireReceiver extends BroadcastReceiver
          * Always be strict on input parameters! A malicious third-party app could send a malformed Intent.
          */
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent.getAction()))
         {
             if (Constants.IS_LOGGABLE)

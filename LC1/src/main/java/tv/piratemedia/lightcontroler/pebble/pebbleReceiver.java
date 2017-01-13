@@ -66,8 +66,7 @@ public class pebbleReceiver extends BroadcastReceiver {
         }*/
 
         //Code necessary to have this Receiver service accept input from the pebble even if main app is not running
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
         //Log.d(TAG, "on recieve");
         //Check to see if the intent is from the pebble
         if (intent.getAction().equals(INTENT_APP_RECEIVE)) {

@@ -131,9 +131,6 @@ public class controller extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controller);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         drawer = (DrawerFrameLayout) findViewById(R.id.drawer);
 
         setupApp();

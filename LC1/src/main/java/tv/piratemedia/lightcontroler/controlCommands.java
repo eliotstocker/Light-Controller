@@ -85,9 +85,6 @@ public class controlCommands {
             UDPC.sendAdminMessage("+ok".getBytes(), true);
             Thread.sleep(100);
             UDPC.sendAdminMessage("AT+WSCAN\r\n".getBytes(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
@@ -104,9 +101,6 @@ public class controlCommands {
             UDPC.sendAdminMessage("AT+WMODE=STA\r\n".getBytes(), true);
             Thread.sleep(100);
             UDPC.sendAdminMessage("AT+Z\r\n".getBytes(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
@@ -121,9 +115,6 @@ public class controlCommands {
             UDPC.sendAdminMessage("AT+WMODE=STA\r\n".getBytes(), true);
             Thread.sleep(100);
             UDPC.sendAdminMessage("AT+Z\r\n".getBytes(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
@@ -286,12 +277,7 @@ public class controlCommands {
         messageBA[0] = 77;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void discoModeFaster() {
@@ -299,12 +285,7 @@ public class controlCommands {
         messageBA[0] = 68;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     public void discoModeSlower() {
@@ -312,12 +293,7 @@ public class controlCommands {
         messageBA[0] = 67;
         messageBA[1] = 0;
         messageBA[2] = 85;
-        try {
-            UDPC.sendMessage(messageBA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        }
+        UDPC.sendMessage(messageBA);
     }
 
     private String startCandleColor;

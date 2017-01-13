@@ -246,8 +246,6 @@ public class controlWidgetProvider extends AppWidgetProvider {
             Log.d("widget", "update widget");
             this.updateUI(context, AppWidgetManager.getInstance(context));
         } else {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
 
             Controller = new controlCommands(context, null);
 

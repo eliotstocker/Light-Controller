@@ -29,6 +29,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -58,7 +59,6 @@ public class UDPConnection {
             NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
         } catch (ConnectionException e) {
             e.printStackTrace();
-            return;
         }
     }
 
@@ -66,24 +66,33 @@ public class UDPConnection {
         onlineMode = online;
     }
 
-    public void sendMessage(byte[] Bytes) throws IOException {
-        if(!onlineMode) {
-            CONTROLLERIP = prefs.getString("pref_light_controller_ip", NetworkBroadCast);
-            CONTROLLERPORT = Integer.parseInt(prefs.getString("pref_light_controller_port", "8899"));
-            DatagramSocket s = new DatagramSocket();
-            InetAddress controller = InetAddress.getByName(CONTROLLERIP);
-            DatagramPacket p = new DatagramPacket(Bytes, 3, controller, CONTROLLERPORT);
-            s.send(p);
-        } else {
-            //send message in online mode;
-        }
+    public void sendMessage(final byte[] Bytes) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!onlineMode) {
+                    CONTROLLERIP = prefs.getString("pref_light_controller_ip", NetworkBroadCast);
+                    CONTROLLERPORT = Integer.parseInt(prefs.getString("pref_light_controller_port", "8899"));
+                    try {
+                        DatagramSocket s = new DatagramSocket();
+                        InetAddress controller = InetAddress.getByName(CONTROLLERIP);
+                        DatagramPacket p = new DatagramPacket(Bytes, 3, controller, CONTROLLERPORT);
+                        s.send(p);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    //send message in online mode;
+                }
+            }
+        }).start();
     }
 
     public void sendAdminMessage(byte[] Bytes) throws IOException {
         sendAdminMessage(Bytes, false);
     }
 
-    public void sendAdminMessage(byte[] Bytes, Boolean Device) throws IOException {
+    public void sendAdminMessage(final byte[] Bytes, final Boolean Device) {
         if(server == null) {
             server = new UDP_Server();
             server.runUdpServer();
@@ -91,23 +100,32 @@ public class UDPConnection {
             server.runUdpServer();
         }
 
-        String NetworkBroadCast = null;
-        if(Device) {
-            CONTROLLERIP = prefs.getString("pref_light_controller_ip", "192.168.0.255");
-            NetworkBroadCast = CONTROLLERIP;
-        } else {
-            try {
-                NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
-            } catch (ConnectionException e) {
-                e.printStackTrace();
-                return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String NetworkBroadCast = null;
+                if (Device) {
+                    CONTROLLERIP = prefs.getString("pref_light_controller_ip", "192.168.0.255");
+                    NetworkBroadCast = CONTROLLERIP;
+                } else {
+                    try {
+                        NetworkBroadCast = Utils.getWifiIP(utils.BROADCAST_ADDRESS);
+                    } catch (ConnectionException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+                try {
+                    DatagramSocket s = new DatagramSocket();
+                    InetAddress controller = InetAddress.getByName(NetworkBroadCast);
+                    DatagramPacket p = new DatagramPacket(Bytes, Bytes.length, controller, CONTROLLERADMINPORT);
+                    s.setBroadcast(true);
+                    s.send(p);
+                } catch(IOException e) {
+
+                }
             }
-        }
-        DatagramSocket s = new DatagramSocket();
-        InetAddress controller = InetAddress.getByName(NetworkBroadCast);
-        DatagramPacket p = new DatagramPacket(Bytes, Bytes.length, controller, CONTROLLERADMINPORT);
-        s.setBroadcast(true);
-        s.send(p);
+        }).start();
     }
 
     public void destroyUDPC() {
