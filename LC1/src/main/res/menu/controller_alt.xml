@@ -4,13 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/action_global_on"
-        android:title="Global On"
-        app:showAsAction="always"
+        android:title="@string/menu_action_global_on"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_global_on"/>
     <item android:id="@+id/action_global_off"
-        android:title="Global Off"
-        app:showAsAction="always"
+        android:title="@string/menu_action_global_off"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_global_off"/>
+
+    <item android:id="@+id/action_zone_setup"
+        android:title="@string/menu_action_zone_setup"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_wifi_setup"
+        android:title="@string/menu_action_wifi_setup"
+        app:showAsAction="never"
+        android:visible="false"/>
 
     <!--<item android:id="@+id/action_menu"-->
         <!--android:title="menu"-->

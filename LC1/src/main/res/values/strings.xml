@@ -6,7 +6,7 @@
     <string name="api_description">Allow Application to Control Lights using the Light Controller API</string>
     <string name="app_settings">Settings</string>
     <string name="app_widget_settings">Widget Settings</string>
-    <string name="gloabl">Global</string>
+    <string name="global">Global</string>
     <string name="Zone1">Zone 1</string>
     <string name="Zone2">Zone 2</string>
     <string name="Zone3">Zone 3</string>
@@ -71,6 +71,11 @@
     <string name="twofortyfouram_locale_menu_save">Done</string>
 
     <string name="add_widget">Add widget</string>
+
+    <string name="menu_action_global_on">Global On</string>
+    <string name="menu_action_global_off">Global Off</string>
+    <string name="menu_action_wifi_setup">Controller Wifi Setup</string>
+    <string name="menu_action_zone_setup">Zone Setup</string>
 
     <string-array name="modes_array">
         <item>Disco Mode</item>

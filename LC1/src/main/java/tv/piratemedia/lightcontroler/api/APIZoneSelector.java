@@ -174,7 +174,7 @@ public class APIZoneSelector extends Activity {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Intent i = new Intent();
         LightZone lz = new LightZone();
-        lz.Name = selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.gloabl);
+        lz.Name = selectedZone > 0 && selectedZone < 9 ? prefs.getString("pref_zone"+selectedZone, "Zone "+selectedZone) : getResources().getString(R.string.global);
         lz.Type = selectedType;
         lz.ID = selectedZone;
         lz.Global = selectedZone > 0 && selectedZone < 9;

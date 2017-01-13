@@ -125,6 +125,8 @@ public class controller extends ActionBarActivity {
 
     private pebbleSender pSender;
 
+    private Menu optionsMenu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,6 +271,12 @@ public class controller extends ActionBarActivity {
                     DeviceMac = Mac;
                 }
             }
+        }
+
+        if(DeviceMac.toLowerCase().equals(Utils.GetWifiMac().replace(":","").toLowerCase())) {
+            optionsMenu.findItem(R.id.action_wifi_setup).setVisible(true);
+        } else {
+            optionsMenu.findItem(R.id.action_wifi_setup).setVisible(false);
         }
     }
 
@@ -497,77 +505,14 @@ public class controller extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
         } else if(prefs.getBoolean("rgbw_enabled", false) && prefs.getBoolean("white_enabled", false)) {
             getMenuInflater().inflate(R.menu.controller_alt, menu);
-            Log.d("menus", "alt menu");
-        } else {
-            Log.d("menus", "no menu");
         }
+        optionsMenu = menu;
         return true;
-    }
-
-    public void popupMenu() {
-        MenuView = View.inflate(this, R.layout.menu, null);
-        TextView settings = (TextView) MenuView.findViewById(R.id.settings_menu_item);
-        TextView DeviceSetup = (TextView) MenuView.findViewById(R.id.setup_menu_item);
-
-        if(DeviceMac.toLowerCase().equals(Utils.GetWifiMac().replace(":","").toLowerCase())) {
-            DeviceSetup.setVisibility(View.VISIBLE);
-        } else {
-            DeviceSetup.setVisibility(View.GONE);
-        }
-
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMenu();
-                Intent intent = new Intent(getApplicationContext(), controlPreferences.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        DeviceSetup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Controller.getWifiNetworks();
-                closeMenu();
-            }
-        });
-
-        MenuView.setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_corner));
-
-        mMenu = new PopupWindow(MenuView, LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        mMenu.setContentView(MenuView);
-        mMenu.setTouchable(true);
-        if(Build.VERSION.SDK_INT == 21) {
-            mMenu.setElevation((int)dipToPixels(this, 10));
-        }
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
-        mMenu.setAnimationStyle(R.anim.abc_slide_in_top);
-        mMenu.setBackgroundDrawable(new BitmapDrawable());
-        mMenu.setFocusable(true);
-        mMenu.setOutsideTouchable(false);
-        mMenu.showAtLocation(findViewById(R.id.container), 0, size.x - (int)dipToPixels(this, 208), (int)dipToPixels(this, 32));
-        mMenu.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                MenuView.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_corner));
-            }
-        });
-    }
-
-    public void closeMenu() {
-        mMenu.dismiss();
     }
 
     public static float dipToPixels(Context context, float dipValue) {
@@ -577,23 +522,24 @@ public class controller extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, controlPreferences.class);
             startActivity(intent);
+            finish();
             return true;
-//        } else if(id == R.id.action_menu) {
-//            popupMenu();
-//            return true;
         } else if(id == R.id.action_global_on) {
             Controller.globalOn();
         } else if(id == R.id.action_global_off) {
             Controller.globalOff();
         } else if(id == android.R.id.home) {
             drawer.openDrawer();
+        } else if(id == R.id.action_wifi_setup) {
+            Controller.getWifiNetworks();
+        } else if(id == R.id.action_zone_setup) {
+            Intent intent = new Intent(this, zoneSetupWizard.class);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
