@@ -925,7 +925,7 @@ public class controller extends ActionBarActivity {
                         Controller.setToWhite(ControlProviders.ZONE_TYPE_COLOR, getArguments().getInt(ARG_SECTION_NUMBER));
                         /*ToggleButton io = (ToggleButton) rootView.findViewById(R.id.onoff);
                         io.setChecked(true);*/
-                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#ffee58"));
+                        ((controller) getActivity()).setActionbarColor(Color.parseColor("#FFef6c00"));
                     }
                 });
 
