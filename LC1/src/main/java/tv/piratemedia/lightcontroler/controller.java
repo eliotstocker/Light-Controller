@@ -508,9 +508,18 @@ public class controller extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         if(prefs.getBoolean("navigation_tabs", false)) {
             getMenuInflater().inflate(R.menu.controller, menu);
-        } else if(prefs.getBoolean("rgbw_enabled", false) && prefs.getBoolean("white_enabled", false)) {
+        } else {
             getMenuInflater().inflate(R.menu.controller_alt, menu);
         }
+
+        if(prefs.getBoolean("rgbw_enabled", false) && prefs.getBoolean("white_enabled", false)) {
+            menu.findItem(R.id.action_global_on).setVisible(true);
+            menu.findItem(R.id.action_global_off).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_global_on).setVisible(false);
+            menu.findItem(R.id.action_global_off).setVisible(false);
+        }
+
         optionsMenu = menu;
         return true;
     }
@@ -602,8 +611,8 @@ public class controller extends ActionBarActivity {
 
         @Override
         public android.support.v4.app.Fragment getItem(int i) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && i > 0) {
-                i += 4;
+            if(!prefs.getBoolean("rgbw_enabled", false)) {
+                i += 5;
             }
             switch(i) {
                 case 0:
@@ -713,8 +722,8 @@ public class controller extends ActionBarActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if(!prefs.getBoolean("rgbw_enabled", false) && position > 0) {
-                position += 4;
+            if(!prefs.getBoolean("rgbw_enabled", false)) {
+                position += 5;
             }
             switch(position) {
                 case 0: return "All Color";
