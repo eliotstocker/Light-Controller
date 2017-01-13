@@ -677,14 +677,13 @@ public class controller extends ActionBarActivity {
             Intent i = new Intent();
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setComponent(new ComponentName(context.getPackageName(), zoneSetup.class.getCanonicalName()));
+            if(!prefs.getBoolean("rgbw_enabled", false)) {
+                zone += 5;
+            }
             int z = zone;
             if(z > 4) {
                 intent.putExtra("type", "white");
-                if(z > 8) {
-                    z = 0;
-                } else {
-                    z -= 4;
-                }
+                z -= 5;
             } else {
                 intent.putExtra("type", "color");
             }

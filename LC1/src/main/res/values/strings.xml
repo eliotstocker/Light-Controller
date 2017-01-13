@@ -77,6 +77,9 @@
     <string name="menu_action_wifi_setup">Controller Wifi Setup</string>
     <string name="menu_action_zone_setup">Zone Setup</string>
 
+    <string name="zone_setup_add_bulb_step3">if the light(s) flashed several times they have been successfully added to the group, if this didn\'t happen, please start again</string>
+    <string name="zone_setup_remove_bulb_step3">if the light(s) flashed several times they have been successfully removed from the group, if this didn\'t happen, please start again</string>
+
     <string-array name="modes_array">
         <item>Disco Mode</item>
         <item>Music Mode</item>
