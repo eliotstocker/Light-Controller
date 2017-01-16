@@ -63,11 +63,7 @@ public class ControlProviders {
                         Log.d("ControlProviders", "Cant find expected attributes in Control Provider Info XML");
                     }
                 }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (PackageManager.NameNotFoundException | XmlPullParserException | IOException | NullPointerException e) {
                 e.printStackTrace();
             }
         }
