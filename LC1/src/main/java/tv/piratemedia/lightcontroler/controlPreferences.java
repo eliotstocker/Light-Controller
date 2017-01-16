@@ -80,6 +80,7 @@ public class controlPreferences extends ActionBarActivity {
 
             addPreferencesFromResource(R.xml.control_preferences);
 
+            Log.d("Providers", "List Providers");
             availableProviders = ControlProviders.listProviders(getActivity());
             ListPreference providers = (ListPreference) findPreference("pref_selected_provider");
             if(availableProviders.length < 1) {
@@ -107,6 +108,7 @@ public class controlPreferences extends ActionBarActivity {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
                         if(!newValue.equals("")) {
+                            Log.d("Providers", "Getting Provider: " + newValue);
                             Provider provider = ControlProviders.getProvider((String) newValue, getActivity());
                             ControlProviders.sendCommand(provider, "Select", getActivity());
                         }

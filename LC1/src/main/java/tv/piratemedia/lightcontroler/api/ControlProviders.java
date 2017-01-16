@@ -49,15 +49,19 @@ public class ControlProviders {
                 int eventType = xpp.getEventType();
                 while (eventType != XmlPullParser.END_DOCUMENT)
                 {
-                    if(eventType == XmlPullParser.START_TAG && xpp.getName().equals("control-provider")) {
-                        p.ColorBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorBrightnessStatefull", false);
-                        p.WhiteBrightnessStatefull  = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteBrightnessStatefull", false);
-                        p.ColorHasTemperature       = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorHasTemperature", false);
-                        p.ColorTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "ColorTemperatureStatefull", false);
-                        p.WhiteTemperatureStatefull = xpp.getAttributeBooleanValue("http://schemas.android.com/apk/res-auto", "WhiteTemperatureStatefull", false);
-                        list.add(p);
+                    try {
+                        if (eventType == XmlPullParser.START_TAG && xpp.getName().equals("control-provider")) {
+                            p.ColorBrightnessStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "ColorBrightnessStatefull", false);
+                            p.WhiteBrightnessStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "WhiteBrightnessStatefull", false);
+                            p.ColorHasTemperature = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "ColorHasTemperature", false);
+                            p.ColorTemperatureStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "ColorTemperatureStatefull", false);
+                            p.WhiteTemperatureStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "WhiteTemperatureStatefull", false);
+                            list.add(p);
+                        }
+                        eventType = xpp.next();
+                    } catch(NullPointerException e) {
+                        Log.d("ControlProviders", "Cant find expected attributes in Control Provider Info XML");
                     }
-                    eventType = xpp.next();
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();

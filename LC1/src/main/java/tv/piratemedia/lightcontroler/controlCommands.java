@@ -67,16 +67,20 @@ public class controlCommands {
     }
 
     public void discover() {
-        Log.d("discovery", "Start Discovery");
-        try {
-            UDPC.sendAdminMessage("AT+Q\r".getBytes());
-            Thread.sleep(100);
-            UDPC.sendAdminMessage("Link_Wi-Fi".getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-            //add alert to tell user we cant send command
-        } catch(InterruptedException e) {
-            e.printStackTrace();
+        if(provider != null) {
+            ControlProviders.sendCommand(provider, "discover", mContext);
+        } else {
+            Log.d("discovery", "Start Discovery");
+            try {
+                UDPC.sendAdminMessage("AT+Q\r".getBytes());
+                Thread.sleep(100);
+                UDPC.sendAdminMessage("Link_Wi-Fi".getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+                //add alert to tell user we cant send command
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
