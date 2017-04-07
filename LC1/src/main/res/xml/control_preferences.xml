@@ -6,7 +6,7 @@
                 android:summary="%s"
                 android:key="pref_selected_provider"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/cat_head" >
+    <PreferenceCategory android:title="@string/cat_head" android:key="cat_unit_prefs">
         <CheckBoxPreference
             android:title="@string/disable_discovery_title"
             android:summary="@string/disable_discovery_summary"
@@ -21,7 +21,7 @@
         <EditTextPreference
             android:title="@string/port_head"
             android:summary="@string/port_summary"
-            android:key="pref_light_controller_port"
+            android:key="tv.piratemedia.lightcontroler.api"
             android:inputType="number"
             android:maxLength="5"
             android:defaultValue="8899"/>

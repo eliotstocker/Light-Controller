@@ -12,6 +12,9 @@ public class Provider {
     public boolean ColorHasTemperature = false;
     public boolean ColorTemperatureStatefull = false;
     public boolean WhiteTemperatureStatefull = false;
+    public boolean CanDisableDiscovery = false;
+    public boolean CanSetHubIP = false;
+    public boolean CanSetHubPort = false;
 
     public Provider(String Name, String Package, String Provider) {
         this.Name = Name;

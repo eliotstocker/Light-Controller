@@ -24,6 +24,8 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.*;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -68,12 +70,23 @@ public class controlPreferences extends ActionBarActivity {
         });
     }
 
+    public void resetPrefs() {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        PrefsFragment newFragment = new PrefsFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.prefs_layout, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     public static class PrefsFragment extends PreferenceFragment {
 
         private static final Pattern PARTIAl_IP_ADDRESS =
                 Pattern.compile("^((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.){3}"+
                         "((25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])){1}$");
         private Provider[] availableProviders;
+        private Handler h;
 
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -102,6 +115,34 @@ public class controlPreferences extends ActionBarActivity {
                 //Log.d("providers", providers.getValue());
                 if(providers.getValue() == null) {
                     providers.setValueIndex(0);
+                } else {
+                    try {
+                        Provider provider = ControlProviders.getProvider(providers.getValue(), getActivity());
+                        PreferenceCategory mCategory = (PreferenceCategory) findPreference("cat_unit_prefs");
+                        Preference autodiscovery = findPreference("pref_disable_auto_find");
+                        Preference hubip = findPreference("pref_light_controller_ip");
+                        Preference hubport = findPreference("pref_light_controller_port");
+
+                        try {
+                            if (!provider.CanDisableDiscovery && !provider.CanSetHubIP && !provider.CanSetHubPort) {
+                                getPreferenceScreen().removePreference(mCategory);
+                            } else {
+                                if (!provider.CanDisableDiscovery) {
+                                    mCategory.removePreference(autodiscovery);
+                                }
+                                if (!provider.CanSetHubIP) {
+                                    mCategory.removePreference(hubip);
+                                }
+                                if (!provider.CanSetHubPort) {
+                                    mCategory.removePreference(hubport);
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 providers.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -111,6 +152,8 @@ public class controlPreferences extends ActionBarActivity {
                             Log.d("Providers", "Getting Provider: " + newValue);
                             Provider provider = ControlProviders.getProvider((String) newValue, getActivity());
                             ControlProviders.sendCommand(provider, "Select", getActivity());
+
+                            ((controlPreferences) getActivity()).resetPrefs();
                         }
                         return true;
                     }

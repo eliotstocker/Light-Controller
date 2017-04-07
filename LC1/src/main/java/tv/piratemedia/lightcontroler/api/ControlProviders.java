@@ -56,6 +56,9 @@ public class ControlProviders {
                             p.ColorHasTemperature = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "ColorHasTemperature", false);
                             p.ColorTemperatureStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "ColorTemperatureStatefull", false);
                             p.WhiteTemperatureStatefull = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "WhiteTemperatureStatefull", false);
+                            p.CanDisableDiscovery = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "CanDisableDiscovery", false);
+                            p.CanSetHubIP = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "CanSetHubIP", false);
+                            p.CanSetHubPort = xpp.getAttributeBooleanValue("tv.piratemedia.lightcontroller", "CanSetHubPort", false);
                             list.add(p);
                         }
                         eventType = xpp.next();
