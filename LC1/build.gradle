@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "tv.piratemedia.lightcontroler"
@@ -47,14 +47,14 @@ repositories {
 def playServices = true
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:25.+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.+'
     compile 'com.getpebble:pebblekit:3.0.0'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
         transitive = true
     }
-    if(playServices) {
+    if (playServices) {
         compile 'com.google.android.gms:play-services:+'
         wearApp project(':wear');
     }
