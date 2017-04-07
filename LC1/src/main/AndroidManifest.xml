@@ -63,22 +63,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.EditActivity"
-            android:exported="true"
-            android:icon="@drawable/icon"
-            android:roundIcon="@drawable/ic_launcher_rounded"
-            android:label="@string/plugin_name"
-            android:theme="@android:style/Theme.Holo"
-            android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustResize">
-
-            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-
         <receiver android:name=".controlWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -89,17 +73,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/control_appwidget_info" />
         </receiver>
-        <receiver
-            android:name=".receiver.FireReceiver"
-            android:exported="true"
-            android:process=":background">
-
-            <!-- this Intent filter allows the plug-in to discovered by Locale -->
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".ClockUpdateService"
             android:exported="false">
